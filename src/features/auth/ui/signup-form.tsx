@@ -4,14 +4,14 @@ import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
+import { UserAuth } from "@/app/auth-context";
+import { useState } from "react";
+import { Spinner } from "@/shared/ui/kit/spinner";
 
 const signupSchema = z
   .object({
     email: z.email("Введите корректный email"),
-    login: z.string().min(3, "Логин должен состоять минимум из 3 символов").max(15, "Максимальная длина логина - 15 символов"),
-    // login: z.string().min(3, "Login must be at least 3 characters.").max(15, "Login must be at most 15 characters."),
     password: z.string().min(8, "Пароль должен состоять из 8 символов").max(8, "Пароль должен состоять из 8 символов"),
-    // password: z.string().min(8, "Password must be at least 8 characters.").max(8, "Password must be at most 8 characters."),
     repeatPassword: z.string().min(1, "Подтвердите пароль"),
   })
   .refine((data) => data.password === data.repeatPassword, {
@@ -24,19 +24,31 @@ export function SignupForm() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
-      login: "",
       password: "",
       repeatPassword: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof signupSchema>) {
-    // Do something with the form values.
-    console.log(data);
-  }
+  const { loading, signUp } = UserAuth();
+  const [error, setError] = useState<string>("");
+
+  const handleSignUp = form.handleSubmit(async (data: z.infer<typeof signupSchema>) => {
+    setError("");
+
+    try {
+      const result = await signUp(data.email, data.password);
+
+      if (result.error) {
+        setError("Ошибка при регистрации: " + (result.error.message ?? "Неизвестная ошибка"));
+        return;
+      }
+    } catch (error) {
+      setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    }
+  });
 
   return (
-    <form id="auth-form" className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form id="auth-form" className="flex flex-col gap-4" onSubmit={handleSignUp}>
       <Controller
         name="email"
         control={form.control}
@@ -44,17 +56,6 @@ export function SignupForm() {
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel htmlFor="auth-form-email">Email</FieldLabel>
             <Input {...field} id="auth-form-email" aria-invalid={fieldState.invalid} placeholder="test@gmail.com" autoComplete="off" />
-            {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-      <Controller
-        name="login"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="auth-form-login">Логин</FieldLabel>
-            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="test" autoComplete="off" />
             {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
           </Field>
         )}
@@ -95,8 +96,12 @@ export function SignupForm() {
           </Field>
         )}
       />
-      {/* TODO: <Button disabled={isPending} type="submit"> */}
-      <Button type="submit">Зарегистрироваться</Button>
+
+      <Button type="submit" disabled={loading}>
+        {loading ? <Spinner /> : "Зарегистрироваться"}
+      </Button>
+
+      {error && <p className="text-destructive text-sm">{error}</p>}
     </form>
   );
 }

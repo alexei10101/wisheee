@@ -4,14 +4,29 @@ import LoginPage from "../features/auth/login.page";
 import SignupPage from "../features/auth/signup.page";
 import App from "./app";
 import { ROUTES } from "@/shared/model/routes";
+import { AuthProvider } from "./auth-provider";
+import ProtectedRoute from "./protected-route";
+import PublicRoute from "./public-route";
 
 const router = createBrowserRouter([
   {
-    element: <App />,
+    element: (
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    ),
     children: [
-      { path: ROUTES.HOME, Component: HomePage },
-      { path: ROUTES.LOGIN, Component: LoginPage },
-      { path: ROUTES.REGISTER, Component: SignupPage },
+      {
+        element: <ProtectedRoute />,
+        children: [{ index: true, element: <HomePage /> }],
+      },
+      {
+        element: <PublicRoute />,
+        children: [
+          { path: ROUTES.LOGIN, Component: LoginPage },
+          { path: ROUTES.REGISTER, Component: SignupPage },
+        ],
+      },
     ],
   },
 ]);

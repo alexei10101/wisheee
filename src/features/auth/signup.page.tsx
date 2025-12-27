@@ -6,8 +6,8 @@ import { SignupForm } from "./ui/signup-form";
 const SignupPage = () => {
   return (
     <AuthLayout
-      title="Вход в систему"
-      description="Введите ваш email и пароль для входа в систему"
+      title="Регистрация в системе"
+      description="Введите ваш email и пароль для регистрации в системе"
       form={<SignupForm />}
       footerText={
         <>

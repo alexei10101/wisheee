@@ -4,38 +4,51 @@ import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
+import { UserAuth } from "@/app/auth-context";
+import { useState } from "react";
+import { Spinner } from "@/shared/ui/kit/spinner";
 
 const loginSchema = z.object({
-  login: z.string().min(3, "Логин должен состоять минимум из 3 символов.").max(15, "Максимальная длина логина - 15 символов."),
-  // login: z.string().min(3, "Login must be at least 3 characters.").max(15, "Login must be at most 15 characters."),
-
+  email: z.email("Введите корректный email"),
   password: z.string().min(8, "Пароль должен состоять из 8 символов.").max(8, "Пароль должен состоять из 8 символов."),
-  // password: z.string().min(8, "Password must be at least 8 characters.").max(8, "Password must be at most 8 characters."),
 });
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      login: "",
+      email: "",
       password: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof loginSchema>) {
-    // Do something with the form values.
-    console.log(data);
-  }
+  const { loading, login } = UserAuth();
+  const [error, setError] = useState<string>("");
+
+  const handleLogin = form.handleSubmit(async (data: z.infer<typeof loginSchema>) => {
+    setError("");
+
+    try {
+      const result = await login(data.email, data.password);
+
+      if (result.error) {
+        setError("Ошибка при входе: " + (result.error.message ?? "Неизвестная ошибка"));
+        return;
+      }
+    } catch (error) {
+      setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    }
+  });
 
   return (
-    <form id="auth-form" className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form id="auth-form" className="flex flex-col gap-4" onSubmit={handleLogin}>
       <Controller
-        name="login"
+        name="email"
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="auth-form-login">Логин</FieldLabel>
-            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="test" autoComplete="off" />
+            <FieldLabel htmlFor="auth-form-login">Email</FieldLabel>
+            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="test@gmail.com" autoComplete="off" />
             {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
           </Field>
         )}
@@ -58,8 +71,12 @@ export function LoginForm() {
           </Field>
         )}
       />
-      {/* TODO: <Button disabled={isPending} type="submit"> */}
-      <Button type="submit">Войти</Button>
+
+      <Button type="submit" disabled={loading}>
+        {loading ? <Spinner /> : "Войти"}
+      </Button>
+
+      {error && <p className="text-destructive text-sm">{error}</p>}
     </form>
   );
 }
