@@ -5,6 +5,8 @@ import { supabase } from "@/shared/api/supabase-client";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
+  // TODO: profile type
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   // Sign up
@@ -14,7 +16,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       password,
     });
-    setLoading(true);
+
+    setLoading(false);
 
     if (error) return { error: error };
 
@@ -40,17 +43,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Logout
   const logout = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    setLoading(false);
-
     setSession(null);
-
-    if (error) return { error: error };
+    setProfile(null);
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
   };
 
   // Get initial session
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) {
+        setProfile(null);
+        return;
+      }
       setSession(session);
     });
   }, []);
@@ -59,9 +68,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!session) {
+        setProfile(null);
+        return;
+      }
+
+      setSession(session);
+
+      try {
+        const { data, error } = await getUserInfo(session.user.id);
+
+        if (error) {
+          console.log(error);
+          setProfile(null);
+          return;
+        }
+
+        setProfile(data);
+      } catch (error) {
+        console.log(error);
+        setProfile(null);
+      }
+    });
     return () => subscription.unsubscribe();
   }, []);
 
-  return <AuthContext.Provider value={{ session, loading, signUp, login, logout }}>{children}</AuthContext.Provider>;
+  // TODO: what about reserved items?
+
+  const getUserInfo = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          `
+            *,
+            wishlists (
+              *,
+              wishlist_items (
+                *,
+                reserved_gifts (*)
+              )
+            ),
+            friends!friends_user_id_fkey (
+              friend_id
+            )
+          `,
+        )
+        .eq("id", id)
+        .order("created_at", { foreignTable: "wishlists", ascending: false })
+        .single();
+      return { data, error };
+    } catch (error) {
+      return { data: null, error };
+    }
+  };
+
+  return <AuthContext.Provider value={{ session, profile, loading, signUp, login, logout }}>{children}</AuthContext.Provider>;
+
+  // TODO: handle OTP authentification
 }

@@ -28,6 +28,8 @@ export function LoginForm() {
   const handleLogin = form.handleSubmit(async (data: z.infer<typeof loginSchema>) => {
     setError("");
 
+    // TODO: problem with error handling (errors are not shown)
+
     try {
       const result = await login(data.email, data.password);
 
