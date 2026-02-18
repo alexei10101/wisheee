@@ -18,5 +18,7 @@
     "lib": "@/shared/lib",
     "hooks": "@/shared/lib/react"
   },
-  "registries": {}
+  "registries": {
+    "@animate-ui": "https://animate-ui.com/r/{name}.json"
+  }
 }

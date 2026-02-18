@@ -1,25 +1,12 @@
 import { UserAuth } from "@/app/auth-context";
-import { supabase } from "@/shared/api/supabase-client";
-import { Button } from "@/shared/ui/kit/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Gift, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import ListOfWishes from "./list-of-wishes";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
-import { Input } from "@/shared/ui/kit/input";
+import { WishlistDialog } from "./wishlist-dialog";
 import { v4 as uuidv4 } from "uuid";
-
-type FormValues = z.infer<typeof wishlistSchema>;
-
-const wishlistSchema = z.object({
-  title: z.string().min(1, "Введите название вишлиста"),
-  description: z.string(),
-  isPublic: z.boolean(),
-});
+import { supabase } from "@/shared/api/supabase-client";
 
 const HomePage = () => {
   const { profile } = UserAuth();
@@ -29,21 +16,12 @@ const HomePage = () => {
     setWishlists(profile?.wishlists ?? []);
   }, [profile]);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(wishlistSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      isPublic: true,
-    },
-  });
-
-  const handleSubmit = form.handleSubmit(async () => {
+  const handleSubmit = async (data: Omit<Wishlist, "user_id" | "id">) => {
     if (!profile) return;
-    const newWishlist = createWishlist();
+
+    const newWishlist = { id: uuidv4(), user_id: profile.id, ...data };
 
     try {
-      console.log("123");
       const { error } = await supabase
         .from("wishlists")
         .upsert({
@@ -58,18 +36,6 @@ const HomePage = () => {
     } catch (error) {
       console.log(error);
     }
-
-    form.reset();
-  });
-
-  const createWishlist = (): Wishlist => {
-    return {
-      id: uuidv4(),
-      user_id: profile!.id,
-      title: form.getValues("title"),
-      description: form.getValues("description"),
-      is_public: form.getValues("isPublic"),
-    };
   };
 
   return (
@@ -94,49 +60,7 @@ const HomePage = () => {
       <section>
         {/* <h2 className="text-5xl">Созданные списки</h2> */}
 
-        <form id="wishlist-form" onSubmit={handleSubmit}>
-          <Controller
-            name="title"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <Input
-                  {...field}
-                  id="wishlist-form-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Название списка"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-          <Controller
-            name="description"
-            control={form.control}
-            render={({ field }) => (
-              <Field>
-                <Input {...field} id="wishlist-form-description" placeholder="Описание списка" autoComplete="off" />
-              </Field>
-            )}
-          />
-          <Controller
-            name="isPublic"
-            control={form.control}
-            render={({ field }) => (
-              <Field>
-                <FieldLabel htmlFor="wishlist-form-isPublic">Список видно всем</FieldLabel>
-                <Input
-                  id="wishlist-form-isPublic"
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                />
-              </Field>
-            )}
-          />
-          <Button type="submit">Создать список</Button>
-        </form>
+        <WishlistDialog onSubmit={handleSubmit} profileId={profile?.id}></WishlistDialog>
 
         <div className="flex flex-col gap-4">
           {wishlists?.map((wishlist) => (
