@@ -1,17 +1,17 @@
 import { UserAuth } from "@/app/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Gift, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ListOfWishes from "./list-of-wishes";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { WishlistDialog } from "./wishlist-dialog";
+import { WishlistCreateDialog } from "./wishlist-create-dialog";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/shared/api/supabase-client";
+import { WishlistDeleteDialog } from "./wishlist-delete-dialog";
 
 const HomePage = () => {
   const { profile } = UserAuth();
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
-
   useEffect(() => {
     setWishlists(profile?.wishlists ?? []);
   }, [profile]);
@@ -38,6 +38,38 @@ const HomePage = () => {
     }
   };
 
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const resolverConfirmRef = useRef<{ resolve: (value: boolean) => void; reject: () => void } | null>(null);
+
+  const openConfirm = () => {
+    setOpenDeleteDialog(true);
+
+    return new Promise<boolean>((resolve, reject) => {
+      resolverConfirmRef.current = { resolve, reject };
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const deleteItems = await openConfirm();
+      resolverConfirmRef.current = null;
+
+      const { error } = await supabase.from("wishlists").delete().eq("id", id).eq("user_id", profile?.id);
+
+      if (error) {
+        console.error("Ошибка удаления:", error.message);
+        throw error;
+      }
+
+      setWishlists((prev) => prev.filter((pr) => pr.id !== id));
+
+      if (deleteItems) {
+        console.log("Удаляем также товары");
+        // TODO: вызываем RPC
+      }
+    } catch {}
+  };
+
   return (
     <main className="container m-auto py-5">
       <section className="flex flex-col items-center justify-center gap-12">
@@ -59,12 +91,13 @@ const HomePage = () => {
 
       <section>
         {/* <h2 className="text-5xl">Созданные списки</h2> */}
-
-        <WishlistDialog onSubmit={handleSubmit} profileId={profile?.id}></WishlistDialog>
+        {profile && <WishlistCreateDialog onSubmit={handleSubmit} profileId={profile?.id} />}
+        {/* {profile && <WishlistDeleteDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} resolver={resolverRef.current}  />} */}
+        {profile && <WishlistDeleteDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} resolver={resolverConfirmRef.current} />}
 
         <div className="flex flex-col gap-4">
           {wishlists?.map((wishlist) => (
-            <ListOfWishes key={wishlist.id} {...wishlist} />
+            <ListOfWishes key={wishlist.id} wishlist={wishlist} onDelete={handleDelete} />
           ))}
         </div>
       </section>
