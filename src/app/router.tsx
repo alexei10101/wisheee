@@ -6,6 +6,7 @@ import ProtectedRoute from "./protected-route";
 import PublicRoute from "./public-route";
 import AppHeader from "@/features/header";
 import { lazy } from "react";
+import { TooltipProvider } from "@/shared/ui/kit/tooltip";
 
 const HomePageLazy = lazy(() => import("../features/home/home.page"));
 const LoginPageLazy = lazy(() => import("../features/auth/login.page"));
@@ -16,7 +17,9 @@ const router = createBrowserRouter([
   {
     element: (
       <AuthProvider>
-        <App />
+        <TooltipProvider>
+          <App />
+        </TooltipProvider>
       </AuthProvider>
     ),
     children: [

@@ -1,6 +1,7 @@
 import type { Wishlist } from "@/shared/types/wishlist";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardAction, CardContent, CardDescription, CardTitle } from "@/shared/ui/kit/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/kit/tooltip";
 import { BookCheck, BookOpenCheck, Pencil, Trash } from "lucide-react";
 
 type ListOfWishesProps = {
@@ -17,9 +18,17 @@ const ListOfWishes = ({ wishlist, onDelete, onEdit }: ListOfWishesProps) => {
         <CardDescription>{wishlist.description?.trim() || `\u00A0`}</CardDescription>
       </CardContent>
       <CardAction className="ml-auto">
-        <Button variant="secondary" className="bg-white hover:bg-neutral-200">
-          {wishlist.is_public ? <BookOpenCheck /> : <BookCheck />}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary" className="bg-white hover:bg-neutral-200">
+              {wishlist.is_public ? <BookOpenCheck /> : <BookCheck />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{wishlist.is_public ? "Публичный" : "Приватный"}</p>
+          </TooltipContent>
+        </Tooltip>
+
         <Button variant="secondary" className="bg-white hover:bg-neutral-200" onClick={() => onEdit(wishlist)}>
           <Pencil />
         </Button>
