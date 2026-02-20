@@ -8,6 +8,7 @@ import { WishlistCreateDialog } from "./wishlist-create-dialog";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "@/shared/api/supabase-client";
 import { WishlistDeleteDialog } from "./wishlist-delete-dialog";
+import { WishlistEditDialog } from "./wishlist-edit-dialog";
 
 const HomePage = () => {
   const { profile } = UserAuth();
@@ -41,7 +42,7 @@ const HomePage = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const resolverConfirmRef = useRef<{ resolve: (value: boolean) => void; reject: () => void } | null>(null);
 
-  const openConfirm = () => {
+  const openConfirm = (): Promise<boolean> => {
     setOpenDeleteDialog(true);
 
     return new Promise<boolean>((resolve, reject) => {
@@ -70,6 +71,40 @@ const HomePage = () => {
     } catch {}
   };
 
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const wishlistDataRef = useRef<Partial<Wishlist> | null>(null);
+  const resolverEditRef = useRef<{
+    resolve: ({}: Partial<Wishlist>) => void;
+    reject: () => void;
+  } | null>(null);
+
+  const handleEdit = async (wishlist: Partial<Wishlist>) => {
+    try {
+      wishlistDataRef.current = wishlist;
+      const editData = await openEditForm();
+
+      resolverEditRef.current = null;
+      wishlistDataRef.current = null;
+
+      const { error } = await supabase.from("wishlists").update(editData).eq("id", wishlist.id).eq("user_id", profile?.id);
+
+      if (error) {
+        console.error("Ошибка изменения:", error.message);
+        throw error;
+      }
+
+      setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...editData } : pr)));
+    } catch {}
+  };
+
+  const openEditForm = (): Promise<Partial<Wishlist>> => {
+    setOpenEditDialog(true);
+
+    return new Promise<Partial<Wishlist>>((resolve, reject) => {
+      resolverEditRef.current = { resolve, reject };
+    });
+  };
+
   return (
     <main className="container m-auto py-5">
       <section className="flex flex-col items-center justify-center gap-12">
@@ -94,10 +129,18 @@ const HomePage = () => {
         {profile && <WishlistCreateDialog onSubmit={handleSubmit} profileId={profile?.id} />}
         {/* {profile && <WishlistDeleteDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} resolver={resolverRef.current}  />} */}
         {profile && <WishlistDeleteDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} resolver={resolverConfirmRef.current} />}
+        {profile && (
+          <WishlistEditDialog
+            open={openEditDialog}
+            setOpen={setOpenEditDialog}
+            data={wishlistDataRef.current}
+            resolver={resolverEditRef.current}
+          />
+        )}
 
         <div className="flex flex-col gap-4">
           {wishlists?.map((wishlist) => (
-            <ListOfWishes key={wishlist.id} wishlist={wishlist} onDelete={handleDelete} />
+            <ListOfWishes key={wishlist.id} wishlist={wishlist} onDelete={handleDelete} onEdit={handleEdit} />
           ))}
         </div>
       </section>

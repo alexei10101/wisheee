@@ -1,4 +1,4 @@
-import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
