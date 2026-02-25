@@ -14,35 +14,17 @@ import {
 } from "@/shared/ui/kit/dialog";
 import { Input } from "@/shared/ui/kit/input";
 import { Label } from "@/shared/ui/kit/label";
-import { Spinner } from "@/shared/ui/kit/spinner";
 import { Handshake, House, Lightbulb, LogOut, Settings } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
 function AppHeader() {
-  // think about images: where to store them, how to upload them
+  // TODO: think about images: where to store them, how to upload them
   const { session, logout } = UserAuth();
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
-  // const [avatarUrl, setLastname] = useState<string>("");
-
-  // useEffect(() => {
-  //   if (!openDialog) return;
-  //   setLoading(true);
-  //   fetchUserProfile();
-  //   setLoading(false);
-  // }, [openDialog]);
-
-  // const fetchUserProfile = async () => {
-  //   const { data: profile } = await supabase.from("profiles").select("*").eq("id", session?.user.id).select("username, avatar_url");
-  //   if (!profile || profile.length === 0) return;
-  //   setName(profile[0].username.split(" ")[0] || "");
-  //   setLastname(profile[0].username.split(" ")[1] || "");
-  // };
 
   const handleSettingsSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,40 +67,34 @@ function AppHeader() {
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
-            {loading ? (
-              <div className="grid place-items-center">
-                <Spinner />
-              </div>
-            ) : (
-              <form onSubmit={handleSettingsSubmit}>
-                <DialogHeader>
-                  <DialogTitle>Редактирование профиля</DialogTitle>
-                  <DialogDescription>Измените ваши персональные данные ниже</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 pt-4">
-                  <div className="grid gap-3">
-                    <Label htmlFor="name">Имя</Label>
-                    <Input id="name" name="name" placeholder="Иван" value={name} onChange={(e) => setName(() => e.target.value)} />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="lastname">Фамилия</Label>
-                    <Input
-                      id="lastname"
-                      name="lastname"
-                      placeholder="Иванов"
-                      value={lastname}
-                      onChange={(e) => setLastname(() => e.target.value)}
-                    />
-                  </div>
+            <form onSubmit={handleSettingsSubmit}>
+              <DialogHeader>
+                <DialogTitle>Редактирование профиля</DialogTitle>
+                <DialogDescription>Измените ваши персональные данные ниже</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 pt-4">
+                <div className="grid gap-3">
+                  <Label htmlFor="name">Имя</Label>
+                  <Input id="name" name="name" placeholder="Иван" value={name} onChange={(e) => setName(() => e.target.value)} />
                 </div>
-                <DialogFooter className="pt-4">
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button type="submit">Save changes</Button>
-                </DialogFooter>
-              </form>
-            )}
+                <div className="grid gap-3">
+                  <Label htmlFor="lastname">Фамилия</Label>
+                  <Input
+                    id="lastname"
+                    name="lastname"
+                    placeholder="Иванов"
+                    value={lastname}
+                    onChange={(e) => setLastname(() => e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter className="pt-4">
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
 
