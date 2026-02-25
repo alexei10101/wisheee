@@ -7,7 +7,7 @@ import { BookCheck, BookOpenCheck, Pencil, Trash } from "lucide-react";
 type ListOfWishesProps = {
   wishlist: Wishlist;
   onDelete: (id: string) => Promise<void>;
-  onEdit: (wishlist: Partial<Wishlist>) => Promise<void>;
+  onEdit: (wishlist: Wishlist) => Promise<void>;
 };
 
 const ListOfWishes = ({ wishlist, onDelete, onEdit }: ListOfWishesProps) => {
