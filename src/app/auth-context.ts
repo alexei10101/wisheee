@@ -1,6 +1,6 @@
 import type { Profile } from "@/shared/types/profile";
 import type { Session } from "@supabase/supabase-js";
-import { createContext, useContext, type MouseEventHandler } from "react";
+import { createContext, useContext } from "react";
 
 type AuthContextType = {
   session: Session | null;
@@ -8,7 +8,8 @@ type AuthContextType = {
   loading: boolean;
   signUp: Function;
   login: Function;
-  logout: MouseEventHandler<HTMLButtonElement>;
+  logout: Function;
+  updateProfile: Function;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -18,6 +19,7 @@ export const AuthContext = createContext<AuthContextType>({
   signUp: () => {},
   login: () => {},
   logout: () => {},
+  updateProfile: () => {},
 });
 
 export const UserAuth = () => {
