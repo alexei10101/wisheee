@@ -2,22 +2,23 @@ import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } fro
 import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 type WishlistDeleteDialogProps = {
   open: boolean;
-  setOpen: (isOpen: boolean) => void;
   resolver: { resolve: (value: boolean) => void; reject: () => void } | null;
 };
 
-export function WishlistDeleteDialog({ open, setOpen, resolver }: WishlistDeleteDialogProps) {
+function WishlistDeleteDialog({ open, resolver }: WishlistDeleteDialogProps) {
   const [deleteItems, setDeleteItems] = useState<boolean>(false);
 
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => {
-        setOpen(open);
+      onOpenChange={(value) => {
+        if (!value) {
+          resolver?.reject();
+        }
       }}>
       <DialogPortal>
         <DialogCustomOverlay />
@@ -34,7 +35,6 @@ export function WishlistDeleteDialog({ open, setOpen, resolver }: WishlistDelete
               Удалить товары
             </label>
           </div>
-
           <DialogFooter className="pt-4">
             <DialogClose asChild>
               <Button
@@ -42,20 +42,11 @@ export function WishlistDeleteDialog({ open, setOpen, resolver }: WishlistDelete
                 className="w-26"
                 onClick={() => {
                   resolver?.reject();
-                  resolver = null;
                 }}>
                 Отмена
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              form="wishlist-form"
-              className="w-26"
-              onClick={() => {
-                resolver?.resolve(deleteItems);
-                resolver = null;
-                setOpen(false);
-              }}>
+            <Button type="submit" form="wishlist-form" className="w-26" onClick={() => resolver?.resolve(deleteItems)}>
               Удалить
             </Button>
           </DialogFooter>
@@ -64,3 +55,5 @@ export function WishlistDeleteDialog({ open, setOpen, resolver }: WishlistDelete
     </Dialog>
   );
 }
+
+export default memo(WishlistDeleteDialog);

@@ -1,121 +1,134 @@
 import { UserAuth } from "@/app/auth-context";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Gift, Users } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import ListOfWishes from "./list-of-wishes";
+import { DiamondPlus, Gift, Users } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { WishlistCreateDialog } from "./wishlist-create-dialog";
-import { WishlistDeleteDialog } from "./wishlist-delete-dialog";
-import { WishlistEditDialog } from "./wishlist-edit-dialog";
 import { createWishlist, deleteWishlist, editWishlist } from "./model/dialog-operations";
+import { Link } from "react-router";
+import { ROUTES } from "@/shared/model/routes";
+import WishlistDialogManager from "./ui/wishlist-dialog-manager";
+import { Button } from "@/shared/ui/kit/button";
+import WishlistsList from "./ui/wishlists-list";
+
+type OperationType = "create" | "delete" | "edit";
+type DialogResultMap = {
+  create: Omit<Wishlist, "user_id" | "id">;
+  delete: boolean;
+  edit: Partial<Wishlist>;
+};
+type InternalResolver = {
+  resolve: (data: unknown) => void;
+  reject: () => void;
+};
 
 const HomePage = () => {
   const { profile } = UserAuth();
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
+
   useEffect(() => {
     setWishlists(profile?.wishlists ?? []);
-  }, [profile]);
+  }, [profile?.id]);
 
-  const handleCreate = async (data: Omit<Wishlist, "user_id" | "id">) => {
-    if (!profile) return;
-    const res = await createWishlist(profile.id, data);
-    console.log(res);
-    if (res.error) {
-      console.log(res.error);
-      return;
-    }
-    setWishlists((prev) => [res.result as Wishlist, ...prev]);
-  };
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const resolverConfirmRef = useRef<{ resolve: (value: boolean) => void; reject: () => void } | null>(null);
-  const openDeleteConfirm = (): Promise<boolean> => {
-    setOpenDeleteDialog(true);
-    return new Promise<boolean>((resolve, reject) => {
-      resolverConfirmRef.current = { resolve, reject };
-    });
-  };
-  const handleDelete = async (id: string) => {
-    if (!profile) return;
-
-    const deleteItems = await openDeleteConfirm();
-    resolverConfirmRef.current = null;
-
-    const res = await deleteWishlist(profile.id, id, deleteItems);
-    console.log(res);
-    if (res.error) {
-      console.log(res.error);
-      return;
-    }
-
-    setWishlists((prev) => prev.filter((pr) => pr.id !== id));
-  };
-
-  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [openDialog, setOpenDialog] = useState<{ isOpen: boolean; operation: OperationType | null }>({
+    isOpen: false,
+    operation: null,
+  });
+  const resolverDialogRef = useRef<InternalResolver | null>(null);
   const wishlistDataRef = useRef<Partial<Wishlist> | null>(null);
-  const resolverEditRef = useRef<{
-    resolve: ({}: Partial<Wishlist>) => void;
-    reject: () => void;
-  } | null>(null);
+  const openDialogPromise = <T extends OperationType>(operation: T): Promise<DialogResultMap[T]> => {
+    setOpenDialog({ isOpen: true, operation });
 
-  const openEditForm = (): Promise<Partial<Wishlist>> => {
-    setOpenEditDialog(true);
-    return new Promise<Partial<Wishlist>>((resolve, reject) => {
-      resolverEditRef.current = { resolve, reject };
+    return new Promise<DialogResultMap[T]>((resolve, reject) => {
+      resolverDialogRef.current = { resolve: resolve as (data: unknown) => void, reject };
     });
   };
-  const handleEdit = async (wishlist: Wishlist) => {
-    if (!profile) return;
+  const handleCreate = useCallback(async () => {
+    if (!profile?.id) return;
 
-    wishlistDataRef.current = wishlist;
-    const editData = await openEditForm();
-    resolverEditRef.current = null;
-    wishlistDataRef.current = null;
-
-    const res = await editWishlist(profile.id, wishlist.id, editData);
-    console.log(res);
-    if (res.error) {
-      console.log(res.error);
-      return;
+    try {
+      const dialogResult = await openDialogPromise("create");
+      const res = await createWishlist(profile.id, dialogResult);
+      if (res.error) {
+        console.log(res.error);
+        return;
+      }
+      setWishlists((prev) => [res.result as Wishlist, ...prev]);
+    } catch {
+    } finally {
+      setOpenDialog({ isOpen: false, operation: null });
+      resolverDialogRef.current = null;
     }
-    setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...editData } : pr)));
-  };
+  }, [profile?.id, createWishlist]);
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (!profile?.id) return;
+
+      try {
+        const dialogResult = await openDialogPromise("delete");
+        const res = await deleteWishlist(profile.id, id, dialogResult);
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+        setWishlists((prev) => prev.filter((pr) => pr.id !== id));
+      } catch {
+      } finally {
+        setOpenDialog({ isOpen: false, operation: null });
+        resolverDialogRef.current = null;
+      }
+    },
+    [profile?.id, deleteWishlist],
+  );
+  const handleEdit = useCallback(
+    async (wishlist: Wishlist) => {
+      if (!profile?.id) return;
+
+      wishlistDataRef.current = wishlist;
+
+      try {
+        const dialogResult = await openDialogPromise("edit");
+        const res = await editWishlist(profile.id, wishlist.id, dialogResult);
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+        setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...dialogResult } : pr)));
+      } catch {
+      } finally {
+        setOpenDialog({ isOpen: false, operation: null });
+        resolverDialogRef.current = null;
+        wishlistDataRef.current = null;
+      }
+    },
+    [profile?.id, editWishlist],
+  );
 
   return (
-    <main className="container m-auto py-5">
+    <main className="m-auto py-5 px-4">
       <section className="flex flex-col items-center justify-center gap-12">
-        <Avatar className="max-w-1/6 min-w-32 rounded-lg overflow-hidden">
-          <AvatarImage className="w-full h-full" src="https://github.com/evilrabbit.png" alt="@evilrabbit" />
-          <AvatarFallback>YOU</AvatarFallback>
-        </Avatar>
         <p>{profile?.username}</p>
         <div className="flex flex-row items-center gap-8">
           <p className="flex gap-1">
             <Gift /> Подарки
           </p>
-          <p className="flex gap-1">
-            <Users />
-            Друзья
-          </p>
+          <Link to={ROUTES.FRIENDS}>
+            <p className="flex gap-1">
+              <Users />
+              Друзья
+            </p>
+          </Link>
         </div>
       </section>
       {profile && (
         <section>
           {/* <h2 className="text-5xl">Созданные списки</h2> */}
-          <WishlistCreateDialog onSubmit={handleCreate} profileId={profile?.id} />
-          <WishlistDeleteDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} resolver={resolverConfirmRef.current} />
-          <WishlistEditDialog
-            open={openEditDialog}
-            setOpen={setOpenEditDialog}
-            data={wishlistDataRef.current}
-            resolver={resolverEditRef.current}
-          />
 
-          <div className="flex flex-col gap-4">
-            {wishlists?.map((wishlist) => (
-              <ListOfWishes key={wishlist.id} wishlist={wishlist} onDelete={handleDelete} onEdit={handleEdit} />
-            ))}
-          </div>
+          <Button onClick={handleCreate}>
+            <DiamondPlus />
+          </Button>
+
+          <WishlistDialogManager open={openDialog} resolver={resolverDialogRef.current} data={wishlistDataRef.current} />
+
+          <WishlistsList wishlists={wishlists} onDelete={handleDelete} onEdit={handleEdit} />
         </section>
       )}
     </main>

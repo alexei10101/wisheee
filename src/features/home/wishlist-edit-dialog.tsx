@@ -8,11 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 
 type WishlistEditDialogProps = {
   open: boolean;
-  setOpen: (isOpen: boolean) => void;
   data: Partial<Wishlist> | null;
   resolver: {
     resolve: ({}: Partial<Wishlist>) => void;
@@ -27,7 +26,7 @@ const wishlistSchema = z.object({
   isPublic: z.boolean(),
 });
 
-export function WishlistEditDialog({ open, setOpen, data, resolver }: WishlistEditDialogProps) {
+function WishlistEditDialog({ open, data, resolver }: WishlistEditDialogProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistSchema),
     defaultValues: {
@@ -48,8 +47,6 @@ export function WishlistEditDialog({ open, setOpen, data, resolver }: WishlistEd
   }, [data, open]);
 
   const handleFormSubmit = () => {
-    setOpen(false);
-
     const formValues = form.getValues();
     const dirtyFields = form.formState.dirtyFields;
 
@@ -72,8 +69,10 @@ export function WishlistEditDialog({ open, setOpen, data, resolver }: WishlistEd
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => {
-        setOpen(open);
+      onOpenChange={(value) => {
+        if (!value) {
+          resolver?.reject();
+        }
       }}>
       <DialogPortal>
         <DialogCustomOverlay />
@@ -144,3 +143,5 @@ export function WishlistEditDialog({ open, setOpen, data, resolver }: WishlistEd
     </Dialog>
   );
 }
+
+export default memo(WishlistEditDialog);

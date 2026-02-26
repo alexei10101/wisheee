@@ -3,20 +3,21 @@ import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
-import { DiamondPlus } from "lucide-react";
 
 type WishlistCreateDialogProps = {
-  onSubmit: (data: Omit<Wishlist, "user_id" | "id">) => Promise<void>;
-  profileId: string | undefined;
+  open: boolean;
+  resolver: {
+    resolve: ({}: Omit<Wishlist, "user_id" | "id">) => void;
+    reject: () => void;
+  } | null;
 };
 
-// Dialog form
 type FormValues = z.infer<typeof wishlistSchema>;
 const wishlistSchema = z.object({
   title: z.string().min(1, "Введите название вишлиста"),
@@ -24,10 +25,7 @@ const wishlistSchema = z.object({
   isPublic: z.boolean(),
 });
 
-export function WishlistCreateDialog({ onSubmit, profileId }: WishlistCreateDialogProps) {
-  if (!profileId) return;
-  const [open, setOpen] = useState<boolean>(false);
-
+function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistSchema),
     defaultValues: {
@@ -38,8 +36,7 @@ export function WishlistCreateDialog({ onSubmit, profileId }: WishlistCreateDial
   });
 
   const handleFormSubmit = () => {
-    setOpen(false);
-    onSubmit({
+    resolver?.resolve({
       title: form.getValues("title"),
       description: form.getValues("description"),
       is_public: form.getValues("isPublic"),
@@ -53,15 +50,11 @@ export function WishlistCreateDialog({ onSubmit, profileId }: WishlistCreateDial
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => {
-        setOpen(open);
+      onOpenChange={(value) => {
+        if (!value) {
+          resolver?.reject();
+        }
       }}>
-      <DialogTrigger asChild>
-        <Button>
-          <DiamondPlus />
-        </Button>
-      </DialogTrigger>
-
       <DialogPortal>
         <DialogCustomOverlay />
 
@@ -112,7 +105,7 @@ export function WishlistCreateDialog({ onSubmit, profileId }: WishlistCreateDial
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" className="w-26">
+              <Button variant="outline" className="w-26" onClick={() => resolver?.reject()}>
                 Отмена
               </Button>
             </DialogClose>
@@ -125,3 +118,5 @@ export function WishlistCreateDialog({ onSubmit, profileId }: WishlistCreateDial
     </Dialog>
   );
 }
+
+export default memo(WishlistCreateDialog);
