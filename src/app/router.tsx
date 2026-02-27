@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "./app";
 import { ROUTES } from "@/shared/model/routes";
-import { AuthProvider } from "./auth-provider";
+import { AuthProvider } from "./providers/auth-provider";
 import ProtectedRoute from "./protected-route";
 import PublicRoute from "./public-route";
 import AppHeader from "@/features/header";
