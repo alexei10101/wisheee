@@ -15,8 +15,6 @@ function AppHeader() {
   // TODO: think about images: where to store them, how to upload them
   const { profile, updateProfile, logout } = UserAuth();
 
-  // TODO: logout bag
-
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -54,7 +52,7 @@ function AppHeader() {
   };
 
   return (
-    <header className="m-4 w-auto rounded-full border-0 shadow py-3 px-2.5 flex items-center">
+    <header className="absolute top-4 left-1/2 -translate-x-1/2 w-[95%] rounded-full shadow py-3 px-2.5 flex items-center">
       <p className="font-extrabold ms-4">WISHEEE</p>
       <div className="ml-auto flex items-center gap-10">
         <Button variant="link" className="cursor-pointer p-0">
@@ -93,6 +91,7 @@ function AppHeader() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" align="center">
             {profile && (
+              // TODO: уведомления (запросы в друзья)
               <DropdownMenuGroup>
                 <ProfileEditDialog open={openDialog} data={profile} resolver={resolverEditRef.current} />
                 <Button variant="ghost" className="cursor-pointer w-full" onClick={handleProfileEdit}>
