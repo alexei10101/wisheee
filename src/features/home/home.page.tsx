@@ -8,6 +8,8 @@ import { ROUTES } from "@/shared/model/routes";
 import WishlistDialogManager from "./ui/wishlist-dialog-manager";
 import { Button } from "@/shared/ui/kit/button";
 import WishlistsList from "./ui/wishlists-list";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
+import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 
 type OperationType = "create" | "delete" | "edit";
 type DialogResultMap = {
@@ -103,10 +105,20 @@ const HomePage = () => {
   );
 
   return (
-    <main className="m-auto py-5 px-4">
-      <section className="flex flex-col items-center justify-center gap-12">
-        <p>{profile?.username}</p>
-        <div className="flex flex-row items-center gap-8">
+    <main className="m-auto flex flex-col min-h-screen">
+      <section className="flex flex-col items-center justify-center gap-3 pt-25 pb-4">
+        <Item variant="default" className="flex flex-col gap-3 p-0">
+          <ItemMedia>
+            <Avatar className="size-25">
+              <AvatarImage src="https://github.com/evilrabbit.png" />
+              <AvatarFallback>{(profile?.username.at(0) ?? "") + (profile?.username.at(1) ?? "")}</AvatarFallback>
+            </Avatar>
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle className="text-xl">{profile?.username}</ItemTitle>
+          </ItemContent>
+        </Item>
+        <div className="flex flex-row items-center text-m gap-8">
           <p className="flex gap-1">
             <Gift /> Подарки
           </p>
@@ -118,19 +130,21 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
-      {profile && (
-        <section>
-          {/* <h2 className="text-5xl">Созданные списки</h2> */}
+      <section className="bg-gray-100 p-4 border-gray-200 border-y-2 flex-1">
+        {profile && (
+          <>
+            <div className="flex gap-6 flex-wrap items-baseline">
+              <h2 className="text-3xl">Мои вишлисты</h2>
+              <Button variant="ghost" className="hover:bg-gray-300" onClick={handleCreate}>
+                <DiamondPlus />
+              </Button>
+            </div>
 
-          <Button onClick={handleCreate}>
-            <DiamondPlus />
-          </Button>
-
-          <WishlistDialogManager open={openDialog} resolver={resolverDialogRef.current} data={wishlistDataRef.current} />
-
-          <WishlistsList wishlists={wishlists} onDelete={handleDelete} onEdit={handleEdit} />
-        </section>
-      )}
+            <WishlistDialogManager open={openDialog} resolver={resolverDialogRef.current} data={wishlistDataRef.current} />
+            <WishlistsList wishlists={wishlists} onDelete={handleDelete} onEdit={handleEdit} />
+          </>
+        )}
+      </section>
     </main>
   );
 };
