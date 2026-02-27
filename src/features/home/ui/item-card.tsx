@@ -9,11 +9,12 @@ type ItemCardProps = {
   item: Wishlist;
   onDelete: (id: string) => Promise<void>;
   onEdit: (wishlist: Wishlist) => Promise<void>;
+  onOpen: (e: React.MouseEvent) => void;
 };
 
-const ItemCard = ({ item, onEdit, onDelete }: ItemCardProps) => {
+const ItemCard = ({ item, onEdit, onDelete, onOpen }: ItemCardProps) => {
   return (
-    <Card className="flex flex-row w-full max-w-2xl mx-auto p-6">
+    <Card className="flex flex-row w-full max-w-2xl mx-auto p-6 cursor-pointer" onClick={onOpen}>
       <CardContent className="flex flex-col gap-3 max-w-1/2">
         <CardTitle>{item.title}</CardTitle>
         <CardDescription>{item.description?.trim() || `\u00A0`}</CardDescription>

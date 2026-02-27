@@ -61,7 +61,7 @@ export function ProfileEditDialog({ open, data, resolver }: ProfileEditDialogPro
 
   return (
     <Dialog open={open}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogTitle>Изменение информации профиля</DialogTitle>
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>
         <form id="profile-edit-form" onSubmit={editProfileForm.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
