@@ -52,7 +52,7 @@ function AppHeader() {
   };
 
   return (
-    <header className="absolute top-4 left-1/2 -translate-x-1/2 w-[95%] rounded-full shadow py-3 px-2.5 flex items-center">
+    <header className="absolute bg-white top-4 left-1/2 -translate-x-1/2 w-[95%] rounded-full shadow py-3 px-2.5 flex items-center">
       <p className="font-extrabold ms-4">WISHEEE</p>
       <div className="ml-auto flex items-center gap-10">
         <Button variant="link" className="cursor-pointer p-0">
