@@ -7,3 +7,7 @@ export type Wishlist = {
   description: string;
   is_public: boolean;
 };
+
+export type WishlistWithItems = Wishlist & {
+  wishlist_items: WishlistItem[];
+};

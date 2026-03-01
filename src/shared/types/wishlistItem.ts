@@ -1,6 +1,6 @@
 export type WishlistItem = {
   id: string;
-  // id wishlist
+  wishlist_id: string;
   title: string;
   description: string;
   link: string;
