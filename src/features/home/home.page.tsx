@@ -2,7 +2,6 @@ import { UserAuth } from "@/app/auth-context";
 import { DiamondPlus, Gift, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { createWishlist, deleteWishlist, editWishlist } from "./model/dialog-operations";
 import { Link } from "react-router";
 import { ROUTES } from "@/shared/model/routes";
 import WishlistDialogManager from "./ui/wishlist-dialog-manager";
@@ -10,6 +9,7 @@ import { Button } from "@/shared/ui/kit/button";
 import WishlistsList from "./ui/wishlists-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
+import { wishlistService } from "@/shared/services/wishlist.service";
 
 type OperationType = "create" | "delete" | "edit";
 type DialogResultMap = {
@@ -43,65 +43,53 @@ const HomePage = () => {
       resolverDialogRef.current = { resolve: resolve as (data: unknown) => void, reject };
     });
   };
+  const closeDialog = () => {
+    setOpenDialog({ isOpen: false, operation: null });
+    resolverDialogRef.current = null;
+    wishlistDataRef.current = null;
+  };
   const handleCreate = useCallback(async () => {
     if (!profile?.id) return;
-
-    try {
-      const dialogResult = await openDialogPromise("create");
-      const res = await createWishlist(profile.id, dialogResult);
-      if (res.error) {
-        console.log(res.error);
-        return;
-      }
-      setWishlists((prev) => [res.result as Wishlist, ...prev]);
-    } catch {
-    } finally {
-      setOpenDialog({ isOpen: false, operation: null });
-      resolverDialogRef.current = null;
+    const dialogResult = await openDialogPromise("create");
+    const res = await wishlistService.create(profile.id, dialogResult);
+    if (res.error) {
+      console.log(res.error);
+      closeDialog();
+      return;
     }
-  }, [profile?.id, createWishlist]);
+    setWishlists((prev) => [res.result as Wishlist, ...prev]);
+    closeDialog();
+  }, [profile?.id]);
   const handleDelete = useCallback(
     async (id: string) => {
       if (!profile?.id) return;
-
-      try {
-        const dialogResult = await openDialogPromise("delete");
-        const res = await deleteWishlist(profile.id, id, dialogResult);
-        if (res.error) {
-          console.log(res.error);
-          return;
-        }
-        setWishlists((prev) => prev.filter((pr) => pr.id !== id));
-      } catch {
-      } finally {
-        setOpenDialog({ isOpen: false, operation: null });
-        resolverDialogRef.current = null;
+      const dialogResult = await openDialogPromise("delete");
+      const res = await wishlistService.delete(profile.id, id, dialogResult);
+      if (res.error) {
+        console.log(res.error);
+        closeDialog();
+        return;
       }
+      setWishlists((prev) => prev.filter((pr) => pr.id !== id));
+      closeDialog();
     },
-    [profile?.id, deleteWishlist],
+    [profile?.id],
   );
   const handleEdit = useCallback(
     async (wishlist: Wishlist) => {
       if (!profile?.id) return;
-
       wishlistDataRef.current = wishlist;
-
-      try {
-        const dialogResult = await openDialogPromise("edit");
-        const res = await editWishlist(profile.id, wishlist.id, dialogResult);
-        if (res.error) {
-          console.log(res.error);
-          return;
-        }
-        setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...dialogResult } : pr)));
-      } catch {
-      } finally {
-        setOpenDialog({ isOpen: false, operation: null });
-        resolverDialogRef.current = null;
-        wishlistDataRef.current = null;
+      const dialogResult = await openDialogPromise("edit");
+      const res = await wishlistService.update(profile.id, wishlist.id, dialogResult);
+      if (res.error) {
+        console.log(res.error);
+        closeDialog;
+        return;
       }
+      setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...dialogResult } : pr)));
+      closeDialog();
     },
-    [profile?.id, editWishlist],
+    [profile?.id],
   );
 
   return (
