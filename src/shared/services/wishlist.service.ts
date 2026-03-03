@@ -1,6 +1,6 @@
 import { supabase } from "../api/supabase-client";
 import type { Profile } from "../types/profile";
-import type { Wishlist } from "../types/wishlist";
+import type { Wishlist, WishlistWithItems } from "../types/wishlist";
 
 type ServiceResult<T = null> = {
   error: string | null;
@@ -8,12 +8,13 @@ type ServiceResult<T = null> = {
 };
 
 export const wishlistService = {
-  async read(wishlistId: string): Promise<ServiceResult<Wishlist>> {
+  async read(wishlistId: string): Promise<ServiceResult<WishlistWithItems>> {
     try {
       const { data, error } = await supabase
         .from("wishlists")
-        .select(`*, wishlist_items (*, reserved_gifts (*))`)
+        .select(`*, wishlist_items (*)`)
         .eq("id", wishlistId)
+        .order("created_at", { foreignTable: "wishlist_items", ascending: true })
         .single();
 
       if (error) {

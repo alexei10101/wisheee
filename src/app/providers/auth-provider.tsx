@@ -50,13 +50,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Get initial session
   useEffect(() => {
-    authService.getSession().then(async ({ data: { session } }) => {
-      if (!session) {
-        setProfile(null);
-        return;
-      }
-      setSession(session);
-    });
+    const initSession = async () => {
+      const {
+        data: { session },
+      } = await authService.getSession();
+
+      setSession(session ?? null);
+      setLoading(false);
+    };
+
+    initSession();
   }, []);
 
   // Listen for auth changes
@@ -99,66 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isMounted = false;
     };
   }, [session]);
-
-  // const getProfileWithWishlists = async (id: string) => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("profiles")
-  //       .select(
-  //         `
-  //       *,
-  //       wishlists (
-  //         id,
-  //         title,
-  //         description,
-  //         created_at
-  //       ),
-  //       friends!friends_user_id_fkey (
-  //         friend_id
-  //       )
-  //     `,
-  //       )
-  //       .eq("id", id)
-  //       .order("created_at", { foreignTable: "wishlists", ascending: false })
-  //       .single();
-
-  //     return { data, error };
-  //   } catch (error) {
-  //     return { data: null, error };
-  //   }
-  // };
-
-  // const getWishlistById = async (wishlistId: string) => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("wishlists")
-  //       .select(
-  //         `
-  //       *,
-  //       wishlist_items (
-  //         *,
-  //         reserved_gifts (*)
-  //       )
-  //     `,
-  //       )
-  //       .eq("id", wishlistId)
-  //       .single();
-
-  //     return { data, error };
-  //   } catch (error) {
-  //     return { data: null, error };
-  //   }
-  // };
-
-  // Get profile info
-  // const getUserInfo = async (id: string) => {
-  //   try {
-  //     const { data, error } = await profileService.getProfile(id);
-  //     return { data, error };
-  //   } catch (error) {
-  //     return { data: null, error };
-  //   }
-  // };
 
   // Edit profile info
   const updateProfile = async (editData: Partial<Profile>): Promise<OperationResult<Profile>> => {
