@@ -1,5 +1,5 @@
 import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
+import { DialogCustomContent, DialogCustomOverlay } from "../../shared/ui/dialog";
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { memo, useState } from "react";
@@ -46,7 +46,7 @@ function WishlistDeleteDialog({ open, resolver }: WishlistDeleteDialogProps) {
                 Отмена
               </Button>
             </DialogClose>
-            <Button type="submit" form="wishlist-form" className="w-26" onClick={() => resolver?.resolve(deleteItems)}>
+            <Button type="button" className="w-26" onClick={() => resolver?.resolve(deleteItems)}>
               Удалить
             </Button>
           </DialogFooter>

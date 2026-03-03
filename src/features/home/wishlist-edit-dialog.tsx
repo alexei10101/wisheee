@@ -1,5 +1,5 @@
 import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
-import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
+import { DialogCustomContent, DialogCustomOverlay } from "../../shared/ui/dialog";
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import * as z from "zod";
@@ -44,7 +44,7 @@ function WishlistEditDialog({ open, data, resolver }: WishlistEditDialogProps) {
         isPublic: data.is_public,
       });
     }
-  }, [data, open]);
+  }, [data, open, form]);
 
   const handleFormSubmit = () => {
     const formValues = form.getValues();

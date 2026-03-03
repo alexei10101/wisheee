@@ -3,12 +3,12 @@ import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
+import { Dialog, DialogClose, DialogDescription, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { memo, useEffect } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { DialogCustomContent, DialogCustomOverlay } from "./ui/dialog";
+import { DialogCustomContent, DialogCustomOverlay } from "../../shared/ui/dialog";
 
 type WishlistCreateDialogProps = {
   open: boolean;
@@ -45,7 +45,7 @@ function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
 
   useEffect(() => {
     if (!open) form.reset();
-  }, [open]);
+  }, [open, form]);
 
   return (
     <Dialog
@@ -64,13 +64,19 @@ function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
             <DialogDescription className="text-sm text-gray-800">Заполните данные для нового списка желаний</DialogDescription>
           </DialogHeader>
 
-          <form id="wishlist-form" onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
+          <form id="wishlist-create-form" onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
             <Controller
               name="title"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <Input {...field} id="wishlist-form-title" aria-invalid={fieldState.invalid} placeholder="Название" autoComplete="off" />
+                  <Input
+                    {...field}
+                    id="wishlist-create-form-title"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Название"
+                    autoComplete="off"
+                  />
                   {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -80,7 +86,7 @@ function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
               control={form.control}
               render={({ field }) => (
                 <Field>
-                  <Input {...field} id="wishlist-form-description" placeholder="Описание" autoComplete="off" />
+                  <Input {...field} id="wishlist-create-form-description" placeholder="Описание" autoComplete="off" />
                 </Field>
               )}
             />
@@ -90,12 +96,12 @@ function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
               render={({ field }) => (
                 <div className="leading-none text-sm flex pe-3 py-1 gap-2 text-[#0a0a0a]">
                   <input
-                    id="wishlist-form-isPublic"
+                    id="wishlist-create-form-is-public"
                     type="checkbox"
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                   />
-                  <label htmlFor="wishlist-form-isPublic" className="flex cursor-pointer">
+                  <label htmlFor="wishlist-create-form-is-public" className="flex cursor-pointer">
                     Видят все
                   </label>
                 </div>
@@ -109,7 +115,7 @@ function WishlistCreateDialog({ open, resolver }: WishlistCreateDialogProps) {
                 Отмена
               </Button>
             </DialogClose>
-            <Button type="submit" form="wishlist-form" className="w-26">
+            <Button type="submit" form="wishlist-create-form" className="w-26">
               Сохранить
             </Button>
           </DialogFooter>
