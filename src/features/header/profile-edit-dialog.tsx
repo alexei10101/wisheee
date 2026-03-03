@@ -37,7 +37,7 @@ export function ProfileEditDialog({ open, data, resolver }: ProfileEditDialogPro
   useEffect(() => {
     if (open && data) {
       editProfileForm.reset({
-        username: data.username,
+        username: data.username ?? "",
         // avatarLink: data.avatarLink,
       });
     }
@@ -79,6 +79,7 @@ export function ProfileEditDialog({ open, data, resolver }: ProfileEditDialogPro
                 <Label htmlFor="profile-form-username">Имя пользователя</Label>
                 <Input
                   {...field}
+                  value={field.value ?? ""}
                   id="profile-form-username"
                   aria-invalid={fieldState.invalid}
                   placeholder="Имя пользователя"

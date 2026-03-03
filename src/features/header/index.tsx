@@ -80,7 +80,7 @@ function AppHeader() {
               <ItemMedia>
                 <Avatar className="size-8">
                   <AvatarImage src="https://github.com/evilrabbit.png" />
-                  <AvatarFallback>{(profile?.username.at(0) ?? "") + (profile?.username.at(1) ?? "")}</AvatarFallback>
+                  <AvatarFallback>{(profile?.username?.at(0) ?? "") + (profile?.username?.at(1) ?? "")}</AvatarFallback>
                 </Avatar>
               </ItemMedia>
               <ItemContent>

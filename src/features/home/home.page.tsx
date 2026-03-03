@@ -103,11 +103,11 @@ const HomePage = () => {
           <ItemMedia>
             <Avatar className="size-25">
               <AvatarImage src="https://github.com/evilrabbit.png" />
-              <AvatarFallback>{(profile?.username.at(0) ?? "") + (profile?.username.at(1) ?? "")}</AvatarFallback>
+              <AvatarFallback>{(profile?.username?.at(0) ?? "") + (profile?.username?.at(1) ?? "")}</AvatarFallback>
             </Avatar>
           </ItemMedia>
           <ItemContent>
-            <ItemTitle className="text-xl">{profile?.username}</ItemTitle>
+            <ItemTitle className="text-xl">{profile?.username ?? "Пользователь"}</ItemTitle>
           </ItemContent>
         </Item>
         <div className="flex flex-row items-center text-m gap-8">
