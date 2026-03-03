@@ -3,6 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@layer components {
+  .no-spin {
+    -moz-appearance: textfield;
+  }
+
+  .no-spin::-webkit-inner-spin-button,
+  .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
