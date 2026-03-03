@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { AuthLayout } from "./ui/auth-layout";
 import { ROUTES } from "../../shared/model/routes";
-import { LoginForm } from "./ui/login-form";
+import { LoginForm } from "./model/login-form";
 
 const LoginPage = () => {
   return (
