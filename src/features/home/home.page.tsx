@@ -4,12 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
 import { Link } from "react-router";
 import { ROUTES } from "@/shared/model/routes";
-import WishlistDialogManager from "./ui/wishlist-dialog-manager";
 import { Button } from "@/shared/ui/kit/button";
 import WishlistsList from "./ui/wishlists-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 import { wishlistService } from "@/shared/services/wishlist.service";
+import WishlistDialogManager from "./ui/wishlist-dialog-manager";
 
 type OperationType = "create" | "delete" | "edit";
 type DialogResultMap = {
@@ -21,6 +21,8 @@ type InternalResolver = {
   resolve: (data: unknown) => void;
   reject: () => void;
 };
+
+// TODO: it's need to fetch actual wishlists
 
 const HomePage = () => {
   const { profile } = UserAuth();
@@ -48,46 +50,55 @@ const HomePage = () => {
     resolverDialogRef.current = null;
     wishlistDataRef.current = null;
   };
-  const handleCreate = useCallback(async () => {
+  const handleCreate = async () => {
     if (!profile?.id) return;
-    const dialogResult = await openDialogPromise("create");
-    const res = await wishlistService.create(profile.id, dialogResult);
-    if (res.error) {
-      console.log(res.error);
+    try {
+      const dialogResult = await openDialogPromise("create");
+      const res = await wishlistService.create(profile.id, dialogResult);
+      if (res.error) {
+        console.log(res.error);
+        return;
+      }
+      setWishlists((prev) => [res.result as Wishlist, ...prev]);
+    } catch {
+    } finally {
       closeDialog();
-      return;
     }
-    setWishlists((prev) => [res.result as Wishlist, ...prev]);
-    closeDialog();
-  }, [profile?.id]);
+  };
   const handleDelete = useCallback(
     async (id: string) => {
       if (!profile?.id) return;
-      const dialogResult = await openDialogPromise("delete");
-      const res = await wishlistService.delete(profile.id, id, dialogResult);
-      if (res.error) {
-        console.log(res.error);
+      try {
+        const dialogResult = await openDialogPromise("delete");
+        const res = await wishlistService.delete(profile.id, id, dialogResult);
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+        setWishlists((prev) => prev.filter((pr) => pr.id !== id));
+      } catch {
+      } finally {
         closeDialog();
-        return;
       }
-      setWishlists((prev) => prev.filter((pr) => pr.id !== id));
-      closeDialog();
     },
     [profile?.id],
   );
   const handleEdit = useCallback(
     async (wishlist: Wishlist) => {
       if (!profile?.id) return;
-      wishlistDataRef.current = wishlist;
-      const dialogResult = await openDialogPromise("edit");
-      const res = await wishlistService.update(profile.id, wishlist.id, dialogResult);
-      if (res.error) {
-        console.log(res.error);
-        closeDialog;
-        return;
+      try {
+        wishlistDataRef.current = wishlist;
+        const dialogResult = await openDialogPromise("edit");
+        const res = await wishlistService.update(profile.id, wishlist.id, dialogResult);
+        if (res.error) {
+          console.log(res.error);
+          return;
+        }
+        setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...dialogResult } : pr)));
+      } catch {
+      } finally {
+        closeDialog();
       }
-      setWishlists((prev) => prev.map((pr) => (pr.id === wishlist.id ? { ...pr, ...dialogResult } : pr)));
-      closeDialog();
     },
     [profile?.id],
   );
