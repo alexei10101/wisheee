@@ -60,7 +60,13 @@ export function ProfileEditDialog({ open, data, resolver }: ProfileEditDialogPro
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog
+      open={open}
+      onOpenChange={(value) => {
+        if (!value) {
+          resolver?.reject();
+        }
+      }}>
       <DialogContent className="sm:max-w-106.25">
         <DialogTitle>Изменение информации профиля</DialogTitle>
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>

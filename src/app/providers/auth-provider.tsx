@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   };
   const updateProfile = async (editData: Partial<Profile>): Promise<OperationResult<Profile>> => {
-    if (!profile?.id) return { error: "No profile id", result: null };
+    if (!profile?.id) return { error: "Отсутствует id профиля", result: null };
 
     try {
       const { data, error } = await profileService.updateProfile(profile.id, editData);
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { error: null, result: data };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "Unknown error", result: null };
+      return { error: err instanceof Error ? err.message : "Неизвестная ошибка", result: null };
     }
   };
 

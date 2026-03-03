@@ -30,7 +30,7 @@ function AppHeader() {
   };
 
   const handleProfileEdit = async () => {
-    if (!profile) return;
+    if (!profile?.id) return;
 
     try {
       const editData = await openEditForm();
@@ -42,8 +42,7 @@ function AppHeader() {
         console.error(res.error);
         return;
       }
-    } catch (error) {
-      console.error(error);
+    } catch {
     } finally {
       setOpenDialog(false);
       setDropdownMenuOpen(false);
