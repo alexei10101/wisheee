@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "../auth-context";
-import { type Session } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
 import type { Profile } from "@/shared/types/profile";
+import type { Wishlist } from "@/shared/types/wishlist";
 import { authService } from "@/shared/services/auth.service";
 import { profileService } from "@/shared/services/profile.service";
 
@@ -13,55 +14,71 @@ type OperationResult<T = null> = {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [wishlists, setWishlists] = useState<Wishlist[]>([]);
+  const [loading, setLoading] = useState(true);
   const [appReady, setAppReady] = useState(false);
 
-  // Sign up
+  // Auth actions
   const signUp = async (email: string, password: string) => {
     setLoading(true);
     const { data, error } = await authService.signUp(email, password);
     setLoading(false);
 
-    if (error) return { error: error };
-
+    if (error) return { error };
     setSession(data.session);
+    if (data.session?.user.id) await loadProfile(data.session.user.id);
     return { error: null };
   };
-
-  // Login
   const login = async (email: string, password: string) => {
     setLoading(true);
     const { data, error } = await authService.login(email, password);
     setLoading(false);
 
     if (error) return { error };
-
     setSession(data.session);
+    if (data.session?.user.id) await loadProfile(data.session.user.id);
     return { error: null };
   };
-
-  // Logout
   const logout = async () => {
     setLoading(true);
     await authService.logout();
-    setLoading(false);
     setSession(null);
     setProfile(null);
+    setWishlists([]);
+    setLoading(false);
+  };
+  const updateProfile = async (editData: Partial<Profile>): Promise<OperationResult<Profile>> => {
+    if (!profile?.id) return { error: "No profile id", result: null };
+
+    try {
+      const { data, error } = await profileService.updateProfile(profile.id, editData);
+
+      if (error) return { error: error.message, result: null };
+
+      setProfile((prev) => (prev ? { ...prev, ...data } : prev));
+      setWishlists(data.wishlists ?? wishlists);
+
+      return { error: null, result: data };
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : "Unknown error", result: null };
+    }
   };
 
-  // Get initial session
-  useEffect(() => {
-    const initSession = async () => {
-      const {
-        data: { session },
-      } = await authService.getSession();
+  // Load profile
+  const loadProfile = async (userId: string) => {
+    setLoading(true);
+    const { data, error } = await profileService.getProfile(userId);
 
-      setSession(session ?? null);
-      setLoading(false);
-    };
+    if (!error && data) {
+      setProfile(data);
+      setWishlists(data.wishlists ?? []);
+    } else {
+      setProfile(null);
+      setWishlists([]);
+    }
 
-    initSession();
-  }, []);
+    setLoading(false);
+  };
 
   // Listen for auth changes
   useEffect(() => {
@@ -70,73 +87,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = authService.onAuthStateChange((event, session) => {
       setSession(session);
 
+      if (session?.user.id) {
+        loadProfile(session.user.id);
+      } else {
+        setProfile(null);
+        setWishlists([]);
+      }
+
       if (event === "INITIAL_SESSION") {
         setAppReady(true);
+        setLoading(false);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // Get profile info
-  useEffect(() => {
-    if (!session?.user.id) {
-      setProfile(null);
-      return;
-    }
-
-    let isMounted = true;
-
-    const loadProfile = async () => {
-      const { data, error } = await profileService.getProfile(session.user.id);
-
-      if (!isMounted) return;
-
-      if (error) {
-        console.error(error);
-        setProfile(null);
-        return;
-      }
-
-      setProfile(data);
-    };
-
-    loadProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [session]);
-
-  // Edit profile info
-  const updateProfile = async (editData: Partial<Profile>): Promise<OperationResult<Profile>> => {
-    if (!profile?.id) return { error: "No profile id", result: null };
-    try {
-      const { data, error } = await profileService.updateProfile(profile.id, editData);
-
-      if (error) {
-        return {
-          error: "Не удалось обновить данные: " + error.message,
-          result: null,
-        };
-      }
-
-      setProfile((prev) => (prev ? { ...prev, ...data } : prev));
-
-      return { error: null, result: data };
-    } catch (error) {
-      return {
-        error: error instanceof Error ? error.message : "Unknown error",
-        result: null,
-      };
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ session, profile, loading, appReady, signUp, login, logout, updateProfile }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        profile,
+        wishlists,
+        setWishlists,
+        loading,
+        appReady,
+        signUp,
+        login,
+        logout,
+        updateProfile,
+      }}>
       {children}
     </AuthContext.Provider>
   );
-
-  // TODO: handle OTP authentification
 }

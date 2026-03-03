@@ -1,6 +1,6 @@
 import { UserAuth } from "@/app/auth-context";
 import { DiamondPlus, Gift, Users } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
 import { Link } from "react-router";
 import { ROUTES } from "@/shared/model/routes";
@@ -22,15 +22,8 @@ type InternalResolver = {
   reject: () => void;
 };
 
-// TODO: it's need to fetch actual wishlists
-
 const HomePage = () => {
-  const { profile } = UserAuth();
-  const [wishlists, setWishlists] = useState<Wishlist[]>([]);
-
-  useEffect(() => {
-    setWishlists(profile?.wishlists ?? []);
-  }, [profile?.id]);
+  const { profile, wishlists, setWishlists } = UserAuth();
 
   const [openDialog, setOpenDialog] = useState<{ isOpen: boolean; operation: OperationType | null }>({
     isOpen: false,
