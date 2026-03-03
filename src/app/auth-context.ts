@@ -6,6 +6,7 @@ type AuthContextType = {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
+  appReady: boolean;
   signUp: Function;
   login: Function;
   logout: Function;
@@ -16,6 +17,7 @@ export const AuthContext = createContext<AuthContextType>({
   session: null,
   profile: null,
   loading: false,
+  appReady: false,
   signUp: () => {},
   login: () => {},
   logout: () => {},

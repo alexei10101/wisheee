@@ -14,6 +14,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [appReady, setAppReady] = useState(false);
 
   // Sign up
   const signUp = async (email: string, password: string) => {
@@ -66,8 +67,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const {
       data: { subscription },
-    } = authService.onAuthStateChange((_event, session) => {
+    } = authService.onAuthStateChange((event, session) => {
       setSession(session);
+
+      if (event === "INITIAL_SESSION") {
+        setAppReady(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -128,7 +133,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, profile, loading, signUp, login, logout, updateProfile }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ session, profile, loading, appReady, signUp, login, logout, updateProfile }}>
+      {children}
+    </AuthContext.Provider>
   );
 
   // TODO: handle OTP authentification

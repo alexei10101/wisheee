@@ -5,9 +5,9 @@ import { Spinner } from "@/shared/ui/kit/spinner";
 import { Suspense } from "react";
 
 function ProtectedRoute() {
-  const { session, loading } = UserAuth();
+  const { session, appReady } = UserAuth();
 
-  if (loading)
+  if (!appReady)
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
         <Spinner />
