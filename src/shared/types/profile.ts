@@ -4,6 +4,6 @@ export type Profile = {
   id: string;
   username: string;
   avatarLink: string;
-  friends: string[];
+  friends: { friend_id: string }[];
   wishlists: Wishlist[];
 };
