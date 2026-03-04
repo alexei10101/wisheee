@@ -110,17 +110,6 @@ const HomePage = () => {
             <ItemTitle className="text-xl">{profile?.username ?? "Пользователь"}</ItemTitle>
           </ItemContent>
         </Item>
-        <div className="flex flex-row items-center text-m gap-8">
-          <p className="flex gap-1">
-            <Gift /> Подарки
-          </p>
-          <Link to={ROUTES.FRIENDS}>
-            <p className="flex gap-1">
-              <Users />
-              Друзья
-            </p>
-          </Link>
-        </div>
       </section>
       <section className="bg-gray-100 p-4 border-gray-200 border-y-2 flex-1">
         {profile && (
