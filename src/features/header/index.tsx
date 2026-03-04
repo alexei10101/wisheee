@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from "@/shared/ui/kit/dropdown-menu";
 import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { Handshake, House, Lightbulb, LogOut, Settings } from "lucide-react";
+import { Bell, Handshake, House, Lightbulb, LogOut, Settings } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "react-router";
 import { ProfileEditDialog } from "./profile-edit-dialog";
@@ -51,13 +51,27 @@ function AppHeader() {
   };
 
   return (
-    <header className="absolute bg-white top-4 left-1/2 -translate-x-1/2 w-[95%] rounded-full shadow py-3 px-2.5 flex items-center">
+    <header className="absolute bg-white top-4 left-8 right-8 rounded-full shadow py-3 px-2.5 flex items-center">
       <p className="font-extrabold ms-4">WISHEEE</p>
       <div className="ml-auto flex items-center gap-10">
         <Button variant="link" className="cursor-pointer p-0">
           <Link to={ROUTES.HOME} className="flex items-center gap-1">
             <House />
             Моя страница
+          </Link>
+        </Button>
+
+        <Button variant="link" className="cursor-pointer p-0">
+          <Link to={ROUTES.FRIENDS} className="flex items-center gap-1">
+            <Handshake />
+            Друзья
+          </Link>
+        </Button>
+
+        <Button variant="link" className="cursor-pointer p-0">
+          <Link to={ROUTES.FRIENDS} className="flex items-center gap-1">
+            <Bell />
+            Уведомления
           </Link>
         </Button>
 
