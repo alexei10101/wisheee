@@ -13,6 +13,7 @@ const LoginPageLazy = lazy(() => import("../features/auth/login.page"));
 const SignupPageLazy = lazy(() => import("../features/auth/signup.page"));
 const FriendsPageLazy = lazy(() => import("../features/friends/friends.page"));
 const WishlistPageLazy = lazy(() => import("../features/wishlist/wishlist.page"));
+const NotificationsPage = lazy(() => import("../features/notifications/notifications.page"));
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
           { index: true, Component: HomePageLazy },
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
           { path: ROUTES.WISHLIST, Component: WishlistPageLazy },
+          { path: ROUTES.NOTIFICATIONS, Component: NotificationsPage },
         ],
       },
       {

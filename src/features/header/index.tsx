@@ -12,7 +12,6 @@ import { ProfileEditDialog } from "./profile-edit-dialog";
 import type { Profile } from "@/shared/types/profile";
 
 function AppHeader() {
-  // TODO: think about images: where to store them, how to upload them
   const { profile, updateProfile, logout } = UserAuth();
 
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
@@ -69,7 +68,7 @@ function AppHeader() {
         </Button>
 
         <Button variant="link" className="cursor-pointer p-0">
-          <Link to={ROUTES.FRIENDS} className="flex items-center gap-1">
+          <Link to={ROUTES.NOTIFICATIONS} className="flex items-center gap-1">
             <Bell />
             Уведомления
           </Link>
@@ -104,7 +103,6 @@ function AppHeader() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" align="center">
             {profile && (
-              // TODO: уведомления (запросы в друзья)
               <DropdownMenuGroup>
                 <ProfileEditDialog open={openDialog} data={profile} resolver={resolverEditRef.current} />
                 <Button variant="ghost" className="cursor-pointer w-full" onClick={handleProfileEdit}>

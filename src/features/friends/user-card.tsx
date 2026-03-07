@@ -8,9 +8,11 @@ import { memo } from "react";
 type UserCardProps = {
   variant: "default" | "thin";
   user: Profile;
+  onAddFriend?: () => void | undefined;
 };
 
-const UserCard = ({ variant, user }: UserCardProps) => {
+const UserCard = ({ variant, user, onAddFriend }: UserCardProps) => {
+  // TODO: use items and item group
   return (
     <Card
       key={user.id}
@@ -33,7 +35,7 @@ const UserCard = ({ variant, user }: UserCardProps) => {
         )}
         {variant === "thin" && (
           <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button size="sm" className="absolute right-2 -translate-y-0.75" variant="ghost">
+            <Button size="sm" className="absolute right-2 -translate-y-0.75" variant="ghost" onClick={onAddFriend}>
               <Plus />
             </Button>
           </div>

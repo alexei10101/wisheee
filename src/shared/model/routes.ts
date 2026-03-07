@@ -4,6 +4,7 @@ export const ROUTES = {
   HOME: "/",
   FRIENDS: "/friends",
   WISHLIST: "/wishlist/:id",
+  NOTIFICATIONS: "/notifications",
 } as const;
 
 export const buildRoutes = {

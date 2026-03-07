@@ -1,9 +1,7 @@
 import { UserAuth } from "@/app/auth-context";
-import { DiamondPlus, Gift, Users } from "lucide-react";
+import { DiamondPlus } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import type { Wishlist } from "@/shared/types/wishlist";
-import { Link } from "react-router";
-import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import WishlistsList from "./ui/wishlists-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";

@@ -70,7 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await profileService.getProfile(userId);
 
     if (!error && data) {
-      setProfile(data);
+      const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
+      setProfile({ ...data, friends: friendIds });
       setWishlists(data.wishlists ?? []);
     } else {
       setProfile(null);
@@ -82,25 +83,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Listen for auth changes
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = authService.onAuthStateChange((event, session) => {
+    let mounted = true;
+
+    const initSession = async () => {
+      const { data } = await authService.getSession();
+      const session = data.session;
+
+      if (!mounted) return;
+
       setSession(session);
 
       if (session?.user.id) {
-        loadProfile(session.user.id);
-      } else {
+        await loadProfile(session.user.id);
+      }
+
+      setAppReady(true);
+      setLoading(false);
+    };
+
+    initSession();
+
+    const {
+      data: { subscription },
+    } = authService.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN") {
+        setSession(session);
+
+        if (session?.user.id) {
+          await loadProfile(session.user.id);
+        }
+      }
+
+      if (event === "SIGNED_OUT") {
+        setSession(null);
         setProfile(null);
         setWishlists([]);
       }
-
-      if (event === "INITIAL_SESSION") {
-        setAppReady(true);
-        setLoading(false);
-      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (

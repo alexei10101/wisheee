@@ -3,10 +3,19 @@ import { Button } from "@/shared/ui/kit/button";
 import { UserPlus, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 import FriendsList from "./friends-list";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Input } from "@/shared/ui/kit/input";
 import { friendsService } from "@/shared/services/friends.service";
 import type { Profile } from "@/shared/types/profile";
+
+// TODO: add friends
+// TODO: notifications
+// TODO: open friends wishlists and gift lists
+// TODO: delete friends
+// TODO: private gift: see everybody /only friiends / only me
+// TODO: connect supabase storage
+// TODO: uploading avatars
+// TODO: reserved gifts?
 
 const FriendsPage = () => {
   const navigate = useNavigate();
@@ -29,13 +38,12 @@ const FriendsPage = () => {
   useEffect(() => {
     if (!profile?.friends) return;
     const getFriends = async () => {
-      const friendIds = profile.friends.map((f) => f.friend_id);
-      const res = await friendsService.getFriendsInfo(friendIds);
+      const res = await friendsService.getFriendsInfo(profile.friends);
       if (res.error) return console.log(res.error);
       setFriends(res.result);
     };
     getFriends();
-  }, [profile?.friends]);
+  }, []);
 
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
@@ -62,6 +70,15 @@ const FriendsPage = () => {
     handleSearch();
   }, [debouncedSearch]);
 
+  const handleAddFriend = useCallback(
+    async (receiverId: Profile["id"]) => {
+      if (!profile?.id) return;
+      const res = await friendsService.sendFriendRequest(profile.id, receiverId);
+      console.log(res);
+    },
+    [profile?.id],
+  );
+
   return (
     <section className="pt-25 px-4 bg-gray-100 min-h-screen">
       <div className="flex justify-between mb-5">
@@ -79,13 +96,7 @@ const FriendsPage = () => {
         </Button>
       </div>
 
-      <div className="flex gap-5 mb-6 justify-between px-4">
-        <div>
-          <div className="flex gap-2 content-start">
-            <div className="text-4xl">{mode === "all" ? "Мои друзья" : "Добавить друга"}</div>
-          </div>
-        </div>
-      </div>
+      <div className="flex gap-5 mb-6 justify-between px-4 text-4xl">{mode === "all" ? "Мои друзья" : "Добавить друга"}</div>
 
       {mode === "all" && friends && <FriendsList cardVariant="default" list={friends} />}
       {mode === "search" && (
@@ -93,12 +104,11 @@ const FriendsPage = () => {
           <Input className="bg-white" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
           {searchResult && (
             <div className="mt-5">
-              {searchResult.length > 0 && <FriendsList cardVariant="thin" list={searchResult} />}
+              {searchResult.length > 0 && <FriendsList cardVariant="thin" list={searchResult} addFriend={handleAddFriend} />}
               {searchResult.length === 0 && <div>По вашему запросу ничего не найдено</div>}
             </div>
           )}
 
-          {/* Results of search */}
           {/* TODO: pagination */}
           {/* <div>
             <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
