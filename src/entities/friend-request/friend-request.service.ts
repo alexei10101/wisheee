@@ -1,6 +1,6 @@
 import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import { friendRequestRepository } from "./friend-request.repository";
-import type { FriendNotificationMetadata, FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
+import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
 import { friendService } from "../friend/friend.service";
 import { notificationService } from "../notification/model/notification-service";
 
@@ -22,25 +22,12 @@ export const friendsRequestService = {
     const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
     if (updating.error) return { error: updating.error, result: null };
     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
-    // const updatingMetadata: FriendNotificationMetadata = {
-    //   request_sender_id: updating.result.sender_id,
-    //   sender_username: updating.result.sender_username,
-    //   sender_avatar: updating.result.sender_avatar,
-    //   receiver_username: updating.result.receiver_username,
-    //   receiver_avatar: updating.result.receiver_avatar,
-    // };
 
-    const notification = await notificationService.updateFriendNotification(status, requestId);
-    if (notification.error) return { error: notification.error, result: null };
-
-    // const notification = await notificationService.createFriendNotification(
-    //   updating.result.receiver_id,
-    //   updating.result.sender_id,
-    //   updating.result.id,
-    //   updatingMetadata,
-    //   status,
-    // );
-    // if (notification.error) return { error: notification.error, result: null };
+    const notification = await notificationService.updateFriendNotification(requestId, status);
+    if (notification.error) {
+      console.error("Ошибка обновления уведомлений:", notification.error);
+      return { error: notification.error, result: null };
+    }
 
     const friendship = await friendService.createFriendship(senderId, receiverId);
     if (friendship.error) return { error: friendship.error, result: null };
@@ -54,25 +41,12 @@ export const friendsRequestService = {
     const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
     if (updating.error) return { error: updating.error, result: null };
     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
-    // const updatingMetadata: FriendNotificationMetadata = {
-    //   request_sender_id: updating.result.sender_id,
-    //   sender_username: updating.result.sender_username,
-    //   sender_avatar: updating.result.sender_avatar,
-    //   receiver_username: updating.result.receiver_username,
-    //   receiver_avatar: updating.result.receiver_avatar,
-    // };
 
-    const notification = await notificationService.updateFriendNotification(status, requestId);
-    if (notification.error) return { error: notification.error, result: null };
-
-    // const notification = await notificationService.createFriendNotification(
-    //   senderId,
-    //   receiverId,
-    //   updating.result.id,
-    //   updatingMetadata,
-    //   status,
-    // );
-    // if (notification.error) return { error: notification.error, result: null };
+    const notification = await notificationService.updateFriendNotification(requestId, status);
+    if (notification.error) {
+      console.error("Ошибка обновления уведомлений:", notification.error);
+      return { error: notification.error, result: null };
+    }
 
     return { error: null, result: null };
   },

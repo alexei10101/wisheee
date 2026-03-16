@@ -94,12 +94,6 @@ export const notificationRepository = {
       },
     ]);
   },
-  async updateFriendNotification(status: Omit<FriendRequestStatus, "pending">, entityId: string) {
-    return supabase
-      .from("notifications")
-      .update({ type: `friend_request_${status}` })
-      .in("entity_id", [entityId]);
-  },
   async markAllAsRead(userId: string) {
     return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false).select("*");
   },
