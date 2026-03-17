@@ -2,7 +2,7 @@ import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import { friendRequestRepository } from "./friend-request.repository";
 import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
 import { friendService } from "../friend/friend.service";
-import { notificationService } from "../notification/model/notification-service";
+import { notificationService } from "../notification/model/notification.service";
 
 export const friendsRequestService = {
   async createFriendRequest(senderId: string, receiverId: string, metadata: FriendRequestMetadata): Promise<ServiceResult<FriendRequest>> {

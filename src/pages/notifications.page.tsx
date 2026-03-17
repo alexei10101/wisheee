@@ -1,5 +1,5 @@
 import { UserAuth } from "@/app/contexts/auth.context";
-import { notificationService } from "@/entities/notification/model/notification-service";
+import { notificationService } from "@/entities/notification/model/notification.service";
 import { useNotificationStore } from "@/entities/notification/model/notification.store";
 import { NotificationList } from "@/features/notification-list/notification.list";
 import { BackButton } from "@/shared/ui/back.button";
