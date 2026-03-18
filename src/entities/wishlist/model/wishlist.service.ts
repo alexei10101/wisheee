@@ -3,6 +3,9 @@ import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import type { Wishlist, WishlistWithItems } from "./wishlist";
 
 export const wishlistService = {
+  async getAll(userId: string): Promise<ServiceResult<Wishlist[]>> {
+    return safeQuery(wishlistRepository.getAll(userId));
+  },
   async get(id: string): Promise<ServiceResult<WishlistWithItems>> {
     return safeQuery(wishlistRepository.get(id));
   },

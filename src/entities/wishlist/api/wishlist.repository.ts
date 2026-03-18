@@ -10,6 +10,9 @@ export const wishlistRepository = {
       .order("created_at", { foreignTable: "wishlist_items", ascending: true })
       .single();
   },
+  async getAll(userId: String) {
+    return supabase.from("wishlists").select("*").eq("user_id", userId).order("created_at", { ascending: false });
+  },
   async create(id: string, data: Omit<Wishlist, "user_id" | "id">) {
     return supabase
       .from("wishlists")

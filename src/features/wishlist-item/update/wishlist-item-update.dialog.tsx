@@ -8,10 +8,10 @@ import * as z from "zod";
 import { memo, useEffect } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
-import { wishlistItemService } from "@/entities/wishlist-item/model/wishlist-item.service";
 import { UserAuth } from "@/app/contexts/auth.context";
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
+import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 
 type WishlistItemUpdateDialogProps = {
   open: boolean;
@@ -30,7 +30,8 @@ const wishlistItemSchema = z.object({
 
 function WishlistItemUpdateDialog({ open, onClose, wishlistItem }: WishlistItemUpdateDialogProps) {
   const { user } = UserAuth();
-  const { wishlists, updateWishlistItem } = UserWishlists();
+  const { data: wishlists } = useWishlists(user?.id);
+  const updateWishlistItem = useUpdateWishlistItem();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistItemSchema),
@@ -58,15 +59,17 @@ function WishlistItemUpdateDialog({ open, onClose, wishlistItem }: WishlistItemU
   const handleUpdate = async () => {
     if (!user?.id || !wishlistItem.id) return;
     const updatedFields = getUpdatedFields();
-    if (!updatedFields) return onClose();
-    const response = await wishlistItemService.update({ ...wishlistItem, ...updatedFields });
-    if (response.error) {
-      console.log(response.error);
+    if (!updatedFields || !wishlistItem) return onClose();
+
+    const data = { ...wishlistItem, ...updatedFields };
+
+    try {
+      updateWishlistItem.mutateAsync({ data });
+    } catch (error) {
+      console.log(error);
+    } finally {
       onClose();
-      return;
     }
-    updateWishlistItem(response.result);
-    onClose();
   };
 
   const getUpdatedFields = () => {
@@ -148,7 +151,7 @@ function WishlistItemUpdateDialog({ open, onClose, wishlistItem }: WishlistItemU
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Мои вишлисты</SelectLabel>
-                        {wishlists.map((wishlist) => (
+                        {wishlists?.map((wishlist) => (
                           <SelectItem key={wishlist.id} value={wishlist.id}>
                             {wishlist.title}
                           </SelectItem>

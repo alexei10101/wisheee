@@ -1,6 +1,6 @@
 import { UserAuth } from "@/app/contexts/auth.context";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
-import { wishlistItemService } from "@/entities/wishlist-item/model/wishlist-item.service";
+import { useCreateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
+import { useWishlist, useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 type WishlistItemCreateDialogProps = {
+  wishlistId: string;
   open: boolean;
   onClose: () => void;
 };
@@ -26,9 +27,12 @@ const wishlistItemSchema = z.object({
   price: z.number(),
 });
 
-export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ open, onClose }: WishlistItemCreateDialogProps) {
+export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
   const { user } = UserAuth();
-  const { wishlists, activeWishlist, createWishlistItem } = UserWishlists();
+  const { data: activeWishlist } = useWishlist(wishlistId);
+  const { data: wishlists } = useWishlists(user?.id);
+
+  const createWishlistItem = useCreateWishlistItem();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistItemSchema),
@@ -57,14 +61,13 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ ope
       price: Number(form.getValues("price")) ?? 0,
     };
 
-    const response = await wishlistItemService.create(data);
-    if (response.error) {
-      console.log(response.error);
+    try {
+      createWishlistItem.mutateAsync({ data });
+    } catch (error) {
+      console.log(error);
+    } finally {
       closeDialog();
-      return;
     }
-    createWishlistItem(response.result);
-    closeDialog();
   };
 
   return (
@@ -122,7 +125,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ ope
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Мои вишлисты</SelectLabel>
-                        {wishlists.map((wishlist) => (
+                        {wishlists?.map((wishlist) => (
                           <SelectItem key={wishlist.id} value={wishlist.id}>
                             {wishlist.title}
                           </SelectItem>

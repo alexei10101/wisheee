@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
 import { useState } from "react";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { WishlistCard } from "@/entities/wishlist/ui/wishlist.card";
 import { WishlistUpdateDialog } from "../update/wishlist-update.dialog";
 import { WishlistDeleteDialog } from "../delete/wishlist-delete.dialog";
+import { UserAuth } from "@/app/contexts/auth.context";
+import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 
 type WishlistListProps = {
   style?: string;
@@ -14,7 +15,9 @@ type WishlistListProps = {
 type WishlistDialogState = { operation: "update"; wishlist: Wishlist } | { operation: "delete"; wishlistId: string } | { operation: null };
 
 export const WishlistList = function WishlistList({ style }: WishlistListProps) {
-  const { wishlists } = UserWishlists();
+  const { user } = UserAuth();
+  // TODO
+  const { data: wishlists } = useWishlists(user?.id);
   const [dialog, setDialog] = useState<WishlistDialogState>({ operation: null });
 
   const navigate = useNavigate();

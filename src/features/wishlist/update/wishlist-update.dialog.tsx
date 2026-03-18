@@ -9,9 +9,9 @@ import { Input } from "@/shared/ui/kit/input";
 import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { UserAuth } from "@/app/contexts/auth.context";
-import { wishlistService } from "@/entities/wishlist/model/wishlist.service";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
+import {} from "@/app/contexts/wishlist.context";
+import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
 
 type WishlistUpdateDialogProps = {
   open: boolean;
@@ -28,7 +28,7 @@ const wishlistSchema = z.object({
 
 export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
   const { user } = UserAuth();
-  const { updateWishlist } = UserWishlists();
+  const updateWishlist = useUpdateWishlist();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistSchema),
@@ -51,16 +51,17 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
 
   const handleUpdate = async () => {
     if (!user?.id || !wishlist.id) return;
+
     const updatedFields = getUpdatedFields();
     if (!updatedFields) return onClose();
-    const response = await wishlistService.update(user.id, wishlist.id, updatedFields);
-    if (response.error) {
-      console.log(response.error);
+
+    try {
+      updateWishlist.mutateAsync({ userId: user.id, wishlistId: wishlist.id, updatedFields });
+    } catch (error) {
+      console.log(error);
+    } finally {
       onClose();
-      return;
     }
-    updateWishlist(updatedFields, wishlist.id);
-    onClose();
   };
 
   const getUpdatedFields = () => {

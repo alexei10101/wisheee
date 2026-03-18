@@ -3,7 +3,7 @@ import { DiamondPlus } from "lucide-react";
 import { useState } from "react";
 import { WishlistItemCreateDialog } from "./wishlist-item-create.dialog";
 
-export function WishlistItemCreateButton() {
+export function WishlistItemCreateButton({ wishlistId }: { wishlistId: string }) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -11,7 +11,7 @@ export function WishlistItemCreateButton() {
       <Button onClick={() => setOpen(true)}>
         Добавить желание <DiamondPlus />
       </Button>
-      <WishlistItemCreateDialog open={open} onClose={() => setOpen(false)} />
+      <WishlistItemCreateDialog wishlistId={wishlistId} open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

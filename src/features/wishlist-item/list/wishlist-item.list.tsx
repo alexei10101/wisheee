@@ -33,15 +33,15 @@ export function WishlistItemList({ style, wishlist }: WishlistItemList) {
       </div>
 
       {dialog.operation === "update" && (
-        <WishlistItemUpdateDialog
-          // key={dialog.wishlistItem.id || "new"}
-          open
-          onClose={() => setDialog({ operation: null })}
-          wishlistItem={dialog.wishlistItem}
-        />
+        <WishlistItemUpdateDialog open onClose={() => setDialog({ operation: null })} wishlistItem={dialog.wishlistItem} />
       )}
       {dialog.operation === "delete" && (
-        <WishlistItemDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistItemId={dialog.wishlistItemId} />
+        <WishlistItemDeleteDialog
+          wishlistId={wishlist.id}
+          open
+          onClose={() => setDialog({ operation: null })}
+          wishlistItemId={dialog.wishlistItemId}
+        />
       )}
     </section>
   );

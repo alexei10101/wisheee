@@ -1,5 +1,7 @@
 import { UserAuth } from "@/app/contexts/auth.context";
 import { UserWishlists } from "@/app/contexts/wishlist.context";
+import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";
+// import { UserWishlists } from "@/app/contexts/wishlist.context";
 import { wishlistService } from "@/entities/wishlist/model/wishlist.service";
 import { WishlistItemCreateButton } from "@/features/wishlist-item/create/wishlist-item-create.button";
 import { WishlistItemList } from "@/features/wishlist-item/list/wishlist-item.list";
@@ -10,44 +12,46 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 function WishlistPage() {
-  const { user } = UserAuth();
-  const { activeWishlist, setActiveWishlist } = UserWishlists();
+  // const { user } = UserAuth();
+  // const { activeWishlistId, setActiveWishlistId } = UserWishlists();
   const { id } = useParams<{ id: string }>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: activeWishlist, isLoading } = useWishlist(id);
 
-  useEffect(() => {
-    if (!id || !user?.id) return;
-    let isMounted = true;
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
 
-    const loadWishlist = async () => {
-      setLoading(true);
-      setError(null);
-      const { result, error } = await wishlistService.get(id);
-      if (!isMounted) return;
-      if (error) {
-        setError(error);
-        setLoading(false);
-        return;
-      }
-      setActiveWishlist(result);
-      setLoading(false);
-    };
+  // useEffect(() => {
+  //   if (!id || !user?.id) return;
+  //   let isMounted = true;
 
-    loadWishlist();
+  //   const loadWishlist = async () => {
+  //     setLoading(true);
+  //     setError(null);
+  //     const { result, error } = await wishlistService.get(id);
+  //     if (!isMounted) return;
+  //     if (error) {
+  //       setError(error);
+  //       setLoading(false);
+  //       return;
+  //     }
+  //     setActiveWishlist(result);
+  //     setLoading(false);
+  //   };
 
-    return () => {
-      isMounted = false;
-    };
-  }, [id, user?.id, setActiveWishlist]);
+  //   loadWishlist();
 
-  if (loading)
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-        <Spinner />
-      </div>
-    );
-  if (error) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">{error}</div>;
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [id, user?.id, setActiveWishlist]);
+
+  // if (isLoading)
+  //   return (
+  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+  //       <Spinner />
+  //     </div>
+  //   );
+  // if (error) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">{error}</div>;
   if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
 
   return (
@@ -57,7 +61,7 @@ function WishlistPage() {
         title={activeWishlist.title}
         subtitle={activeWishlist.description}
         left={<BackButton />}
-        right={<WishlistItemCreateButton />}
+        right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
       />
       <WishlistItemList wishlist={activeWishlist} />
     </main>

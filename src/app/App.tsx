@@ -1,10 +1,16 @@
 import { Outlet } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export function App() {
-  // TODO: ESlint
-  // TODO: tanstack
+  const queryClient = new QueryClient();
 
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

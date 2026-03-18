@@ -1,6 +1,5 @@
 import { UserAuth } from "@/app/contexts/auth.context";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
-import { wishlistService } from "@/entities/wishlist/model/wishlist.service";
+import { useCreateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
@@ -25,7 +24,7 @@ const wishlistSchema = z.object({
 
 export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, onClose }: WishlistCreateDialogProps) {
   const { user } = UserAuth();
-  const { createWishlist } = UserWishlists();
+  const createWishlist = useCreateWishlist();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistSchema),
@@ -45,20 +44,15 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
     if (!user?.id) return;
 
     const data = { title: form.getValues("title"), description: form.getValues("description"), is_public: form.getValues("isPublic") };
-    const response = await wishlistService.create(user.id, data);
-    if (response.error) {
-      console.log(response.error);
-      closeDialog();
-      return;
-    }
-    if (!response.result) {
-      console.log("Ошибка создания товара");
-      closeDialog();
-      return;
-    }
 
-    createWishlist(response.result);
-    closeDialog();
+    try {
+      await createWishlist.mutateAsync({ userId: user.id, data });
+    } catch (error) {
+      // TODO: sonner and console
+      console.log(error);
+    } finally {
+      closeDialog();
+    }
   };
 
   return (
@@ -125,7 +119,7 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
             <Button variant="outline" className="w-26" onClick={closeDialog}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-create-form" className="w-26">
+            <Button type="submit" form="wishlist-create-form" className="w-26" disabled={createWishlist.isPending}>
               Сохранить
             </Button>
           </DialogFooter>
