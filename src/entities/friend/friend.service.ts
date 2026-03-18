@@ -1,6 +1,6 @@
 import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import { friendRepository } from "./friend.repository";
-import type { User } from "../user/user";
+import type { User } from "../user/model/user";
 
 export const friendService = {
   async createFriendship(senderId: string, receiverId: string): Promise<ServiceResult> {
