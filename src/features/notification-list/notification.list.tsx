@@ -1,12 +1,12 @@
-import { UserAuth } from "@/app/contexts/auth.context";
 import NotificationCard from "@/entities/notification/ui/notification-card";
 import { friendsRequestService } from "@/entities/friend-request/friend-request.service";
 import { useNotificationStore } from "@/entities/notification/model/notification.store";
 import { ItemGroup } from "@/shared/ui/kit/item";
 import { useCallback } from "react";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 export function NotificationList() {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const notifications = useNotificationStore().notifications;
 
   const handleAcceptingRequest = useCallback(

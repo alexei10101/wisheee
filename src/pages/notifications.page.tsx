@@ -1,13 +1,13 @@
-import { UserAuth } from "@/app/contexts/auth.context";
 import { notificationService } from "@/entities/notification/model/notification.service";
 import { useNotificationStore } from "@/entities/notification/model/notification.store";
+import { useAuth } from "@/entities/user/model/use-auth";
 import { NotificationList } from "@/features/notification-list/notification.list";
 import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useEffect } from "react";
 
 function NotificationPage() {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const markAllAsRead = useNotificationStore((s) => s.markAllAsRead);
 
   useEffect(() => {

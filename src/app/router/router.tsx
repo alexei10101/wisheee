@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router";
 import { ROUTES } from "@/shared/routes";
-import { AuthProvider } from "../providers/auth.provider";
 import { lazy } from "react";
 import { TooltipProvider } from "@/shared/ui/kit/tooltip";
 import App from "../app";
@@ -18,13 +17,11 @@ const NotificationsPage = lazy(() => import("../../pages/notifications.page"));
 const router = createBrowserRouter([
   {
     element: (
-      <AuthProvider>
-        <NotificationProvider>
-          <TooltipProvider>
-            <App />
-          </TooltipProvider>
-        </NotificationProvider>
-      </AuthProvider>
+      <NotificationProvider>
+        <TooltipProvider>
+          <App />
+        </TooltipProvider>
+      </NotificationProvider>
     ),
     children: [
       {

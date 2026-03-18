@@ -1,9 +1,9 @@
 import { memo, useEffect, useState } from "react";
 import { cn } from "@/shared/lib/css";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { friendService } from "@/entities/friend/friend.service";
-import { UserCard } from "@/entities/user/user.card";
-import type { User } from "@/entities/user/user";
+import { UserCard } from "@/entities/user/ui/user.card";
+import type { User } from "@/entities/user/model/user";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 type FriendsListProps = {
   cardVariant: "default" | "thin";
@@ -12,7 +12,7 @@ type FriendsListProps = {
 };
 
 export const FriendList = memo(function ({ cardVariant, addFriend, list }: FriendsListProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const [friends, setFriends] = useState<User[] | null>(list ?? null);
   const [loading, setLoading] = useState<boolean>(true);
 

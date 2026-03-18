@@ -4,9 +4,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { useState } from "react";
 import { Spinner } from "@/shared/ui/kit/spinner";
+import { useLogin } from "@/entities/user/model/user.mutations";
 
 const loginSchema = z.object({
   email: z.email("Введите корректный email"),
@@ -22,24 +22,15 @@ export function LoginForm() {
     },
   });
 
-  const { loading, login } = UserAuth();
+  const login = useLogin();
   const [error, setError] = useState<string>("");
 
   const handleLogin = form.handleSubmit(async (data: z.infer<typeof loginSchema>) => {
     setError("");
 
-    // TODO: problem with error handling (errors are not shown)
-
-    try {
-      const result = await login(data.email, data.password);
-
-      if (result.error) {
-        setError("Ошибка при входе: " + (result.error.message ?? "Неизвестная ошибка"));
-        return;
-      }
-    } catch (error) {
-      setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка"));
-    }
+    login.mutate(data, {
+      onError: (error) => setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка")),
+    });
   });
 
   return (
@@ -74,8 +65,8 @@ export function LoginForm() {
         )}
       />
 
-      <Button type="submit" disabled={loading}>
-        {loading ? <Spinner /> : "Войти"}
+      <Button type="submit" disabled={login.isPending}>
+        {login.isPending ? <Spinner /> : "Войти"}
       </Button>
 
       {error && <p className="text-destructive text-sm">{error}</p>}

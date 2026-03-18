@@ -1,14 +1,14 @@
-import { UserAuth } from "@/app/contexts/auth.context";
 import { friendService } from "@/entities/friend/friend.service";
-import type { User } from "@/entities/user/user";
 import { Input } from "@/shared/ui/kit/input";
 import { useCallback, useEffect, useState } from "react";
 import { FriendList } from "../friend-list/friend.list";
 import { friendsRequestService } from "@/entities/friend-request/friend-request.service";
 import type { FriendRequestMetadata } from "@/entities/friend-request/friend-request";
+import { useAuth } from "@/entities/user/model/use-auth";
+import type { User } from "@/entities/user/model/user";
 
 export function SearchUser() {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
@@ -24,7 +24,6 @@ export function SearchUser() {
       };
       friendsRequestService.sendFriendRequest(user.id, receiverId, metadata);
     },
-    // TODO: change notification card?
     [user?.id],
   );
 

@@ -1,8 +1,8 @@
 import { useNotifications } from "@/entities/notification/hooks/use-notifications";
-import { UserAuth } from "../contexts/auth.context";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   useNotifications(user?.id);
 
   return <>{children}</>;

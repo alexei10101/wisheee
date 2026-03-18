@@ -1,22 +1,28 @@
-import { UserAuth } from "@/app/contexts/auth.context";
 import { ROUTES } from "@/shared/routes";
 import { Avatar, AvatarFallback } from "@/shared/ui/kit/avatar";
 import { Button } from "@/shared/ui/kit/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from "@/shared/ui/kit/dropdown-menu";
 import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { Bell, Handshake, House, Lightbulb, LogOut } from "lucide-react";
+import { Bell, Handshake, House, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import { UserUpdateDialog } from "../../../features/user-update/user-update.dialog";
 import { Badge } from "../kit/badge";
 import { useNotificationStore } from "@/entities/notification/model/notification.store";
+import { useAuth } from "@/entities/user/model/use-auth";
+import { useLogout } from "@/entities/user/model/user.mutations";
+import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
 
 export function AppHeader() {
-  const { user, logout } = UserAuth();
+  const { user } = useAuth();
+  const logout = useLogout();
   const newNotifications = useNotificationStore((state) => state.unreadCount());
-
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    setDropdownMenuOpen(false);
+    logout.mutate();
+  };
 
   return (
     <header className="absolute bg-white top-4 left-8 right-8 rounded-full shadow py-3 px-2.5 flex items-center">
@@ -48,25 +54,11 @@ export function AppHeader() {
           </Link>
         </Button>
 
-        {/* <div className="flex">
-          {newNotifications !== 0 && (
-            <Badge variant="secondary" className="text-[11px]">
-              {newNotifications}
-            </Badge>
-          )}
-          {newNotifications === 0 && <Bell />}
-          <Button variant="link" className="cursor-pointer p-0">
-            <Link to={ROUTES.NOTIFICATIONS} className="flex items-center gap-1">
-              Уведомления
-            </Link>
-          </Button>
-        </div> */}
-
-        <Button variant="link" className="cursor-pointer p-0">
+        {/* <Button variant="link" className="cursor-pointer p-0">
           <Link to={""} className="flex items-center gap-1">
             <Lightbulb /> Идеи подарков
           </Link>
-        </Button>
+        </Button> */}
 
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>
@@ -85,15 +77,9 @@ export function AppHeader() {
           <DropdownMenuContent className="w-48" align="center">
             {user && (
               <DropdownMenuGroup>
-                <UserUpdateDialog />
+                <UserUpdateDialogButton closeMenu={() => setDropdownMenuOpen(false)} />
 
-                <Button
-                  variant="ghost"
-                  className="cursor-pointer w-full"
-                  onClick={() => {
-                    setDropdownMenuOpen(false);
-                    logout();
-                  }}>
+                <Button variant="ghost" className="cursor-pointer w-full" onClick={handleLogout}>
                   <LogOut />
                   Выход
                 </Button>

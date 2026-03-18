@@ -8,10 +8,9 @@ import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
-import {} from "@/app/contexts/wishlist.context";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 type WishlistUpdateDialogProps = {
   open: boolean;
@@ -27,7 +26,7 @@ const wishlistSchema = z.object({
 });
 
 export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const updateWishlist = useUpdateWishlist();
 
   const form = useForm<FormValues>({

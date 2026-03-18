@@ -1,15 +1,20 @@
-import { UserAuth } from "@/app/contexts/auth.context";
-import type { User } from "@/entities/user/user";
+import { useAuth } from "@/entities/user/model/use-auth";
+import type { User } from "@/entities/user/model/user";
+import { useUpdateUser } from "@/entities/user/model/user.mutations";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Label } from "@/shared/ui/kit/label";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Settings } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
+
+type UserUpdateDialogProps = {
+  open: boolean;
+  onClose: () => void;
+};
 
 type FormValues = z.infer<typeof userSchema>;
 const userSchema = z.object({
@@ -17,9 +22,9 @@ const userSchema = z.object({
   // avatarLink: z.string(),
 });
 
-export function UserUpdateDialog() {
-  const { user, updateUser } = UserAuth();
-  const [open, setOpen] = useState<boolean>(false);
+export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
+  const { user } = useAuth();
+  const updateUser = useUpdateUser();
 
   // TODO: avatar uploading
   const updateUserForm = useForm<FormValues>({
@@ -45,7 +50,7 @@ export function UserUpdateDialog() {
     const formValues = updateUserForm.getValues();
     const dirtyFields = updateUserForm.formState.dirtyFields;
 
-    const newData = {} as Partial<User>;
+    const newData = {} as Pick<User, "username" | "avatarLink">;
     if (dirtyFields.username) {
       newData.username = formValues.username.trim();
     }
@@ -56,28 +61,26 @@ export function UserUpdateDialog() {
 
     if (Object.keys(newData).length === 0) {
       console.log("Поля не изменены");
-      setOpen(false);
+      onClose();
       return;
     }
 
-    const response = await updateUser(newData);
-    if (response.error) {
-      console.error(response.error);
-    }
+    updateUser.mutate(
+      { id: user.id, updateData: newData },
+      {
+        onError: (error) => console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка")),
+      },
+    );
 
-    setOpen(false);
+    onClose();
   };
 
   return (
     <Dialog
       open={open}
       onOpenChange={(value) => {
-        if (!value) setOpen(false);
+        if (!value) onClose();
       }}>
-      <Button variant="ghost" className="cursor-pointer w-full" onClick={() => setOpen(true)}>
-        <Settings />
-        Настройки
-      </Button>
       <DialogContent className="sm:max-w-106.25">
         <DialogTitle>Изменение информации профиля</DialogTitle>
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>
@@ -111,7 +114,7 @@ export function UserUpdateDialog() {
           /> */}
         </form>
         <DialogFooter>
-          <Button variant="outline" className="w-26" onClick={() => setOpen(false)}>
+          <Button variant="outline" className="w-26" onClick={onClose}>
             Отмена
           </Button>
           <Button type="submit" form="profile-edit-form" className="w-26">

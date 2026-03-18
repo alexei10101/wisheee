@@ -2,9 +2,9 @@ import { Dialog, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { memo } from "react";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useDeleteWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 type WishlistItemDeleteDialogProps = {
   wishlistId: string;
@@ -19,7 +19,7 @@ export const WishlistItemDeleteDialog = memo(function WishlistItemDeleteDialog({
   onClose,
   wishlistItemId,
 }: WishlistItemDeleteDialogProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const deleteWishlistItem = useDeleteWishlistItem();
 
   const handleDelete = async () => {

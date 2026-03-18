@@ -1,4 +1,5 @@
 import { supabase } from "@/shared/api/supabase-client";
+import type { User } from "../model/user";
 
 export const userRepository = {
   async get(id: string) {
@@ -22,7 +23,7 @@ export const userRepository = {
       .single();
   },
 
-  async update(id: string, editData: any) {
-    return supabase.from("profiles").update(editData).eq("id", id).select().single();
+  async update(id: string, updateData: Pick<User, "username" | "avatarLink">) {
+    return supabase.from("profiles").update(updateData).eq("id", id).select().single();
   },
 };

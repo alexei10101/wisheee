@@ -1,11 +1,11 @@
 import { ROUTES } from "@/shared/routes";
 import { Navigate, Outlet } from "react-router";
-import { UserAuth } from "../contexts/auth.context";
 import { Spinner } from "@/shared/ui/kit/spinner";
 import { Suspense } from "react";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 function PublicRoute() {
-  const { session, appReady } = UserAuth();
+  const { session, appReady } = useAuth();
 
   if (!appReady)
     return (

@@ -8,10 +8,10 @@ import * as z from "zod";
 import { memo, useEffect } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
-import { UserAuth } from "@/app/contexts/auth.context";
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 type WishlistItemUpdateDialogProps = {
   open: boolean;
@@ -29,7 +29,7 @@ const wishlistItemSchema = z.object({
 });
 
 function WishlistItemUpdateDialog({ open, onClose, wishlistItem }: WishlistItemUpdateDialogProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const { data: wishlists } = useWishlists(user?.id);
   const updateWishlistItem = useUpdateWishlistItem();
 

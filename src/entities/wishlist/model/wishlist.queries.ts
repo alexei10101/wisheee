@@ -10,7 +10,7 @@ export const wishlistKeys = {
 
 export const useWishlists = (userId?: string) =>
   useQuery({
-    queryKey: wishlistKeys.list(userId!),
+    queryKey: wishlistKeys.list(userId ?? ""),
     queryFn: async () => {
       const result = await wishlistService.getAll(userId!);
       return unwrap(result);

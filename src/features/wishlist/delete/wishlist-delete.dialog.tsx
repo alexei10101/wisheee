@@ -3,8 +3,8 @@ import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { memo } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { useDeleteWishlist } from "@/entities/wishlist/model/wishlist.mutations";
+import { useAuth } from "@/entities/user/model/use-auth";
 
 type WishlistDeleteDialogProps = {
   open: boolean;
@@ -13,19 +13,13 @@ type WishlistDeleteDialogProps = {
 };
 
 export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, onClose, wishlistId }: WishlistDeleteDialogProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const deleteWishlist = useDeleteWishlist();
 
   const handleDelete = async () => {
     if (!user?.id) return;
-
-    try {
-      deleteWishlist.mutateAsync({ userId: user.id, wishlistId });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      onClose();
-    }
+    deleteWishlist.mutate({ userId: user.id, wishlistId }, { onError: (error) => console.log(error) });
+    onClose();
   };
 
   return (

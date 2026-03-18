@@ -1,9 +1,9 @@
-import type { User } from "@/entities/user/user";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
 import { Plus, X } from "lucide-react";
 import { memo } from "react";
+import type { User } from "../model/user";
 
 type UserCardProps = {
   variant: "default" | "thin";

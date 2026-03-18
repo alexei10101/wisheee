@@ -4,9 +4,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
-import { UserAuth } from "@/app/contexts/auth.context";
 import { useState } from "react";
 import { Spinner } from "@/shared/ui/kit/spinner";
+import { useSignUp } from "@/entities/user/model/user.mutations";
 
 const signupSchema = z
   .object({
@@ -29,22 +29,15 @@ export function SignupForm() {
     },
   });
 
-  const { loading, signUp } = UserAuth();
+  const signUp = useSignUp();
   const [error, setError] = useState<string>("");
 
   const handleSignUp = form.handleSubmit(async (data: z.infer<typeof signupSchema>) => {
     setError("");
 
-    try {
-      const result = await signUp(data.email, data.password);
-
-      if (result.error) {
-        setError("Ошибка при регистрации: " + (result.error.message ?? "Неизвестная ошибка"));
-        return;
-      }
-    } catch (error) {
-      setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка"));
-    }
+    signUp.mutate(data, {
+      onError: (error) => setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка")),
+    });
   });
 
   return (
@@ -97,8 +90,8 @@ export function SignupForm() {
         )}
       />
 
-      <Button type="submit" disabled={loading}>
-        {loading ? <Spinner /> : "Зарегистрироваться"}
+      <Button type="submit" disabled={signUp.isPending}>
+        {signUp.isPending ? <Spinner /> : "Зарегистрироваться"}
       </Button>
 
       {error && <p className="text-destructive text-sm">{error}</p>}

@@ -1,4 +1,4 @@
-import { UserAuth } from "@/app/contexts/auth.context";
+import { useAuth } from "@/entities/user/model/use-auth";
 import { useCreateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { useWishlist, useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
@@ -28,7 +28,7 @@ const wishlistItemSchema = z.object({
 });
 
 export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
-  const { user } = UserAuth();
+  const { user } = useAuth();
   const { data: activeWishlist } = useWishlist(wishlistId);
   const { data: wishlists } = useWishlists(user?.id);
 

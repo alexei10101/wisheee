@@ -1,57 +1,22 @@
-import { UserAuth } from "@/app/contexts/auth.context";
-import { UserWishlists } from "@/app/contexts/wishlist.context";
 import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";
-// import { UserWishlists } from "@/app/contexts/wishlist.context";
-import { wishlistService } from "@/entities/wishlist/model/wishlist.service";
 import { WishlistItemCreateButton } from "@/features/wishlist-item/create/wishlist-item-create.button";
 import { WishlistItemList } from "@/features/wishlist-item/list/wishlist-item.list";
 import { BackButton } from "@/shared/ui/back.button";
 import { Spinner } from "@/shared/ui/kit/spinner";
 import { PageHeader } from "@/shared/ui/page-header";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 function WishlistPage() {
-  // const { user } = UserAuth();
-  // const { activeWishlistId, setActiveWishlistId } = UserWishlists();
   const { id } = useParams<{ id: string }>();
-  const { data: activeWishlist, isLoading } = useWishlist(id);
+  const { data: activeWishlist, isLoading, isError } = useWishlist(id);
 
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (!id || !user?.id) return;
-  //   let isMounted = true;
-
-  //   const loadWishlist = async () => {
-  //     setLoading(true);
-  //     setError(null);
-  //     const { result, error } = await wishlistService.get(id);
-  //     if (!isMounted) return;
-  //     if (error) {
-  //       setError(error);
-  //       setLoading(false);
-  //       return;
-  //     }
-  //     setActiveWishlist(result);
-  //     setLoading(false);
-  //   };
-
-  //   loadWishlist();
-
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [id, user?.id, setActiveWishlist]);
-
-  // if (isLoading)
-  //   return (
-  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-  //       <Spinner />
-  //     </div>
-  //   );
-  // if (error) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">{error}</div>;
+  if (isLoading)
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <Spinner />
+      </div>
+    );
+  if (isError) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки страницы</div>;
   if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
 
   return (

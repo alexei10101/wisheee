@@ -12,7 +12,6 @@ export const useCreateWishlist = () => {
       const result = await wishlistService.create(userId, data);
       return unwrap(result);
     },
-
     onSuccess: (created, variables) => {
       queryClient.setQueryData(wishlistKeys.list(variables.userId), (old: Wishlist[] = []) => [created, ...old]);
     },
@@ -24,8 +23,9 @@ export const useDeleteWishlist = () => {
 
   return useMutation({
     mutationFn: async ({ userId, wishlistId }: { userId: string; wishlistId: string }) => {
-      const result = await wishlistService.delete(userId, wishlistId);
-      return unwrap(result);
+      const { error } = await wishlistService.delete(userId, wishlistId);
+      if (error) throw error;
+      return wishlistId;
     },
     onSuccess: (_, variables) => {
       queryClient.setQueryData(wishlistKeys.list(variables.userId), (old: Wishlist[] = []) =>
