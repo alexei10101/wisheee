@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/shared/ui/kit/tooltip";
 import App from "../app";
 import { ProtectedLayout } from "./layouts/protected.layout";
 import { PublicLayout } from "./layouts/public.layout";
-import { NotificationProvider } from "../providers/notification.provider";
 
 const HomePageLazy = lazy(() => import("../../pages/home.page"));
 const LoginPageLazy = lazy(() => import("../../pages/auth/login.page"));
@@ -17,11 +16,9 @@ const NotificationsPage = lazy(() => import("../../pages/notifications.page"));
 const router = createBrowserRouter([
   {
     element: (
-      <NotificationProvider>
-        <TooltipProvider>
-          <App />
-        </TooltipProvider>
-      </NotificationProvider>
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
     ),
     children: [
       {

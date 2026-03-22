@@ -1,20 +1,21 @@
-import { friendService } from "@/entities/friend/friend.service";
+import { friendService } from "@/entities/friend/model/friend.service";
 import { Input } from "@/shared/ui/kit/input";
 import { useCallback, useEffect, useState } from "react";
-import { FriendList } from "../friend-list/friend.list";
-import { friendsRequestService } from "@/entities/friend-request/friend-request.service";
-import type { FriendRequestMetadata } from "@/entities/friend-request/friend-request";
+import type { FriendRequestMetadata } from "@/entities/request/friend-request/model/friend-request";
 import { useAuth } from "@/entities/user/model/use-auth";
 import type { User } from "@/entities/user/model/user";
+import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
+import { SearchList } from "../search-list/search.list";
 
 export function SearchUser() {
   const { user } = useAuth();
+  const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
-    async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
+    (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
       if (!user?.id) return;
       const metadata: FriendRequestMetadata = {
         sender_username: user.username,
@@ -22,7 +23,7 @@ export function SearchUser() {
         receiver_username: receiverUsername,
         receiver_avatar: receiverAvatar,
       };
-      friendsRequestService.sendFriendRequest(user.id, receiverId, metadata);
+      sendFriendRequest.mutate({ senderId: user.id, receiverId, metadata }, { onError: (error) => console.log(error) });
     },
     [user?.id],
   );
@@ -40,7 +41,7 @@ export function SearchUser() {
       try {
         const res = await friendService.searchUsers(debouncedSearch, user.id);
         if (res.error) return console.log(res.error);
-        if (!res.result) return setSearchResult([]);
+        if (!res.result) return setSearchResult(null);
         setSearchResult(res.result);
       } catch {}
     };
@@ -51,12 +52,9 @@ export function SearchUser() {
   return (
     <>
       <Input className="bg-white" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
-      {searchResult && (
-        <div className="mt-5">
-          {searchResult.length > 0 && <FriendList cardVariant="thin" list={searchResult} addFriend={handleAddFriend} />}
-          {searchResult.length === 0 && <div>По вашему запросу ничего не найдено</div>}
-        </div>
-      )}
+      <div className="mt-5">
+        <SearchList list={searchResult} addFriend={handleAddFriend} />
+      </div>
     </>
   );
 }

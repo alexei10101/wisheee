@@ -1,4 +1,4 @@
-import type { FriendNotificationMetadata, FriendRequestStatus } from "@/entities/friend-request/friend-request";
+import type { FriendNotificationMetadata, FriendRequestStatus } from "@/entities/request/friend-request/model/friend-request";
 import { supabase } from "@/shared/api/supabase-client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import type { AppNotification } from "../model/notification";
@@ -35,18 +35,18 @@ export const notificationRepository = {
           onUpdate(payload.new as AppNotification);
         },
       )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "notifications",
-          filter: `sender_id=eq.${userId}`,
-        },
-        (payload) => {
-          onUpdate(payload.new as AppNotification);
-        },
-      )
+      // .on(
+      //   "postgres_changes",
+      //   {
+      //     event: "UPDATE",
+      //     schema: "public",
+      //     table: "notifications",
+      //     filter: `sender_id=eq.${userId}`,
+      //   },
+      //   (payload) => {
+      //     onUpdate(payload.new as AppNotification);
+      //   },
+      // )
       .subscribe();
 
     return channel;
@@ -95,8 +95,11 @@ export const notificationRepository = {
     ]);
   },
   async markAllAsRead(userId: string) {
-    return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false).select("*");
+    return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false);
   },
+  // async markAsRead(userId: string, ids: string[]) {
+  //   return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false).in("id", ids);
+  // },
   async fetchNotifications(userId: string) {
     return supabase.from("notifications").select("*").eq("receiver_id", userId).order("created_at", { ascending: false }).limit(30);
   },

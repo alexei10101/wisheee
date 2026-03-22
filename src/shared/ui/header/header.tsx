@@ -8,16 +8,18 @@ import { Bell, Handshake, House, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { Badge } from "../kit/badge";
-import { useNotificationStore } from "@/entities/notification/model/notification.store";
 import { useAuth } from "@/entities/user/model/use-auth";
 import { useLogout } from "@/entities/user/model/user.mutations";
 import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
+import { useNotifications } from "@/entities/notification/model/notification.queries";
 
 export function AppHeader() {
   const { user } = useAuth();
   const logout = useLogout();
-  const newNotifications = useNotificationStore((state) => state.unreadCount());
+  const { data: notifications } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
+
+  const unreadCount = notifications?.filter((n) => !n.is_read).length;
 
   const handleLogout = () => {
     setDropdownMenuOpen(false);
@@ -44,12 +46,12 @@ export function AppHeader() {
 
         <Button asChild variant="link" className="p-0 flex items-center gap-1">
           <Link to={ROUTES.NOTIFICATIONS}>
-            {newNotifications !== 0 && (
+            {unreadCount !== 0 && (
               <Badge variant="secondary" className="text-[11px]">
-                {newNotifications}
+                {unreadCount}
               </Badge>
             )}
-            {newNotifications === 0 && <Bell />}
+            {unreadCount === 0 && <Bell />}
             Уведомления
           </Link>
         </Button>

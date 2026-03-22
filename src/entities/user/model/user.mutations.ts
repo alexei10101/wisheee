@@ -77,7 +77,8 @@ const prefetchUser = async (queryClient: QueryClient, userId: string) => {
     queryFn: async () => {
       const { data, error } = await userRepository.get(userId);
       if (error) throw error;
-      return data;
+      const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
+      return { ...data, friends: friendIds };
     },
   });
 };

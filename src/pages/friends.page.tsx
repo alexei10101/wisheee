@@ -28,7 +28,7 @@ function FriendsPage() {
         }
       />
 
-      {mode === "all" && <FriendList cardVariant="default" />}
+      {mode === "all" && <FriendList />}
       {mode === "search" && <SearchUser />}
     </main>
   );

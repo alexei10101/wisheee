@@ -1,5 +1,5 @@
 import { supabase } from "@/shared/api/supabase-client";
-import type { FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
+import type { FriendRequestMetadata, FriendRequestStatus } from "../model/friend-request";
 
 export const friendRequestRepository = {
   async createRequest(senderId: string, receiverId: string, metadata: FriendRequestMetadata) {

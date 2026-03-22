@@ -7,8 +7,10 @@ import { notificationComponents } from "../model/notification-registry";
 export type NotificationCardProps = {
   userId: string;
   notification: AppNotification;
-  onAccept: () => Promise<void>;
-  onReject: () => Promise<void>;
+  onAccept: () => void;
+  onReject: () => void;
+  selected?: boolean;
+  onSelect?: () => void;
 };
 
 const NotificationCard = ({ userId, notification: n, onAccept, onReject }: NotificationCardProps) => {

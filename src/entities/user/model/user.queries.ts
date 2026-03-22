@@ -3,7 +3,7 @@ import { userRepository } from "../api/user.repository";
 import type { User } from "./user";
 
 export const userKeys = {
-  me: (userId: string) => ["user", userId] as const,
+  me: (userId: string) => ["user", userId ?? ""] as const,
 };
 
 export const useUser = (userId: string | null) => {
