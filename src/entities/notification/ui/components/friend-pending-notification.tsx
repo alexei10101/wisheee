@@ -1,27 +1,23 @@
 import { ItemActions, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
 import type { NotificationCardProps } from "../notification-card";
 import { Button } from "@/shared/ui/kit/button";
+import { UserBadge } from "@/entities/user/ui/user.badge";
 
 export function FriendPendingNotification({ userId, notification, onAccept, onReject }: NotificationCardProps) {
   const isRequestInitiator = notification.metadata?.request_sender_id === userId;
-
-  const senderUsername = notification.metadata?.sender_username;
-  const receiverUsername = notification.metadata?.receiver_username;
+  const data = {
+    username: isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username,
+    avatar: isRequestInitiator ? notification.metadata?.receiver_avatar : notification.metadata?.sender_avatar,
+  };
+  const title = isRequestInitiator ? "Вы отправили заявку в друзья пользователю " : "Новая заявка в друзья от ";
 
   return (
     <>
-      <ItemDescription>{isRequestInitiator ? "Заявка в друзья" : "Новая заявка в друзья"}</ItemDescription>
+      <ItemDescription>Заявка в друзья</ItemDescription>
 
       <ItemTitle>
-        {isRequestInitiator ? (
-          <>
-            Вы отправили заявку в друзья пользователю <span className="font-bold">{receiverUsername}</span>
-          </>
-        ) : (
-          <>
-            <span className="font-bold">{senderUsername}</span> отправил вам заявку в друзья!
-          </>
-        )}
+        <span>{title}</span>
+        <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
       </ItemTitle>
 
       {!isRequestInitiator && (

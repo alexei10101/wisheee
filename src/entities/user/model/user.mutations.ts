@@ -57,7 +57,7 @@ export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, updateData }: { id: string; updateData: Pick<User, "username" | "avatarLink"> }) => {
+    mutationFn: async ({ id, updateData }: { id: string; updateData: Pick<User, "username" | "avatar_url"> }) => {
       const { data, error } = await userRepository.update(id, updateData);
       if (error) throw error;
       return data;

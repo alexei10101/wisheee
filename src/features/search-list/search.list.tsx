@@ -15,7 +15,7 @@ export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {
       {list.length > 0 && (
         <div className="flex flex-col gap-0.5">
           {list.map((user) => (
-            <UserCard key={user.id} variant={"thin"} user={user} onAddFriend={() => addFriend(user.id, user.username, user.avatarLink)} />
+            <UserCard key={user.id} variant={"thin"} user={user} onAddFriend={() => addFriend(user.id, user.username, user.avatar_url)} />
           ))}
         </div>
       )}

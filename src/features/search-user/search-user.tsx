@@ -19,7 +19,7 @@ export function SearchUser() {
       if (!user?.id) return;
       const metadata: FriendRequestMetadata = {
         sender_username: user.username,
-        sender_avatar: user.avatarLink,
+        sender_avatar: user.avatar_url,
         receiver_username: receiverUsername,
         receiver_avatar: receiverAvatar,
       };

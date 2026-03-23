@@ -1,9 +1,10 @@
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
-import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 import { Plus, X } from "lucide-react";
 import { memo } from "react";
 import type { User } from "../model/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 
 type UserCardProps = {
   variant: "default" | "thin";
@@ -21,7 +22,13 @@ export const UserCard = memo(function ({ variant, user, onAddFriend }: UserCardP
         variant === "default" && "max-w-2xl py-6",
         variant === "thin" && "py-1 px-3 rounded-md",
       )}>
-      <ItemContent className={cn("flex flex-col gap-3 max-w-1/2", variant === "thin" && "p-0")}>
+      <ItemContent className={cn("flex-row gap-3 max-w-1/2", variant === "thin" && "p-0")}>
+        <ItemMedia>
+          <Avatar className="size-7">
+            <AvatarImage src={user?.avatar_url ?? "/default-avatar.png"} />
+            <AvatarFallback className="pb-1.5">{(user?.username?.at(0) ?? "") + (user?.username?.at(1) ?? "")}</AvatarFallback>
+          </Avatar>
+        </ItemMedia>
         <ItemTitle className={cn(variant === "thin" && "leading-6.5")}>{user.username}</ItemTitle>
         <ItemDescription hidden={true}></ItemDescription>
       </ItemContent>
