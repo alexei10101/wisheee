@@ -18,8 +18,13 @@ export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, o
 
   const handleDelete = async () => {
     if (!user?.id) return;
-    deleteWishlist.mutate({ userId: user.id, wishlistId }, { onError: (error) => console.log(error) });
-    onClose();
+    try {
+      await deleteWishlist.mutateAsync({ userId: user.id, wishlistId });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      onClose();
+    }
   };
 
   return (

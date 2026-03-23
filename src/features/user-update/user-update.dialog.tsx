@@ -65,14 +65,13 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
       return;
     }
 
-    updateUser.mutate(
-      { id: user.id, updateData: newData },
-      {
-        onError: (error) => console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка")),
-      },
-    );
-
-    onClose();
+    try {
+      await updateUser.mutateAsync({ id: user.id, updateData: newData });
+    } catch (error) {
+      console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    } finally {
+      onClose();
+    }
   };
 
   return (

@@ -28,9 +28,12 @@ export function LoginForm() {
   const handleLogin = form.handleSubmit(async (data: z.infer<typeof loginSchema>) => {
     setError("");
 
-    login.mutate(data, {
-      onError: (error) => setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка")),
-    });
+    try {
+      await login.mutateAsync(data);
+    } catch (error) {
+      // TODO: sonner and console
+      setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    }
   });
 
   return (

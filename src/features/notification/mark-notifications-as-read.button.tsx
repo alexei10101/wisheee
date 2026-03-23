@@ -9,9 +9,13 @@ type MarkNotificationsAsReadProps = {
 export function MarkNotificationsAsRead({ userId }: MarkNotificationsAsReadProps) {
   const markAsRead = useMarkAllAsRead();
 
-  const handleMarkAllAsRead = () => {
+  const handleMarkAllAsRead = async () => {
     if (!userId) return;
-    markAsRead.mutate({ userId }, { onError: (error) => console.log(error) });
+    try {
+      await markAsRead.mutateAsync({ userId });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

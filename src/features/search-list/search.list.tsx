@@ -4,7 +4,7 @@ import { memo } from "react";
 
 type SearchListProps = {
   list: User[] | null;
-  addFriend: (receiverId: string, receiverUsername: string, receiverAvatar: string) => void;
+  addFriend: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
 };
 
 export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {

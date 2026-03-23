@@ -8,7 +8,7 @@ import type { User } from "../model/user";
 type UserCardProps = {
   variant: "default" | "thin";
   user: User;
-  onAddFriend?: () => void | undefined;
+  onAddFriend?: () => Promise<void> | undefined;
 };
 
 export const UserCard = memo(function ({ variant, user, onAddFriend }: UserCardProps) {

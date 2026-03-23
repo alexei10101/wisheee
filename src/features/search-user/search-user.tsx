@@ -15,7 +15,7 @@ export function SearchUser() {
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
-    (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
+    async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
       if (!user?.id) return;
       const metadata: FriendRequestMetadata = {
         sender_username: user.username,
@@ -23,7 +23,11 @@ export function SearchUser() {
         receiver_username: receiverUsername,
         receiver_avatar: receiverAvatar,
       };
-      sendFriendRequest.mutate({ senderId: user.id, receiverId, metadata }, { onError: (error) => console.log(error) });
+      try {
+        await sendFriendRequest.mutateAsync({ senderId: user.id, receiverId, metadata });
+      } catch (error) {
+        console.log(error);
+      }
     },
     [user?.id],
   );

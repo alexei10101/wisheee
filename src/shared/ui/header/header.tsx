@@ -21,9 +21,13 @@ export function AppHeader() {
 
   const unreadCount = notifications?.filter((n) => !n.is_read).length;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setDropdownMenuOpen(false);
-    logout.mutate();
+    try {
+      await logout.mutateAsync();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

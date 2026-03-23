@@ -35,9 +35,12 @@ export function SignupForm() {
   const handleSignUp = form.handleSubmit(async (data: z.infer<typeof signupSchema>) => {
     setError("");
 
-    signUp.mutate(data, {
-      onError: (error) => setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка")),
-    });
+    try {
+      await signUp.mutateAsync(data);
+    } catch (error) {
+      // TODO: sonner and console
+      setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    }
   });
 
   return (
