@@ -1,3 +1,4 @@
+import { useAuth } from "@/entities/user/model/use-auth";
 import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";
 import { WishlistItemCreateButton } from "@/features/wishlist-item/create/wishlist-item-create.button";
 import { WishlistItemList } from "@/features/wishlist-item/list/wishlist-item.list";
@@ -7,8 +8,10 @@ import { PageHeader } from "@/shared/ui/page-header";
 import { useParams } from "react-router";
 
 function WishlistPage() {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const { data: activeWishlist, isLoading, isError } = useWishlist(id);
+  const isOwner = !!user && !!activeWishlist && user.id === activeWishlist.user_id;
 
   if (isLoading)
     return (
@@ -28,7 +31,7 @@ function WishlistPage() {
         left={<BackButton />}
         right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
       />
-      <WishlistItemList wishlist={activeWishlist} />
+      <WishlistItemList wishlist={activeWishlist} isOwner={isOwner} />
     </main>
   );
 

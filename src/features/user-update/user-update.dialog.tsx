@@ -100,7 +100,6 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
     }
   };
 
-  console.log(previewUrl);
   return (
     <Dialog
       open={open}

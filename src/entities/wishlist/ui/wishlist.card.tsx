@@ -1,22 +1,23 @@
 import { Button } from "@/shared/ui/kit/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/shared/ui/kit/tooltip";
 import { BookCheck, BookOpenCheck, Pencil, Trash } from "lucide-react";
 import { memo } from "react";
 import type { Wishlist } from "../model/wishlist";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/kit/tooltip";
 
 type WishlistCardProps = {
   wishlist: Wishlist;
   onOpen: (id: string) => void;
   onUpdate: () => void;
   onDelete: () => void;
+  isOwner: boolean;
 };
 
-export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpdate, onDelete }: WishlistCardProps) {
+export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpdate, onDelete, isOwner }: WishlistCardProps) {
   return (
     <Item
       variant="outline"
-      className="w-full max-w-2xl mx-auto cursor-pointer shadow"
+      className="w-full max-w-2xl mx-auto cursor-pointer shadow bg-white"
       onClick={(e) => {
         const target = e.target as HTMLElement;
         if (target.closest("button")) return;
@@ -26,23 +27,25 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
         <ItemTitle>{wishlist.title}</ItemTitle>
         <ItemDescription>{wishlist.description?.trim() || `\u00A0`}</ItemDescription>
       </ItemContent>
-      <ItemActions className="ml-auto">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost">{wishlist.is_public ? <BookOpenCheck /> : <BookCheck />}</Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{wishlist.is_public ? "Публичный" : "Приватный"}</p>
-          </TooltipContent>
-        </Tooltip>
+      {isOwner && (
+        <ItemActions className="ml-auto">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost">{wishlist.is_public ? <BookOpenCheck /> : <BookCheck />}</Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{wishlist.is_public ? "Публичный" : "Приватный"}</p>
+            </TooltipContent>
+          </Tooltip>
 
-        <Button variant="ghost" onClick={onUpdate}>
-          <Pencil />
-        </Button>
-        <Button variant="ghost" onClick={onDelete}>
-          <Trash />
-        </Button>
-      </ItemActions>
+          <Button variant="ghost" onClick={onUpdate}>
+            <Pencil />
+          </Button>
+          <Button variant="ghost" onClick={onDelete}>
+            <Trash />
+          </Button>
+        </ItemActions>
+      )}
     </Item>
   );
 });

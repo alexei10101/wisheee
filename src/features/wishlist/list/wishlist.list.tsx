@@ -10,15 +10,17 @@ import { useAuth } from "@/entities/user/model/use-auth";
 import { Spinner } from "@/shared/ui/kit/spinner";
 
 type WishlistListProps = {
+  userId?: string;
   style?: string;
 };
 
 type WishlistDialogState = { operation: "update"; wishlist: Wishlist } | { operation: "delete"; wishlistId: string } | { operation: null };
 
-export const WishlistList = function WishlistList({ style }: WishlistListProps) {
+export const WishlistList = function WishlistList({ userId, style }: WishlistListProps) {
   const { user } = useAuth();
-  const { data: wishlists, isLoading } = useWishlists(user?.id);
+  const { data: wishlists, isLoading } = useWishlists(userId);
   const [dialog, setDialog] = useState<WishlistDialogState>({ operation: null });
+  const isOwner = !!user && !!wishlists && user.id === userId;
 
   const navigate = useNavigate();
   const onOpen = (id: string) => navigate(buildRoutes.wishlist(id));
@@ -30,10 +32,8 @@ export const WishlistList = function WishlistList({ style }: WishlistListProps) 
           <Spinner />
         </div>
       )}
-      {!isLoading && (!wishlists || wishlists?.length === 0) && (
-        <div className="flex flex-col mx-auto text-lg text-center">Вишлистов пока нет</div>
-      )}
-      {!isLoading && wishlists && (
+      {!isLoading && wishlists?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлистов пока нет</div>}
+      {!isLoading && wishlists && userId && (
         <div className="flex flex-col gap-4">
           {wishlists.map((wishlist) => (
             <WishlistCard
@@ -42,13 +42,13 @@ export const WishlistList = function WishlistList({ style }: WishlistListProps) 
               onUpdate={() => setDialog({ operation: "update", wishlist: wishlist })}
               onDelete={() => setDialog({ operation: "delete", wishlistId: wishlist.id })}
               onOpen={onOpen}
+              isOwner={isOwner}
             />
           ))}
-
-          {dialog.operation === "update" && (
+          {isOwner && dialog.operation === "update" && (
             <WishlistUpdateDialog open onClose={() => setDialog({ operation: null })} wishlist={dialog.wishlist} />
           )}
-          {dialog.operation === "delete" && (
+          {isOwner && dialog.operation === "delete" && (
             <WishlistDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistId={dialog.wishlistId} />
           )}
         </div>

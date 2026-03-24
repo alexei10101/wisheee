@@ -5,18 +5,20 @@ import { memo } from "react";
 
 type WishlistItemProps = {
   wishlistItem: WishlistItem;
-  handleDelete: (id: WishlistItem["id"]) => void;
-  handleUpdate: (id: WishlistItem["id"]) => void;
+  isOwner: boolean;
+  handleDelete?: (id: WishlistItem["id"]) => void;
+  handleUpdate?: (id: WishlistItem["id"]) => void;
 };
 
-export const WishlistItemCard = memo(function ({ wishlistItem, handleDelete, handleUpdate }: WishlistItemProps) {
+export const WishlistItemCard = memo(function ({ wishlistItem, isOwner, handleDelete, handleUpdate }: WishlistItemProps) {
+  // const canReserve = !isOwner;
   return (
     <div
       className="rounded-2xl border bg-card shadow-sm p-4 flex gap-4 relative w-100 cursor-pointer"
       onClick={(e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
         if (target.closest("button")) return;
-        handleUpdate(wishlistItem.id);
+        handleUpdate && handleUpdate(wishlistItem.id);
       }}>
       {/* Image */}
       {/* <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0">
@@ -43,9 +45,14 @@ export const WishlistItemCard = memo(function ({ wishlistItem, handleDelete, han
         )}
 
         {/* Action */}
-        <Button className="absolute top-1 right-1" variant="ghost" onClick={() => handleDelete(wishlistItem.id)}>
-          <X />
-        </Button>
+        {isOwner && (
+          <Button
+            className="absolute top-1 right-1"
+            variant="ghost"
+            onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined}>
+            <X />
+          </Button>
+        )}
       </div>
     </div>
   );

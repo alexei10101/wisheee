@@ -6,8 +6,9 @@ import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog"
 import { useState } from "react";
 
 type WishlistItemList = {
-  style?: string;
+  isOwner: boolean;
   wishlist: WishlistWithItems;
+  style?: string;
 };
 
 type WishlistItemDialogState =
@@ -15,19 +16,20 @@ type WishlistItemDialogState =
   | { operation: "delete"; wishlistItemId: string }
   | { operation: null };
 
-export function WishlistItemList({ style, wishlist }: WishlistItemList) {
+export function WishlistItemList({ isOwner, wishlist, style }: WishlistItemList) {
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
 
   return (
     <section className={style}>
       <div className="flex flex-wrap gap-5 text-lg">
         {wishlist.wishlist_items.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлист пуст</div>}
-        {wishlist.wishlist_items.map((item) => (
+        {wishlist.wishlist_items?.map((item) => (
           <WishlistItemCard
             key={item.id}
             wishlistItem={item}
-            handleDelete={() => setDialog({ operation: "delete", wishlistItemId: item.id })}
-            handleUpdate={() => setDialog({ operation: "update", wishlistItem: item })}
+            isOwner={isOwner}
+            handleDelete={isOwner ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
+            handleUpdate={isOwner ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
           />
         ))}
       </div>

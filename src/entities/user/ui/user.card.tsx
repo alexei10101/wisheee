@@ -9,26 +9,32 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 type UserCardProps = {
   variant: "default" | "thin";
   user: User;
+  onOpen: (userId: string) => void;
   onAddFriend?: () => Promise<void> | undefined;
 };
 
-export const UserCard = memo(function ({ variant, user, onAddFriend }: UserCardProps) {
+export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: UserCardProps) {
   return (
     <Item
       variant="outline"
       key={user.id}
+      onClick={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest("button")) return;
+        onOpen(user.id);
+      }}
       className={cn(
         "relative flex flex-row w-full mx-auto cursor-pointer group bg-white shadow",
         variant === "default" && "max-w-2xl py-6",
         variant === "thin" && "py-1 px-3 rounded-md",
       )}>
+      <ItemMedia>
+        <Avatar className="size-7">
+          <AvatarImage src={user?.avatar_url ?? "/default-avatar.png"} className="object-cover" />
+          <AvatarFallback className="pb-1.5">{(user?.username?.at(0) ?? "") + (user?.username?.at(1) ?? "")}</AvatarFallback>
+        </Avatar>
+      </ItemMedia>
       <ItemContent className={cn("flex-row gap-3 max-w-1/2", variant === "thin" && "p-0")}>
-        <ItemMedia>
-          <Avatar className="size-7">
-            <AvatarImage src={user?.avatar_url ?? "/default-avatar.png"} />
-            <AvatarFallback className="pb-1.5">{(user?.username?.at(0) ?? "") + (user?.username?.at(1) ?? "")}</AvatarFallback>
-          </Avatar>
-        </ItemMedia>
         <ItemTitle className={cn(variant === "thin" && "leading-6.5")}>{user.username}</ItemTitle>
         <ItemDescription hidden={true}></ItemDescription>
       </ItemContent>

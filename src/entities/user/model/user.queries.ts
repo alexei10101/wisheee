@@ -6,7 +6,7 @@ export const userKeys = {
   me: (userId: string) => ["user", userId ?? ""] as const,
 };
 
-export const useUser = (userId: string | null) => {
+export const useUser = (userId?: string) => {
   return useQuery({
     queryKey: userKeys.me(userId!),
     queryFn: async (): Promise<User> => {

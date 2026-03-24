@@ -12,6 +12,7 @@ const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
 const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
 const NotificationsPage = lazy(() => import("../../pages/notifications.page"));
+const UsersPage = lazy(() => import("../../pages/users.page"));
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
           { path: ROUTES.WISHLIST, Component: WishlistPageLazy },
           { path: ROUTES.NOTIFICATIONS, Component: NotificationsPage },
+          { path: ROUTES.USERS, Component: UsersPage },
         ],
       },
       {
