@@ -4,16 +4,17 @@ import { memo } from "react";
 import type { Wishlist } from "../model/wishlist";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/kit/tooltip";
+import type { Permissions } from "@/shared/lib/permissions";
 
 type WishlistCardProps = {
   wishlist: Wishlist;
   onOpen: (id: string) => void;
   onUpdate: () => void;
   onDelete: () => void;
-  isOwner: boolean;
+  permissions: Permissions;
 };
 
-export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpdate, onDelete, isOwner }: WishlistCardProps) {
+export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpdate, onDelete, permissions }: WishlistCardProps) {
   return (
     <Item
       variant="outline"
@@ -27,7 +28,7 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
         <ItemTitle>{wishlist.title}</ItemTitle>
         <ItemDescription>{wishlist.description?.trim() || `\u00A0`}</ItemDescription>
       </ItemContent>
-      {isOwner && (
+      {permissions.canUpdate && permissions.canDelete && (
         <ItemActions className="ml-auto">
           <Tooltip>
             <TooltipTrigger asChild>

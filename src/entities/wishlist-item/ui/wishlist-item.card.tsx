@@ -1,17 +1,17 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import type { Permissions } from "@/shared/lib/permissions";
 import { Button } from "@/shared/ui/kit/button";
 import { X } from "lucide-react";
 import { memo } from "react";
 
 type WishlistItemProps = {
   wishlistItem: WishlistItem;
-  isOwner: boolean;
+  permissions: Permissions;
   handleDelete?: (id: WishlistItem["id"]) => void;
   handleUpdate?: (id: WishlistItem["id"]) => void;
 };
 
-export const WishlistItemCard = memo(function ({ wishlistItem, isOwner, handleDelete, handleUpdate }: WishlistItemProps) {
-  // const canReserve = !isOwner;
+export const WishlistItemCard = memo(function ({ wishlistItem, permissions, handleDelete, handleUpdate }: WishlistItemProps) {
   return (
     <div
       className="rounded-2xl border bg-card shadow-sm p-4 flex gap-4 relative w-100 cursor-pointer"
@@ -45,7 +45,7 @@ export const WishlistItemCard = memo(function ({ wishlistItem, isOwner, handleDe
         )}
 
         {/* Action */}
-        {isOwner && (
+        {permissions.canDelete && (
           <Button
             className="absolute top-1 right-1"
             variant="ghost"

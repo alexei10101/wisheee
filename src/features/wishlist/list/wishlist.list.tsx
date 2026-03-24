@@ -6,21 +6,20 @@ import { WishlistCard } from "@/entities/wishlist/ui/wishlist.card";
 import { WishlistUpdateDialog } from "../update/wishlist-update.dialog";
 import { WishlistDeleteDialog } from "../delete/wishlist-delete.dialog";
 import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
-import { useAuth } from "@/entities/user/model/use-auth";
 import { Spinner } from "@/shared/ui/kit/spinner";
+import { type Permissions } from "@/shared/lib/permissions";
 
 type WishlistListProps = {
+  permissions: Permissions;
   userId?: string;
   style?: string;
 };
 
 type WishlistDialogState = { operation: "update"; wishlist: Wishlist } | { operation: "delete"; wishlistId: string } | { operation: null };
 
-export const WishlistList = function WishlistList({ userId, style }: WishlistListProps) {
-  const { user } = useAuth();
+export const WishlistList = function WishlistList({ permissions, userId, style }: WishlistListProps) {
   const { data: wishlists, isLoading } = useWishlists(userId);
   const [dialog, setDialog] = useState<WishlistDialogState>({ operation: null });
-  const isOwner = !!user && !!wishlists && user.id === userId;
 
   const navigate = useNavigate();
   const onOpen = (id: string) => navigate(buildRoutes.wishlist(id));
@@ -42,13 +41,13 @@ export const WishlistList = function WishlistList({ userId, style }: WishlistLis
               onUpdate={() => setDialog({ operation: "update", wishlist: wishlist })}
               onDelete={() => setDialog({ operation: "delete", wishlistId: wishlist.id })}
               onOpen={onOpen}
-              isOwner={isOwner}
+              permissions={permissions}
             />
           ))}
-          {isOwner && dialog.operation === "update" && (
+          {permissions.canUpdate && dialog.operation === "update" && (
             <WishlistUpdateDialog open onClose={() => setDialog({ operation: null })} wishlist={dialog.wishlist} />
           )}
-          {isOwner && dialog.operation === "delete" && (
+          {permissions.canDelete && dialog.operation === "delete" && (
             <WishlistDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistId={dialog.wishlistId} />
           )}
         </div>

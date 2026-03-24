@@ -4,9 +4,10 @@ import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
 import WishlistItemUpdateDialog from "../update/wishlist-item-update.dialog";
 import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog";
 import { useState } from "react";
+import type { Permissions } from "@/shared/lib/permissions";
 
 type WishlistItemList = {
-  isOwner: boolean;
+  permissions: Permissions;
   wishlist: WishlistWithItems;
   style?: string;
 };
@@ -16,20 +17,20 @@ type WishlistItemDialogState =
   | { operation: "delete"; wishlistItemId: string }
   | { operation: null };
 
-export function WishlistItemList({ isOwner, wishlist, style }: WishlistItemList) {
+export function WishlistItemList({ permissions, wishlist, style }: WishlistItemList) {
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
 
   return (
     <section className={style}>
       <div className="flex flex-wrap gap-5 text-lg">
-        {wishlist.wishlist_items.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлист пуст</div>}
+        {wishlist.wishlist_items?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлист пуст</div>}
         {wishlist.wishlist_items?.map((item) => (
           <WishlistItemCard
             key={item.id}
             wishlistItem={item}
-            isOwner={isOwner}
-            handleDelete={isOwner ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
-            handleUpdate={isOwner ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
+            permissions={permissions}
+            handleDelete={permissions.canDelete ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
+            handleUpdate={permissions.canUpdate ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
           />
         ))}
       </div>

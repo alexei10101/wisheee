@@ -2,6 +2,7 @@ import { useAuth } from "@/entities/user/model/use-auth";
 import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";
 import { WishlistItemCreateButton } from "@/features/wishlist-item/create/wishlist-item-create.button";
 import { WishlistItemList } from "@/features/wishlist-item/list/wishlist-item.list";
+import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
 import { BackButton } from "@/shared/ui/back.button";
 import { Spinner } from "@/shared/ui/kit/spinner";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -11,7 +12,9 @@ function WishlistPage() {
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const { data: activeWishlist, isLoading, isError } = useWishlist(id);
-  const isOwner = !!user && !!activeWishlist && user.id === activeWishlist.user_id;
+
+  const relation = getUserRelation({ viewerId: activeWishlist?.user_id, ownerId: user?.id });
+  const permissions = getPermissions(relation);
 
   if (isLoading)
     return (
@@ -31,7 +34,7 @@ function WishlistPage() {
         left={<BackButton />}
         right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
       />
-      <WishlistItemList wishlist={activeWishlist} isOwner={isOwner} />
+      <WishlistItemList wishlist={activeWishlist} permissions={permissions} />
     </main>
   );
 
