@@ -3,6 +3,7 @@ import { WishlistCreateButton } from "@/features/wishlist/create/wishlist-create
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
 import { useAuth } from "@/entities/user/model/use-auth";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
+import { BackButton } from "@/shared/ui/back.button";
 
 function WishlistsPage() {
   const { user } = useAuth();
@@ -11,8 +12,8 @@ function WishlistsPage() {
   const permissions = getPermissions(relation);
 
   return (
-    <main>
-      <PageHeader style={"pt-30 px-8"} title="Мои вишлисты" right={<WishlistCreateButton />} />
+    <main className="pt-30 px-8">
+      <PageHeader style={"mb-5"} title="Мои вишлисты" left={<BackButton />} right={permissions.canAdd && <WishlistCreateButton />} />
       <WishlistList userId={user?.id} permissions={permissions} />
     </main>
   );

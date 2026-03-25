@@ -32,7 +32,7 @@ function WishlistPage() {
         title={activeWishlist.title}
         subtitle={activeWishlist.description}
         left={<BackButton />}
-        right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
+        right={permissions.canAdd && <WishlistItemCreateButton wishlistId={activeWishlist.id} />}
       />
       <WishlistItemList wishlist={activeWishlist} permissions={permissions} />
     </main>

@@ -1,7 +1,7 @@
 import { ROUTES } from "@/shared/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from "@/shared/ui/kit/dropdown-menu";
-import { Bell, Handshake, House, LogOut } from "lucide-react";
+import { Bell, House, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { Badge } from "../kit/badge";
@@ -31,22 +31,14 @@ export function AppHeader() {
   return (
     <header className="absolute bg-white top-4 left-8 right-8 rounded-full shadow py-3 px-2.5 flex items-center">
       <p className="font-extrabold ms-4">WISHEEE</p>
-      <div className="ml-auto flex items-center gap-10">
+      <div className="ml-auto flex items-center gap-5">
         <Button variant="link" className="cursor-pointer p-0">
           <Link to={ROUTES.HOME} className="flex items-center gap-1">
             <House />
-            Моя страница
           </Link>
         </Button>
 
-        <Button variant="link" className="cursor-pointer p-0">
-          <Link to={ROUTES.FRIENDS} className="flex items-center gap-1">
-            <Handshake />
-            Друзья
-          </Link>
-        </Button>
-
-        <Button asChild variant="link" className="p-0 flex items-center gap-1">
+        <Button variant="link" className="p-0 flex items-center gap-1">
           <Link to={ROUTES.NOTIFICATIONS}>
             {unreadCount !== 0 && (
               <Badge variant="secondary" className="text-[11px]">
@@ -54,7 +46,6 @@ export function AppHeader() {
               </Badge>
             )}
             {unreadCount === 0 && <Bell />}
-            Уведомления
           </Link>
         </Button>
 

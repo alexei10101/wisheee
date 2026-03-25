@@ -6,11 +6,13 @@ import App from "../app";
 import { ProtectedLayout } from "./layouts/protected.layout";
 import { PublicLayout } from "./layouts/public.layout";
 
-const HomePageLazy = lazy(() => import("../../pages/home.page"));
 const LoginPageLazy = lazy(() => import("../../pages/auth/login.page"));
 const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
-const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
+
+const HomePageLazy = lazy(() => import("../../pages/home.page"));
+const WishlistsPageLazy = lazy(() => import("../../pages/wishlists.page"));
 const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
+const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 const NotificationsPage = lazy(() => import("../../pages/notifications.page"));
 const UsersPage = lazy(() => import("../../pages/users.page"));
 
@@ -27,6 +29,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: HomePageLazy },
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
+          { path: ROUTES.WISHLISTS, Component: WishlistsPageLazy },
           { path: ROUTES.WISHLIST, Component: WishlistPageLazy },
           { path: ROUTES.NOTIFICATIONS, Component: NotificationsPage },
           { path: ROUTES.USERS, Component: UsersPage },
