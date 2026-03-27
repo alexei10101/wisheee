@@ -1,14 +1,17 @@
 import { useAuth } from "@/entities/user/model/use-auth";
-import { useCreateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
+import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import { useCreateWishlistItemWithImage } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { useWishlist, useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
+import { Label } from "@/shared/ui/kit/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { memo } from "react";
+import { X } from "lucide-react";
+import { memo, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
@@ -25,6 +28,7 @@ const wishlistItemSchema = z.object({
   description: z.string(),
   link: z.string(),
   price: z.number(),
+  image: z.union([z.instanceof(File), z.null()]).optional(),
 });
 
 export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
@@ -32,7 +36,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
   const { data: activeWishlist } = useWishlist(wishlistId);
   const { data: wishlists } = useWishlists(user?.id);
 
-  const createWishlistItem = useCreateWishlistItem();
+  const createWishlistItem = useCreateWishlistItemWithImage(user?.id);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistItemSchema),
@@ -42,6 +46,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
       description: "",
       link: "",
       price: 0,
+      image: null,
     },
   });
 
@@ -53,22 +58,34 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
   const handleCreate = async () => {
     if (!user?.id || !form.getValues("wishlist_id")) return;
 
-    const data = {
+    const data: Omit<WishlistItem, "id" | "image_url"> = {
       wishlist_id: form.getValues("wishlist_id"),
       title: form.getValues("title"),
       description: form.getValues("description"),
       link: form.getValues("link"),
       price: Number(form.getValues("price")) ?? 0,
     };
+    const file = form.getValues("image");
 
     try {
-      createWishlistItem.mutateAsync({ data });
+      await createWishlistItem?.mutateAsync({ data, file });
     } catch (error) {
-      console.log(error);
+      console.log("Ошибка создания карточки: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {
       closeDialog();
     }
   };
+
+  const imageFile = form.watch("image");
+  const previewUrl = imageFile instanceof File ? URL.createObjectURL(imageFile) : imageFile === null ? null : user?.avatar_url;
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return (
     <Dialog
@@ -162,13 +179,64 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
                 </Field>
               )}
             />
+            <Controller
+              name="image"
+              control={form.control}
+              render={({ field }) => {
+                const file: File | null = field.value ?? null;
+                const previewUrl = file ? URL.createObjectURL(file) : null;
+
+                return (
+                  <Field className="w-full relative group">
+                    <Label className="cursor-pointer block w-full">
+                      <span className="block mb-2 ml-0.5">Выберите изображение</span>
+
+                      {previewUrl ? (
+                        <img src={previewUrl} className="w-full h-48 object-cover rounded-xl" />
+                      ) : (
+                        <div className="w-full h-48 rounded-xl border border-dashed flex items-center justify-center text-sm text-muted-foreground">
+                          PNG, JPEG или WEBP
+                        </div>
+                      )}
+
+                      <Input
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpeg, image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          field.onChange(file);
+                        }}
+                      />
+                    </Label>
+
+                    {file && (
+                      <Button
+                        className="absolute bottom-0 right-2 opacity-0 group-hover:opacity-100"
+                        type="button"
+                        variant="default"
+                        size="sm"
+                        onClick={() => {
+                          field.onChange(null);
+                          const input = document.querySelector('input[type="file"]') as HTMLInputElement | null;
+                          if (input) input.value = "";
+                        }}>
+                        <X />
+                      </Button>
+                    )}
+                  </Field>
+                );
+              }}
+            />
           </form>
 
           <DialogFooter>
             <Button variant="outline" className="w-26" onClick={closeDialog}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-item-create-form" className="w-26">
+            <Button type="submit" form="wishlist-item-create-form" className="w-26" disabled={createWishlistItem.isPending}>
               Сохранить
             </Button>
           </DialogFooter>

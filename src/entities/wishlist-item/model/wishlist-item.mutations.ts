@@ -9,7 +9,7 @@ export const useCreateWishlistItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ data }: { data: Omit<WishlistItem, "id"> }) => {
+    mutationFn: async ({ data }: { data: Omit<WishlistItem, "id" | "image_url"> }) => {
       const result = await wishlistItemService.create(data);
       return unwrap(result);
     },
@@ -61,6 +61,39 @@ export const useUpdateWishlistItem = () => {
           wishlist_items: old.wishlist_items.map((w) => (w.id === updated.id ? updated : w)),
         };
       });
+    },
+  });
+};
+
+export const useCreateWishlistItemWithImage = (userId?: string) => {
+  const createItem = useCreateWishlistItem();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ data, file }: { data: Omit<WishlistItem, "id" | "image_url">; file?: File | null }) => {
+      const created = await createItem.mutateAsync({ data });
+
+      if (file && userId) {
+        const upload = await wishlistItemService.uploadImage(userId, created.id, file);
+
+        const { publicUrl } = unwrap(upload);
+
+        await wishlistItemService.update({
+          id: created.id,
+          image_url: publicUrl,
+        });
+
+        queryClient.setQueryData(wishlistKeys.detail(data.wishlist_id), (old: WishlistWithItems | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            wishlist_items: old.wishlist_items.map((i) => (i.id === created.id ? { ...i, image_url: publicUrl } : i)),
+          };
+        });
+      }
+
+      return created;
     },
   });
 };

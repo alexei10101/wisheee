@@ -20,19 +20,11 @@ export const WishlistItemCard = memo(function ({ wishlistItem, permissions, hand
         if (target.closest("button")) return;
         handleUpdate && handleUpdate(wishlistItem.id);
       }}>
-      {/* Image */}
-      {/* <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0">
-        {wishlistItem.imageUrl ? (
-          <img src={imageUrl} alt={wishlistItem.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No Image</div>
-        )}
-      </div> */}
       <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0">
+        {wishlistItem.image_url && <img src={wishlistItem.image_url} className="object-cover" />}
         <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No Image</div>
       </div>
 
-      {/* Content */}
       <div className="flex flex-col justify-between flex-1 min-w-0">
         <div>
           <h3 className="font-semibold text-base truncate max-w-[90%]">{wishlistItem.title}</h3>
@@ -44,7 +36,6 @@ export const WishlistItemCard = memo(function ({ wishlistItem, permissions, hand
           <p className="absolute bottom-1 right-5 text-muted-foreground text-[12px]">≈{wishlistItem.price.toLocaleString()} ₽</p>
         )}
 
-        {/* Action */}
         {permissions.canDelete && (
           <Button
             className="absolute top-1 right-1"
