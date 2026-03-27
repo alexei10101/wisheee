@@ -17,4 +17,7 @@ export const wishlistItemRepository = {
   getPublicUrl(filePath: string) {
     return supabase.storage.from("wishlist-images").getPublicUrl(filePath);
   },
+  async removeImage(path: string) {
+    return supabase.storage.from("wishlist-images").remove([path]);
+  },
 };

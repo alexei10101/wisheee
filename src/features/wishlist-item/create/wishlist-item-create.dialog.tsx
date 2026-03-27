@@ -11,7 +11,7 @@ import { Label } from "@/shared/ui/kit/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
@@ -75,17 +75,6 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
       closeDialog();
     }
   };
-
-  const imageFile = form.watch("image");
-  const previewUrl = imageFile instanceof File ? URL.createObjectURL(imageFile) : imageFile === null ? null : user?.avatar_url;
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
 
   return (
     <Dialog

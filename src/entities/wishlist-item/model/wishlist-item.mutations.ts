@@ -27,8 +27,8 @@ export const useDeleteWishlistItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ wishlistItemId }: { wishlistId: string; wishlistItemId: string }) => {
-      const result = await wishlistItemService.delete(wishlistItemId);
+    mutationFn: async ({ wishlistItemId, userId }: { wishlistId: string; wishlistItemId: string; userId: string }) => {
+      const result = await wishlistItemService.delete(userId, wishlistItemId);
       return unwrap(result);
     },
     onSuccess: (_, variables) => {

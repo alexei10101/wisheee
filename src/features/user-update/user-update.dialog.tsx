@@ -80,6 +80,7 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
       }
 
       if (avatarValue === null) {
+        userService.removeAvatar(user.id);
         newData.avatar_url = null;
       }
 

@@ -26,10 +26,14 @@ export const userRepository = {
   async update(id: string, updateData: Pick<User, "username" | "avatar_url">) {
     return supabase.from("profiles").update(updateData).eq("id", id).select().single();
   },
+  
   async uploadAvatar(file: File, filePath: string) {
     return supabase.storage.from("avatars").upload(filePath, file, { upsert: true });
   },
   getPublicUrl(filePath: string) {
     return supabase.storage.from("avatars").getPublicUrl(filePath);
+  },
+  async removeAvatar(path: string) {
+    return supabase.storage.from("avatars").remove([path]);
   },
 };

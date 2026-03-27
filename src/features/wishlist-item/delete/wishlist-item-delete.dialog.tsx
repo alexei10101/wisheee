@@ -26,7 +26,7 @@ export const WishlistItemDeleteDialog = memo(function WishlistItemDeleteDialog({
     if (!user?.id) return;
 
     try {
-      deleteWishlistItem.mutateAsync({ wishlistId, wishlistItemId });
+      deleteWishlistItem.mutateAsync({ wishlistId, wishlistItemId, userId: user.id });
     } catch (error) {
       console.log(error);
     } finally {
