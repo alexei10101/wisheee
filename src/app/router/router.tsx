@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 import { ROUTES } from "@/shared/routes";
 import { lazy } from "react";
 import { TooltipProvider } from "@/shared/ui/kit/tooltip";
-import App from "../temp";
+import App from "../App";
 import { ProtectedLayout } from "./layouts/protected.layout";
 import { PublicLayout } from "./layouts/public.layout";
 
