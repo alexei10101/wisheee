@@ -107,7 +107,7 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
       onOpenChange={(value) => {
         if (!value) onClose();
       }}>
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent className="p-2 sm:p-6 sm:max-w-106.25">
         <DialogTitle>Изменение информации профиля</DialogTitle>
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>
         <form id="form" onSubmit={updateUserForm.handleSubmit(handleFormSubmit)} className="flex gap-4">
@@ -159,10 +159,10 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
           />
         </form>
         <DialogFooter>
-          <Button variant="outline" className="w-26" onClick={onClose}>
+          <Button variant="outline" className="sm:w-26" onClick={onClose}>
             Отмена
           </Button>
-          <Button type="submit" form="form" className="w-26">
+          <Button type="submit" form="form" className="sm:w-26">
             Сохранить
           </Button>
         </DialogFooter>

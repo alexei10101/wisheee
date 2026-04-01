@@ -22,3 +22,14 @@ export async function convertToWebp(file: File, maxWidth: number = 100): Promise
     type: "image/webp",
   });
 }
+
+export async function urlToFile(url: string, filename = "image.webp"): Promise<File> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch file");
+
+  const blob = await response.blob();
+
+  return new File([blob], filename, {
+    type: blob.type || "image/webp",
+  });
+}

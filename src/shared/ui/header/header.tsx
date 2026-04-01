@@ -29,16 +29,16 @@ export function AppHeader() {
   };
 
   return (
-    <header className="absolute bg-white top-4 left-8 right-8 rounded-full shadow py-3 px-2.5 flex items-center">
-      <p className="font-extrabold ms-4">WISHEEE</p>
-      <div className="ml-auto flex items-center gap-5">
-        <Button variant="link" className="cursor-pointer p-0">
+    <header className="absolute bg-white top-4 left-2 sm:left-8 right-2 sm:right-8 rounded-full shadow py-3 px-2.5 flex items-center">
+      <p className="font-extrabold ms-4 hidden sm:block">WISHEEE</p>
+      <div className="sm:ml-auto flex items-center gap-5 justify-between w-full sm:w-auto">
+        <Button variant="link" className="cursor-pointer p-0 hidden sm:flex">
           <Link to={ROUTES.HOME} className="flex items-center gap-1">
             <House />
           </Link>
         </Button>
 
-        <Button variant="link" className="p-0 flex items-center gap-1">
+        <Button variant="link" className="p-0  items-center gap-1 hidden sm:flex">
           <Link to={ROUTES.NOTIFICATIONS}>
             {unreadCount !== 0 && (
               <Badge variant="secondary" className="text-[11px]">
@@ -68,6 +68,25 @@ export function AppHeader() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <div className="flex gap-5 sm:hidden">
+          <Link to={ROUTES.HOME}>
+            <House size={26} />
+          </Link>
+
+          {unreadCount === 0 && (
+            <Link to={ROUTES.NOTIFICATIONS}>
+              <Bell />
+            </Link>
+          )}
+          {unreadCount !== 0 && (
+            <Badge asChild variant="secondary">
+              <Link to={ROUTES.NOTIFICATIONS}>
+                <div className="text-[13px]"> {unreadCount}</div>
+              </Link>
+            </Badge>
+          )}
+        </div>
       </div>
     </header>
   );

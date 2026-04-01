@@ -107,7 +107,7 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                   />
-                  <label htmlFor="wishlist-create-form-is-public" className="flex cursor-pointer">
+                  <label htmlFor="wishlist-create-form-is-public" className="flex flex-1 cursor-pointer">
                     Видят все
                   </label>
                 </div>
@@ -115,11 +115,11 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
             />
           </form>
 
-          <DialogFooter>
-            <Button variant="outline" className="w-26" onClick={closeDialog}>
+          <DialogFooter className="mt-3">
+            <Button variant="outline" className="sm:w-26" onClick={closeDialog}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-create-form" className="w-26" disabled={createWishlist.isPending}>
+            <Button type="submit" form="wishlist-create-form" className="sm:w-26" disabled={createWishlist.isPending}>
               Сохранить
             </Button>
           </DialogFooter>

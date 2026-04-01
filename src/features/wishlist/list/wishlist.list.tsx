@@ -8,6 +8,7 @@ import { WishlistDeleteDialog } from "../delete/wishlist-delete.dialog";
 import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { Spinner } from "@/shared/ui/kit/spinner";
 import { type Permissions } from "@/shared/lib/permissions";
+import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 
 type WishlistListProps = {
   permissions: Permissions;
@@ -20,6 +21,7 @@ type WishlistDialogState = { operation: "update"; wishlist: Wishlist } | { opera
 export const WishlistList = function WishlistList({ permissions, userId, style }: WishlistListProps) {
   const { data: wishlists, isLoading } = useWishlists(userId);
   const [dialog, setDialog] = useState<WishlistDialogState>({ operation: null });
+  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   const navigate = useNavigate();
   const onOpen = (id: string) => navigate(buildRoutes.wishlist(id));
@@ -42,6 +44,7 @@ export const WishlistList = function WishlistList({ permissions, userId, style }
               onDelete={() => setDialog({ operation: "delete", wishlistId: wishlist.id })}
               onOpen={onOpen}
               permissions={permissions}
+              isMobile={isMobile}
             />
           ))}
           {permissions.canUpdate && dialog.operation === "update" && (

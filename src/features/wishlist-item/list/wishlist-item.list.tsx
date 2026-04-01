@@ -1,10 +1,11 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { WishlistItemCard } from "@/entities/wishlist-item/ui/wishlist-item.card";
 import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
-import WishlistItemUpdateDialog from "../update/wishlist-item-update.dialog";
+import { WishlistItemUpdateDialog } from "../update/wishlist-item-update.dialog";
 import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog";
 import { useState } from "react";
 import type { Permissions } from "@/shared/lib/permissions";
+import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 
 type WishlistItemList = {
   permissions: Permissions;
@@ -19,6 +20,12 @@ type WishlistItemDialogState =
 
 export function WishlistItemList({ permissions, wishlist, style }: WishlistItemList) {
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
+  const isMobile = !useMediaQuery("(min-width: 640px)");
+
+  const onOpen = (link: string) => {
+    if (!link) return;
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <section className={style}>
@@ -31,6 +38,8 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
             permissions={permissions}
             handleDelete={permissions.canDelete ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
             handleUpdate={permissions.canUpdate ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
+            isMobile={isMobile}
+            onOpen={onOpen}
           />
         ))}
       </div>

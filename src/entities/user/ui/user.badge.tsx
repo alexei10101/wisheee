@@ -6,13 +6,14 @@ import { getInitials } from "@/shared/utils/get-initials";
 
 const sizeClasses = {
   sm: "w-8 h-8",
+  lg: "w-30 h-30",
   xl: "w-40 h-40",
 };
 
 type UserBadgeProps = {
   user: Pick<User, "username" | "avatar_url">;
   variant?: "vertical";
-  size?: "sm" | "xl";
+  size?: "sm" | "xl" | "lg";
 };
 
 export function UserBadge({ user, variant, size }: UserBadgeProps) {
@@ -25,11 +26,20 @@ export function UserBadge({ user, variant, size }: UserBadgeProps) {
             onError={(e) => (e.currentTarget.src = "/default-avatar.png")}
             className="object-cover"
           />
-          <AvatarFallback className="pb-1">{getInitials(user.username)}</AvatarFallback>
+          <AvatarFallback
+            className={cn(
+              "pb-1",
+              size === "lg" && "text-base sm:text-2xl md:text-3xl",
+              size === "xl" && "text-lg sm:text-3xl md:text-4xl",
+            )}>
+            {getInitials(user.username)}
+          </AvatarFallback>
         </Avatar>
       </ItemMedia>
       <ItemContent>
-        <ItemTitle className={`${variant === "vertical" && "text-3xl"}`}>{user?.username}</ItemTitle>
+        <ItemTitle className={cn(size === "lg" && "text-base sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
+          {user?.username.length < 13 && user?.username}
+        </ItemTitle>
       </ItemContent>
     </Item>
   );

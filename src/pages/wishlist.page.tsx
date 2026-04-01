@@ -26,14 +26,15 @@ function WishlistPage() {
   if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
 
   return (
-    <main className="bg-gray-100 min-h-screen px-8">
-      <PageHeader
-        style={"pt-30 mb-5"}
-        title={activeWishlist.title}
-        subtitle={activeWishlist.description}
-        left={<BackButton />}
-        right={permissions.canAdd && <WishlistItemCreateButton wishlistId={activeWishlist.id} />}
-      />
+    <main className="pt-25 sm:pt-30 px-2 sm:px-8 min-h-screen bg-gray-100">
+      <div className="mb-3 sm:mb-5">
+        <PageHeader
+          title={activeWishlist.title}
+          subtitle={activeWishlist.description}
+          left={<BackButton />}
+          right={permissions.canAdd && <WishlistItemCreateButton wishlistId={activeWishlist.id} />}
+        />
+      </div>
       <WishlistItemList wishlist={activeWishlist} permissions={permissions} />
     </main>
   );

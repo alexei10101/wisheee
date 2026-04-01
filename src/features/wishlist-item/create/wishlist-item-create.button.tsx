@@ -8,7 +8,7 @@ export function WishlistItemCreateButton({ wishlistId }: { wishlistId: string })
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} className="w-full sm:w-auto">
         Добавить желание <DiamondPlus />
       </Button>
       <WishlistItemCreateDialog wishlistId={wishlistId} open={open} onClose={() => setOpen(false)} />

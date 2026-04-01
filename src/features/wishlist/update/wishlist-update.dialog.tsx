@@ -97,7 +97,7 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
         <DialogCustomOverlay />
         <DialogCustomContent>
           <DialogHeader className="pb-7">
-            <DialogTitle className="font-semibold">Изменение вишлиста</DialogTitle>
+            <DialogTitle className="font-semibold">Редактирование вишлиста</DialogTitle>
             <DialogDescription className="text-sm text-gray-800">Вы можете изменить информацию о вишлисте</DialogDescription>
           </DialogHeader>
           {wishlist && (
@@ -149,11 +149,11 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
             </form>
           )}
 
-          <DialogFooter>
-            <Button variant="outline" className="w-26" onClick={() => onClose()}>
+          <DialogFooter className="mt-3">
+            <Button variant="outline" className="sm:w-26" onClick={() => onClose()}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-edit-form" className="w-26">
+            <Button type="submit" form="wishlist-edit-form" className="sm:w-26">
               Сохранить
             </Button>
           </DialogFooter>

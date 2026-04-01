@@ -91,7 +91,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
             <DialogDescription className="text-sm text-gray-800">Заполните данные для нового подарка</DialogDescription>
           </DialogHeader>
 
-          <form id="wishlist-item-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4 mb-5">
+          <form id="wishlist-item-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4 mb-5 ">
             <Controller
               name="title"
               control={form.control}
@@ -203,9 +203,9 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
 
                     {file && (
                       <Button
-                        className="absolute bottom-0 right-2 opacity-0 group-hover:opacity-100"
+                        className="-my-3 sm:my-auto sm:absolute sm:bottom-0 sm:opacity-0 group-hover:opacity-100"
                         type="button"
-                        variant="default"
+                        variant="secondary"
                         size="sm"
                         onClick={() => {
                           field.onChange(null);
@@ -222,10 +222,10 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
           </form>
 
           <DialogFooter>
-            <Button variant="outline" className="w-26" onClick={closeDialog}>
+            <Button variant="outline" className="w-full sm:w-26" onClick={closeDialog}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-item-create-form" className="w-26" disabled={createWishlistItem.isPending}>
+            <Button type="submit" form="wishlist-item-create-form" className="w-full sm:w-26" disabled={createWishlistItem.isPending}>
               Сохранить
             </Button>
           </DialogFooter>

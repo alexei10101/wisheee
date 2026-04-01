@@ -49,11 +49,11 @@ export const WishlistItemDeleteDialog = memo(function WishlistItemDeleteDialog({
               Безвозвратно удалить подарок
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="pt-4">
-            <Button variant="outline" className="w-26" onClick={onClose}>
+          <DialogFooter className="mt-3">
+            <Button variant="outline" className="sm:w-26" onClick={onClose}>
               Отмена
             </Button>
-            <Button type="button" className="w-26" onClick={handleDelete}>
+            <Button type="button" className="sm:w-26" onClick={handleDelete}>
               Удалить
             </Button>
           </DialogFooter>

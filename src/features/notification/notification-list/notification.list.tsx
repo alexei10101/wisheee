@@ -38,19 +38,16 @@ export function NotificationList({ userId, notifications }: NotificationListProp
 
   if (!userId) return null;
   return (
-    <>
-      <div className="flex items-center gap-3 mb-4"></div>
-      <ItemGroup className="gap-4">
-        {notifications?.map((n) => (
-          <NotificationCard
-            key={n.id}
-            userId={userId}
-            notification={n}
-            onAccept={() => handleAcceptingRequest(n.sender_id, n.entity_id)}
-            onReject={() => handleRejectingRequest(n.sender_id, n.entity_id)}
-          />
-        ))}
-      </ItemGroup>
-    </>
+    <ItemGroup className="gap-4">
+      {notifications?.map((n) => (
+        <NotificationCard
+          key={n.id}
+          userId={userId}
+          notification={n}
+          onAccept={() => handleAcceptingRequest(n.sender_id, n.entity_id)}
+          onReject={() => handleRejectingRequest(n.sender_id, n.entity_id)}
+        />
+      ))}
+    </ItemGroup>
   );
 }

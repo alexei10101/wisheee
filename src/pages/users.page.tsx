@@ -25,15 +25,16 @@ function UsersPage() {
   if (isError) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
 
   return (
-    <main className="bg-gray-100 min-h-screen px-8">
-      <PageHeader
-        style={"pt-30 mb-5"}
-        title={`Вишлисты пользователя ${user?.username}`}
-        left={<BackButton />}
-        // right - add to frined or friend yet
-        // right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
-        user={<UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} />}
-      />
+    <main className="bg-gray-100 min-h-screen px-2 sm:px-8 pt-25 sm:pt-30">
+      <div className="mb-3 sm:mb-5">
+        <PageHeader
+          title={`Вишлисты пользователя ${user?.username}`}
+          left={<BackButton />}
+          // right - add to frined or friend yet
+          // right={<WishlistItemCreateButton wishlistId={activeWishlist.id} />}
+          user={<UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} />}
+        />
+      </div>
       {userId && <WishlistList userId={userId} permissions={permissions} />}
     </main>
   );

@@ -3,17 +3,14 @@ import { UserInfo } from "@/features/user-info/user-info";
 
 function HomePage() {
   const { user, loading } = useAuth();
-
+// TODO loader
   if (loading) return <div>load</div>;
 
   return (
-    <main className="pt-30 px-8 flex justify-center">
+    <main className="pt-25 sm:pt-30 px-8 flex justify-center h-full">
       <UserInfo user={user} />
     </main>
   );
 }
-
-// мои вишлисты
-// забронированные подарки
 
 export default HomePage;

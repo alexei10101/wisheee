@@ -11,25 +11,25 @@ type UserInfoProps = {
 
 export function UserInfo({ user }: UserInfoProps) {
   return (
-    <div className="flex gap-5">
-      <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} variant="vertical" size="xl" />
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
+      <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} variant="vertical" size="lg" />
 
-      <div className="flex flex-col text-xl mt-3">
-        <Button variant="link" className="justify-start cursor-pointer p-0">
+      <div className="flex flex-col text-xl mt-3 items-center sm:items-start">
+        <Button variant="link" className="cursor-pointer p-0">
           <Link to={ROUTES.WISHLISTS} className="flex items-center gap-1">
             <ScrollText />
             Вишлисты
           </Link>
         </Button>
 
-        <Button variant="link" className="justify-start cursor-pointer p-0">
+        <Button variant="link" className="cursor-pointer p-0">
           <Link to={ROUTES.FRIENDS} className="flex items-center gap-1">
             <Handshake />
             Друзья
           </Link>
         </Button>
 
-        <Button variant="link" className="justify-start cursor-pointer p-0">
+        <Button variant="link" className="cursor-pointer p-0">
           <Link to={"/"} className="flex items-center gap-1">
             <Gem />
             Забронированные подарки

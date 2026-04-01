@@ -43,7 +43,7 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
         <ItemTitle className={cn(variant === "thin" && "leading-6.5")}>{user.username}</ItemTitle>
         <ItemDescription hidden={true}></ItemDescription>
       </ItemContent>
-      <ItemActions className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+      <ItemActions className="ml-auto sm:opacity-0 group-hover:opacity-100 transition-opacity">
         {variant === "default" && (
           <div>
             <Button className="absolute right-2 -translate-y-4" variant="ghost">
@@ -52,11 +52,13 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
           </div>
         )}
         {variant === "thin" && (
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button size="sm" className="absolute right-2 -translate-y-4" variant="ghost" onClick={onAddFriend}>
-              <Plus />
-            </Button>
-          </div>
+          <Button
+            size="sm"
+            className="absolute right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+            variant="ghost"
+            onClick={onAddFriend}>
+            <Plus />
+          </Button>
         )}
       </ItemActions>
     </Item>

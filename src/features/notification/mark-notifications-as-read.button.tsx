@@ -19,9 +19,12 @@ export function MarkNotificationsAsRead({ userId }: MarkNotificationsAsReadProps
   };
 
   return (
-    <Button disabled={markAsRead.isPending} onClick={handleMarkAllAsRead} className="flex items-center gap-2 disabled:opacity-50">
-      <CheckCheck className="w-4 h-4" />
-      Отметить как прочитанное
+    <Button
+      disabled={markAsRead.isPending}
+      onClick={handleMarkAllAsRead}
+      className="flex items-center gap-2 disabled:opacity-50 w-full sm:w-auto">
+      <CheckCheck className="sm:w-4 sm:h-4" />
+      Отметить все как прочитанные
     </Button>
   );
 }

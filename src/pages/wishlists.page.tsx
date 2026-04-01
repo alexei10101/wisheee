@@ -12,8 +12,10 @@ function WishlistsPage() {
   const permissions = getPermissions(relation);
 
   return (
-    <main className="pt-30 px-8">
-      <PageHeader style={"mb-5"} title="Мои вишлисты" left={<BackButton />} right={permissions.canAdd && <WishlistCreateButton />} />
+    <main className="pt-25 sm:pt-30 px-2 sm:px-8">
+      <div className="mb-3 sm:mb-5">
+        <PageHeader title="Мои вишлисты" left={<BackButton />} right={permissions.canAdd && <WishlistCreateButton />} />
+      </div>
       <WishlistList userId={user?.id} permissions={permissions} />
     </main>
   );

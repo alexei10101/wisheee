@@ -10,13 +10,11 @@ function NotificationPage() {
   const { data: notifications } = useNotifications(user?.id);
 
   return (
-    <main className="bg-gray-100 min-h-screen px-8">
-      <PageHeader
-        style={"pt-30 mb-5"}
-        title="Мои уведомления"
-        left={<BackButton />}
-        right={<MarkNotificationsAsRead userId={user?.id} />}
-      />
+    <main className="bg-gray-100 min-h-screen pt-25 sm:pt-30 px-2 sm:px-8">
+      <div className="mb-3 sm:mb-5">
+        <PageHeader title="Мои уведомления" left={<BackButton />} right={<MarkNotificationsAsRead userId={user?.id} />} />
+      </div>
+
       <NotificationList userId={user?.id} notifications={notifications ?? []} />
     </main>
   );

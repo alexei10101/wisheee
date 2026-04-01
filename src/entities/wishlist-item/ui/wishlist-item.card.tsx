@@ -1,50 +1,98 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import type { Permissions } from "@/shared/lib/permissions";
 import { Button } from "@/shared/ui/kit/button";
-import { X } from "lucide-react";
-import { memo } from "react";
+import { Pencil, Trash } from "lucide-react";
+import { memo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 
 type WishlistItemProps = {
   wishlistItem: WishlistItem;
   permissions: Permissions;
-  handleDelete?: (id: WishlistItem["id"]) => void;
-  handleUpdate?: (id: WishlistItem["id"]) => void;
+  handleDelete?: (id: string) => void;
+  handleUpdate?: (id: string) => void;
+  isMobile: boolean;
+  onOpen: (link: string) => void;
 };
 
-export const WishlistItemCard = memo(function ({ wishlistItem, permissions, handleDelete, handleUpdate }: WishlistItemProps) {
+export const WishlistItemCard = memo(function ({
+  wishlistItem,
+  permissions,
+  handleDelete,
+  handleUpdate,
+  isMobile,
+  onOpen,
+}: WishlistItemProps) {
+  const [opened, setOpened] = useState(false);
+  const wasDragging = useRef(false);
+
   return (
-    <div
-      className="rounded-2xl border bg-card shadow-sm p-4 flex gap-4 relative w-100 cursor-pointer"
-      onClick={(e: React.MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (target.closest("button")) return;
-        handleUpdate && handleUpdate(wishlistItem.id);
-      }}>
-      <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0">
-        {wishlistItem.image_url && <img src={wishlistItem.image_url} className="object-cover" />}
-        <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">No Image</div>
-      </div>
-
-      <div className="flex flex-col justify-between flex-1 min-w-0">
-        <div>
-          <h3 className="font-semibold text-base truncate max-w-[90%]">{wishlistItem.title}</h3>
-
-          {wishlistItem.description && <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{wishlistItem.description}</p>}
-        </div>
-
-        {wishlistItem.price !== 0 && (
-          <p className="absolute bottom-1 right-5 text-muted-foreground text-[12px]">≈{wishlistItem.price.toLocaleString()} ₽</p>
-        )}
-
-        {permissions.canDelete && (
-          <Button
-            className="absolute top-1 right-1"
-            variant="ghost"
-            onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined}>
-            <X />
+    <div className="relative w-full sm:max-w-2xl overflow-hidden">
+      {isMobile && permissions.canUpdate && permissions.canDelete && (
+        <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
+          <Button variant="ghost" onClick={handleUpdate ? () => handleUpdate(wishlistItem.id) : undefined} className="hover:bg-white">
+            <Pencil />
           </Button>
-        )}
-      </div>
+          <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined} className="hover:bg-white">
+            <Trash />
+          </Button>
+        </div>
+      )}
+
+      <motion.div
+        drag={isMobile && permissions.canDelete && permissions.canUpdate ? "x" : false}
+        dragConstraints={{ left: -72, right: 0 }}
+        dragElastic={0.1}
+        dragSnapToOrigin
+        onDragStart={() => {
+          wasDragging.current = true;
+        }}
+        onDragEnd={(_, info) => {
+          setTimeout(() => {
+            wasDragging.current = false;
+          }, 0);
+
+          if (info.offset.x < -30) setOpened(true);
+          else setOpened(false);
+        }}
+        animate={{ x: opened ? -72 : 0 }}
+        transition={{ type: "spring", stiffness: 200, damping: 30 }}>
+        <Item
+          variant="outline"
+          className="rounded-xl sm:rounded-2xl bg-card shadow-sm p-0 sm:p-4 flex sm:gap-4 relative sm:w-100 cursor-pointer"
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.closest("button")) return;
+            if (wasDragging.current) return;
+            if (!opened) onOpen(wishlistItem.link);
+            else setOpened(false);
+          }}>
+          <ItemMedia className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0 -mt-1">
+            {wishlistItem.image_url && <img src={wishlistItem.image_url} className="object-cover" />}
+            {!wishlistItem.image_url && (
+              <div className="w-full h-full flex items-center text-xs text-center text-muted-foreground">Нет изображения</div>
+            )}
+          </ItemMedia>
+          <ItemContent className="flex flex-col gap-0 sm:gap-3 w-full sm:max-w-1/2 self-start">
+            <ItemTitle className="font-semibold text-base">{wishlistItem.title}</ItemTitle>
+            <ItemDescription className="text-sm text-muted-foreground">{wishlistItem.description?.trim() || `\u00A0`}</ItemDescription>
+            {wishlistItem.price !== 0 && (
+              <p className="absolute bottom-1 right-2 text-muted-foreground text-[12px]">≈{wishlistItem.price.toLocaleString()} ₽</p>
+            )}
+          </ItemContent>
+
+          {!isMobile && permissions.canUpdate && permissions.canDelete && (
+            <ItemActions className="ml-auto hidden sm:flex">
+              <Button variant="ghost" onClick={handleUpdate ? () => handleUpdate(wishlistItem.id) : undefined}>
+                <Pencil />
+              </Button>
+              <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined}>
+                <Trash />
+              </Button>
+            </ItemActions>
+          )}
+        </Item>
+      </motion.div>
     </div>
   );
 });

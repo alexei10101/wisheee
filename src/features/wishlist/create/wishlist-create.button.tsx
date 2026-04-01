@@ -8,7 +8,7 @@ export function WishlistCreateButton() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} className="w-full">
         Добавить вишлист <DiamondPlus />
       </Button>
       <WishlistCreateDialog open={open} onClose={() => setOpen(false)} />
