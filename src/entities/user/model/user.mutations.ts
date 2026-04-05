@@ -27,10 +27,13 @@ export const useSignUp = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ email, password }: { email: string; password: string }) => {
-      const { data, error } = await authRepository.signUp(email, password);
+    mutationFn: async ({ email, username, password }: { email: string; username: string; password: string }) => {
+      const { data: authData, error } = await authRepository.signUp(email, password);
       if (error) throw error;
-      return data;
+      if (!authData.user?.id) throw Error("No id");
+      const { error: addUsernameError } = await userRepository.update(authData.user.id, { username, avatar_url: "" });
+      if (addUsernameError) console.log(addUsernameError);
+      return authData;
     },
     onSuccess: (data) => {
       const userId = data.session?.user?.id;

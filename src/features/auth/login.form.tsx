@@ -37,14 +37,14 @@ export function LoginForm() {
   });
 
   return (
-    <form id="auth-form" className="flex flex-col gap-4" onSubmit={handleLogin}>
+    <form id="auth-form" className="flex flex-col gap-1 sm:gap-4" onSubmit={handleLogin}>
       <Controller
         name="email"
         control={form.control}
         render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-login">Email</FieldLabel>
-            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="test@gmail.com" autoComplete="off" />
+            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="name@example.com" autoComplete="off" />
             {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
           </Field>
         )}
@@ -53,7 +53,7 @@ export function LoginForm() {
         name="password"
         control={form.control}
         render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-password">Пароль</FieldLabel>
             <Input
               {...field}
@@ -68,7 +68,7 @@ export function LoginForm() {
         )}
       />
 
-      <Button type="submit" disabled={login.isPending}>
+      <Button type="submit" disabled={login.isPending} className="mt-2">
         {login.isPending ? <Spinner /> : "Войти"}
       </Button>
 

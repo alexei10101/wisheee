@@ -11,6 +11,7 @@ import { useSignUp } from "@/entities/user/model/user.mutations";
 const signupSchema = z
   .object({
     email: z.email("Введите корректный email"),
+    username: z.string().min(1, "Добавьте имя пользователя"),
     password: z.string().min(8, "Пароль должен состоять из 8 символов").max(8, "Пароль должен состоять из 8 символов"),
     repeatPassword: z.string().min(1, "Подтвердите пароль"),
   })
@@ -24,6 +25,7 @@ export function SignupForm() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
+      username: "",
       password: "",
       repeatPassword: "",
     },
@@ -44,14 +46,25 @@ export function SignupForm() {
   });
 
   return (
-    <form id="auth-form" className="flex flex-col gap-4" onSubmit={handleSignUp}>
+    <form id="auth-form" className="flex flex-col gap-1 sm:gap-4" onSubmit={handleSignUp}>
       <Controller
         name="email"
         control={form.control}
         render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-email">Email</FieldLabel>
-            <Input {...field} id="auth-form-email" aria-invalid={fieldState.invalid} placeholder="test@gmail.com" autoComplete="off" />
+            <Input {...field} id="auth-form-email" aria-invalid={fieldState.invalid} placeholder="name@example.com" autoComplete="off" />
+            {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Controller
+        name="username"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
+            <FieldLabel htmlFor="auth-form-username">Имя пользователя</FieldLabel>
+            <Input {...field} id="auth-form-username" aria-invalid={fieldState.invalid} placeholder="Иван Иванов" autoComplete="off" />
             {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
           </Field>
         )}
@@ -60,7 +73,7 @@ export function SignupForm() {
         name="password"
         control={form.control}
         render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-password">Пароль</FieldLabel>
             <Input
               {...field}
@@ -78,7 +91,7 @@ export function SignupForm() {
         name="repeatPassword"
         control={form.control}
         render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
+          <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-repeat-password">Подтвердите пароль</FieldLabel>
             <Input
               {...field}
@@ -93,7 +106,7 @@ export function SignupForm() {
         )}
       />
 
-      <Button type="submit" disabled={signUp.isPending}>
+      <Button type="submit" disabled={signUp.isPending} className="mt-2">
         {signUp.isPending ? <Spinner /> : "Зарегистрироваться"}
       </Button>
 

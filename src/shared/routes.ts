@@ -1,6 +1,8 @@
 export const ROUTES = {
   REGISTER: "/signup",
   LOGIN: "/login",
+  CHECK_EMAIL: "/check-email",
+
   HOME: "/",
   WISHLISTS: "/wishlists",
   FRIENDS: "/friends",

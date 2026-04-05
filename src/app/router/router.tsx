@@ -8,6 +8,7 @@ import { PublicLayout } from "./layouts/public.layout";
 
 const LoginPageLazy = lazy(() => import("../../pages/auth/login.page"));
 const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
+const CheckEmailPageLazy = lazy(() => import("../../pages/auth/check-email.page"));
 
 const HomePageLazy = lazy(() => import("../../pages/home.page"));
 const WishlistsPageLazy = lazy(() => import("../../pages/wishlists.page"));
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
         children: [
           { path: ROUTES.LOGIN, Component: LoginPageLazy },
           { path: ROUTES.REGISTER, Component: SignupPageLazy },
+          { path: ROUTES.CHECK_EMAIL, Component: CheckEmailPageLazy },
         ],
       },
     ],

@@ -7,7 +7,7 @@ function SignupPage() {
   return (
     <AuthLayout
       title="Регистрация в системе"
-      description="Введите ваш email и пароль для регистрации в системе"
+      description="Введите ваши данные для регистрации в системе"
       form={<SignupForm />}
       footerText={
         <>

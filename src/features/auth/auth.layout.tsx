@@ -13,8 +13,8 @@ export function AuthLayout({
   footerText: React.ReactNode;
 }) {
   return (
-    <main className="grow flex flex-col pt-50 items-center">
-      <Card className="w-full max-w-100">
+    <main className="p-2 min-h-screen sm:h-auto flex justify-center items-center">
+      <Card className="w-full sm:max-w-100 gap-2">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
