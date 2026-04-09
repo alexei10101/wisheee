@@ -7,6 +7,8 @@ import { Button } from "@/shared/ui/kit/button";
 import { useState } from "react";
 import { Spinner } from "@/shared/ui/kit/spinner";
 import { useSignUp } from "@/entities/user/model/user.mutations";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/shared/routes";
 
 const signupSchema = z
   .object({
@@ -33,12 +35,14 @@ export function SignupForm() {
 
   const signUp = useSignUp();
   const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSignUp = form.handleSubmit(async (data: z.infer<typeof signupSchema>) => {
     setError("");
 
     try {
       await signUp.mutateAsync(data);
+      navigate(ROUTES.CHECK_EMAIL);
     } catch (error) {
       // TODO: sonner and console
       setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка"));
