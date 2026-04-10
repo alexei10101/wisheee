@@ -5,6 +5,7 @@ import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
+import { Skeleton } from "@/shared/ui/kit/skeleton";
 
 function NotificationPage() {
   const { data: user, isLoading: userIsLoading } = useCurrentUser();
@@ -16,8 +17,17 @@ function NotificationPage() {
       <div className="mb-3 sm:mb-5">
         <PageHeader title="Мои уведомления" left={<BackButton />} right={<MarkNotificationsAsRead userId={user?.id} />} />
       </div>
-
-      <NotificationList userId={user?.id} notifications={notifications ?? []} />
+      {notificationsIsLoading ? (
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-62.5" />
+            <Skeleton className="h-4 w-50" />
+          </div>
+        </div>
+      ) : (
+        <NotificationList userId={user?.id} notifications={notifications ?? []} />
+      )}
     </main>
   );
 }
