@@ -1,12 +1,12 @@
 import { memo } from "react";
 import { UserCard } from "@/entities/user/ui/user.card";
-import { useAuth } from "@/entities/user/model/use-auth";
 import { useFriends } from "@/entities/friend/model/friend.queries";
 import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 
 export const FriendList = memo(function () {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const { data: friends, isLoading } = useFriends(user?.id);
 
   const navigate = useNavigate();

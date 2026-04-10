@@ -1,12 +1,12 @@
 import { PageHeader } from "@/shared/ui/page-header";
 import { WishlistCreateButton } from "@/features/wishlist/create/wishlist-create.button";
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
-import { useAuth } from "@/entities/user/model/use-auth";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
 import { BackButton } from "@/shared/ui/back.button";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 
 function WishlistsPage() {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
 
   const relation = getUserRelation({ viewerId: user?.id, ownerId: user?.id });
   const permissions = getPermissions(relation);

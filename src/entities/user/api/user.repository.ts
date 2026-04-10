@@ -23,10 +23,10 @@ export const userRepository = {
       .order("created_at", { foreignTable: "wishlists", ascending: false })
       .single();
   },
-  async update(id: string, updateData: Pick<User, "username" | "avatar_url">) {
+  async update(id: string, updateData: Pick<User, "username"> & { avatar_url: string | null }) {
     return supabase.from("profiles").update(updateData).eq("id", id).select().single();
   },
-  
+
   async uploadAvatar(file: File, filePath: string) {
     return supabase.storage.from("avatars").upload(filePath, file, { upsert: true });
   },

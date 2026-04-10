@@ -1,31 +1,12 @@
 import { ROUTES } from "@/shared/routes";
 import { Navigate, Outlet } from "react-router";
-import { Spinner } from "@/shared/ui/kit/spinner";
-import { Suspense } from "react";
-import { useAuth } from "@/entities/user/model/use-auth";
+import { useAuth } from "@/app/auth.context";
 
 function PublicRoute() {
-  const { session, appReady } = useAuth();
-
-  if (!appReady)
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-        <Spinner />
-      </div>
-    );
-
+  const { session } = useAuth();
   if (session) return <Navigate to={ROUTES.HOME} replace />;
 
-  return (
-    <Suspense
-      fallback={
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-          <Spinner />
-        </div>
-      }>
-      <Outlet />
-    </Suspense>
-  );
+  return <Outlet />;
 }
 
 export default PublicRoute;

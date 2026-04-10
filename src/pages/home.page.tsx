@@ -1,11 +1,13 @@
-import { useAuth } from "@/entities/user/model/use-auth";
+import { useAuth } from "@/app/auth.context";
+import { useUser } from "@/entities/user/model/user.queries";
 import { UserInfo } from "@/features/user-info/user-info";
+import { PageLoader } from "@/shared/ui/page-loader";
 
 function HomePage() {
-  const { user, loading } = useAuth();
-// TODO loader
-  if (loading) return <div>load</div>;
+  const { userId } = useAuth();
+  const { data: user, isLoading } = useUser(userId);
 
+  if (isLoading) return <PageLoader />;
   return (
     <main className="pt-25 sm:pt-30 px-8 flex justify-center h-full">
       <UserInfo user={user} />

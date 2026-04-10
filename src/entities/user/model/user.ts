@@ -3,7 +3,7 @@ import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 export type User = {
   id: string;
   username: string;
-  avatar_url: string | null;
+  avatar_url: string;
   friends: string[];
   wishlists: Wishlist[];
 };

@@ -6,6 +6,7 @@ import { memo } from "react";
 import type { User } from "../model/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 import { getInitials } from "@/shared/utils/get-initials";
+import { Skeleton } from "@/shared/ui/kit/skeleton";
 
 type UserCardProps = {
   variant: "default" | "thin";
@@ -31,11 +32,10 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
       )}>
       <ItemMedia>
         <Avatar className="size-7">
-          <AvatarImage
-            src={user?.avatar_url || "/default-avatar.png"}
-            onError={(e) => (e.currentTarget.src = "/default-avatar.png")}
-            className="object-cover"
-          />
+          <AvatarImage src={user.avatar_url} onError={(e) => (e.currentTarget.src = "/default-avatar.webp")} className="object-cover" />
+          <AvatarFallback>
+            <Skeleton className={`pb-1 w-7 h-7 rounded-full`} />
+          </AvatarFallback>
           <AvatarFallback className="pb-1">{getInitials(user.username)}</AvatarFallback>
         </Avatar>
       </ItemMedia>

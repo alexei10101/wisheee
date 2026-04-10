@@ -2,13 +2,13 @@ import { friendService } from "@/entities/friend/model/friend.service";
 import { Input } from "@/shared/ui/kit/input";
 import { useCallback, useEffect, useState } from "react";
 import type { FriendRequestMetadata } from "@/entities/request/friend-request/model/friend-request";
-import { useAuth } from "@/entities/user/model/use-auth";
 import type { User } from "@/entities/user/model/user";
 import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
 import { SearchList } from "../search-list/search.list";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 
 export function SearchUser() {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);

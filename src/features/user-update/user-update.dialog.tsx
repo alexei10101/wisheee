@@ -1,4 +1,4 @@
-import { useAuth } from "@/entities/user/model/use-auth";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import type { User } from "@/entities/user/model/user";
 import { useUpdateUser } from "@/entities/user/model/user.mutations";
 import { userService } from "@/entities/user/model/user.service";
@@ -25,7 +25,7 @@ const userSchema = z.object({
 });
 
 export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const updateUser = useUpdateUser();
 
   const updateUserForm = useForm<FormValues>({
@@ -61,7 +61,7 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
     const formValues = updateUserForm.getValues();
     const dirtyFields = updateUserForm.formState.dirtyFields;
 
-    const newData = {} as Pick<User, "username" | "avatar_url">;
+    const newData = {} as Pick<User, "username"> & { avatar_url: string | null };
     if (dirtyFields.username) {
       newData.username = formValues.username.trim();
     }
@@ -117,7 +117,7 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
             render={({ field }) => (
               <Field className="w-20">
                 <Label className="cursor-pointer relative group">
-                  <img src={previewUrl || "/default-avatar.png"} className="w-16 h-16 rounded-full object-cover" />
+                  <img src={previewUrl ?? "/default-avatar.webp"} className="w-16 h-16 rounded-full object-cover" />
                   <Input
                     type="file"
                     className="hidden"

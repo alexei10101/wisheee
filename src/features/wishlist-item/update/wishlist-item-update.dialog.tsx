@@ -11,10 +11,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { useAuth } from "@/entities/user/model/use-auth";
 import { urlToFile } from "@/shared/utils/convert-image";
 import { Label } from "@/shared/ui/kit/label";
 import { X } from "lucide-react";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 
 type WishlistItemUpdateDialogProps = {
   open: boolean;
@@ -37,7 +37,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   onClose,
   wishlistItem,
 }: WishlistItemUpdateDialogProps) {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const { data: wishlists } = useWishlists(user?.id);
   const updateWishlistItem = useUpdateWishlistItem();
 

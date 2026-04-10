@@ -1,4 +1,4 @@
-import { useAuth } from "@/entities/user/model/use-auth";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { useUser } from "@/entities/user/model/user.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
@@ -9,7 +9,7 @@ import { PageHeader } from "@/shared/ui/page-header";
 import { useParams } from "react-router";
 
 function UsersPage() {
-  const { user: hero } = useAuth();
+  const { data: hero } = useCurrentUser();
   const { userId } = useParams<{ userId: string }>();
   const { data: user, isLoading, isError } = useUser(userId);
 

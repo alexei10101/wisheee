@@ -60,7 +60,7 @@ export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, updateData }: { id: string; updateData: Pick<User, "username" | "avatar_url"> }) => {
+    mutationFn: async ({ id, updateData }: { id: string; updateData: Pick<User, "username"> & { avatar_url: string | null } }) => {
       const { data, error } = await userRepository.update(id, updateData);
       if (error) throw error;
       return data;
@@ -81,6 +81,7 @@ const prefetchUser = async (queryClient: QueryClient, userId: string) => {
       const { data, error } = await userRepository.get(userId);
       if (error) throw error;
       const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
+      if (!data.avatar_url) return { ...data, avatar_url: "/default-avatar.webp", friends: friendIds };
       return { ...data, friends: friendIds };
     },
   });

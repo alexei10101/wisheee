@@ -10,7 +10,7 @@ import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useAuth } from "@/entities/user/model/use-auth";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
 
 type WishlistUpdateDialogProps = {
   open: boolean;
@@ -26,7 +26,7 @@ const wishlistSchema = z.object({
 });
 
 export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const updateWishlist = useUpdateWishlist();
 
   const form = useForm<FormValues>({

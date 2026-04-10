@@ -3,8 +3,10 @@ import { ROUTES } from "@/shared/routes";
 import { lazy } from "react";
 import { TooltipProvider } from "@/shared/ui/kit/tooltip";
 import App from "../App";
-import { ProtectedLayout } from "./layouts/protected.layout";
-import { PublicLayout } from "./layouts/public.layout";
+import { AuthProvider } from "../auth.context";
+import ProtectedRoute from "./protected.route";
+import PublicRoute from "./public.route";
+import { RootLayout } from "./root.layout";
 
 const LoginPageLazy = lazy(() => import("../../pages/auth/login.page"));
 const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
@@ -21,12 +23,16 @@ const router = createBrowserRouter([
   {
     element: (
       <TooltipProvider>
-        <App />
+        <AuthProvider>
+          <RootLayout>
+            <App />
+          </RootLayout>
+        </AuthProvider>
       </TooltipProvider>
     ),
     children: [
       {
-        element: <ProtectedLayout />,
+        element: <ProtectedRoute />,
         children: [
           { index: true, Component: HomePageLazy },
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
@@ -37,7 +43,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        element: <PublicLayout />,
+        element: <PublicRoute />,
         children: [
           { path: ROUTES.LOGIN, Component: LoginPageLazy },
           { path: ROUTES.REGISTER, Component: SignupPageLazy },

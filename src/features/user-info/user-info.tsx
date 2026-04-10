@@ -2,6 +2,7 @@ import type { User } from "@/entities/user/model/user";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { ROUTES } from "@/shared/routes";
 import { Button } from "@/shared/ui/kit/button";
+import { Skeleton } from "@/shared/ui/kit/skeleton";
 import { Gem, Handshake, ScrollText } from "lucide-react";
 import { Link } from "react-router";
 
@@ -12,7 +13,7 @@ type UserInfoProps = {
 export function UserInfo({ user }: UserInfoProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
-      <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} variant="vertical" size="lg" />
+      {user ? <UserBadge user={{ username: user.username, avatar_url: user.avatar_url }} variant="vertical" size="lg" /> : <Skeleton />}
 
       <div className="flex flex-col text-xl mt-3 items-center sm:items-start">
         <Button variant="link" className="cursor-pointer p-0">

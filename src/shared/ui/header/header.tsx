@@ -5,16 +5,17 @@ import { Bell, House, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { Badge } from "../kit/badge";
-import { useAuth } from "@/entities/user/model/use-auth";
 import { useLogout } from "@/entities/user/model/user.mutations";
 import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
 import { useNotifications } from "@/entities/notification/model/notification.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
+import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { Skeleton } from "../kit/skeleton";
 
 export function AppHeader() {
-  const { user } = useAuth();
+  const { data: user, isLoading: userIsLoading } = useCurrentUser();
   const logout = useLogout();
-  const { data: notifications } = useNotifications(user?.id);
+  const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
 
   const unreadCount = notifications?.filter((n) => !n.is_read).length;
@@ -52,7 +53,14 @@ export function AppHeader() {
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>
             <div className="pe-5 cursor-pointer">
-              <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} />
+              {userIsLoading ? (
+                <div className="flex gap-2 items-center">
+                  <Skeleton className="w-8 h-8 rounded-full" />
+                  <Skeleton className="w-25 h-5" />
+                </div>
+              ) : (
+                <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} />
+              )}
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" align="center">
@@ -74,12 +82,13 @@ export function AppHeader() {
             <House size={26} />
           </Link>
 
-          {unreadCount === 0 && (
+          {notificationsIsLoading && <Skeleton className="w-7 h-7 rounded-full" />}
+          {unreadCount === 0 && !notificationsIsLoading && (
             <Link to={ROUTES.NOTIFICATIONS}>
               <Bell />
             </Link>
           )}
-          {unreadCount !== 0 && (
+          {unreadCount !== 0 && !notificationsIsLoading && (
             <Badge asChild variant="secondary">
               <Link to={ROUTES.NOTIFICATIONS}>
                 <div className="text-[13px]"> {unreadCount}</div>
