@@ -35,7 +35,7 @@ export const WishlistList = function WishlistList({ permissions, userId, style }
       )}
       {!isLoading && wishlists?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлистов пока нет</div>}
       {!isLoading && wishlists && userId && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 sm:gap-4">
           {wishlists.map((wishlist) => (
             <WishlistCard
               key={wishlist.id}

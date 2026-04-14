@@ -36,7 +36,7 @@ export const PageHeader = memo(function PageHeader({ left, title, subtitle, righ
         </div>
       </div>
 
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 py-1 px-2 bg-white w-full z-20">{right}</div>
+      {right && <div className="sm:hidden relative py-1 z-20">{right}</div>}
     </>
   );
 });

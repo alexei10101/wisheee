@@ -5,7 +5,6 @@ import { Plus, X } from "lucide-react";
 import { memo } from "react";
 import type { User } from "../model/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
-import { getInitials } from "@/shared/utils/get-initials";
 import { Skeleton } from "@/shared/ui/kit/skeleton";
 
 type UserCardProps = {
@@ -36,7 +35,6 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
           <AvatarFallback>
             <Skeleton className={`pb-1 w-7 h-7 rounded-full`} />
           </AvatarFallback>
-          <AvatarFallback className="pb-1">{getInitials(user.username)}</AvatarFallback>
         </Avatar>
       </ItemMedia>
       <ItemContent className={cn("flex-row gap-3 max-w-1/2", variant === "thin" && "p-0")}>

@@ -17,7 +17,7 @@ function FriendsPage() {
           title={mode === "all" ? "Мои друзья" : "Добавить друга"}
           left={<BackButton />}
           right={
-            <Button className="me-4 w-full sm:w-40" onClick={toggleMode}>
+            <Button className="sm:me-4 w-full sm:w-40" onClick={toggleMode}>
               <span className="flex items-center gap-2" hidden={mode === "search"}>
                 Добавить друга <UserPlus />
               </span>
