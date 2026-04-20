@@ -2,7 +2,12 @@ import type { ServiceResult } from "./safe-query";
 
 const EDJE_BASE_URL = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
 
-export async function callEdge<T = null>(path: string, accessToken: string, body: unknown): Promise<ServiceResult<T>> {
+export const EdgeOperation = {
+  updateFriendNotification: "update-friend-notifications",
+} as const;
+export type EdgeOperation = (typeof EdgeOperation)[keyof typeof EdgeOperation];
+
+export async function callEdge<T = null>(path: EdgeOperation, accessToken: string, body: unknown): Promise<ServiceResult<T>> {
   try {
     const res = await fetch(`${EDJE_BASE_URL}/${path}`, {
       method: "POST",

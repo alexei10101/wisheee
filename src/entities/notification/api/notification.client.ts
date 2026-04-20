@@ -1,5 +1,5 @@
 import type { FriendRequestStatus } from "@/entities/request/friend-request/model/friend-request";
-import { callEdge } from "@/shared/api/edje-client";
+import { callEdge, EdgeOperation } from "@/shared/api/edje-client";
 import type { Session } from "@supabase/supabase-js";
 
 export async function updateFriendRequestStatus(session: Session, entityId: string, status: Omit<FriendRequestStatus, "pending">) {
@@ -8,5 +8,5 @@ export async function updateFriendRequestStatus(session: Session, entityId: stri
     status,
   };
 
-  return callEdge("update-friend-notifications", session.access_token, body);
+  return callEdge(EdgeOperation.updateFriendNotification, session.access_token, body);
 }
