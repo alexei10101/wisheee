@@ -25,7 +25,13 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
     <div className="relative w-full sm:max-w-2xl overflow-hidden">
       {isMobile && permissions.canUpdate && permissions.canDelete && (
         <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
-          <Button variant="ghost" size={"sm"} onClick={onUpdate}>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => {
+              onUpdate();
+              setOpened(false);
+            }}>
             <Pencil />
           </Button>
           <Button variant="ghost" size={"sm"} onClick={onDelete}>

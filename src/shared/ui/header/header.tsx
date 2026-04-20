@@ -1,6 +1,12 @@
 import { ROUTES } from "@/shared/routes";
 import { Button } from "@/shared/ui/kit/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from "@/shared/ui/kit/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/kit/dropdown-menu";
 import { Bell, House, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -59,15 +65,15 @@ export function AppHeader() {
                   <Skeleton className="w-25 h-5" />
                 </div>
               ) : (
-                <UserBadge user={{ username: user?.username ?? "", avatar_url: user?.avatar_url ?? "" }} />
+                user && <UserBadge user={{ username: user.username, avatar_url: user.avatar_url }} />
               )}
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48" align="center">
+          <DropdownMenuContent className="w-48" align="start">
             {user && (
               <DropdownMenuGroup>
                 <UserUpdateDialogButton closeMenu={() => setDropdownMenuOpen(false)} />
-
+                <DropdownMenuSeparator />
                 <Button variant="ghost" className="cursor-pointer w-full" onClick={handleLogout}>
                   <LogOut />
                   Выход

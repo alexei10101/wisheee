@@ -9,11 +9,12 @@ export type NotificationCardProps = {
   notification: AppNotification;
   onAccept: () => Promise<void>;
   onReject: () => Promise<void>;
+  onOpen: (userId: string) => void | Promise<void>;
   selected?: boolean;
   onSelect?: () => void;
 };
 
-const NotificationCard = ({ userId, notification: n, onAccept, onReject }: NotificationCardProps) => {
+const NotificationCard = ({ userId, notification: n, onAccept, onReject, onOpen }: NotificationCardProps) => {
   const Component = notificationComponents[n.type];
   if (!Component) return null;
   return (
@@ -23,7 +24,7 @@ const NotificationCard = ({ userId, notification: n, onAccept, onReject }: Notif
       </ItemMedia>
 
       <ItemContent className={n.type}>
-        <Component userId={userId} notification={n} onAccept={onAccept} onReject={onReject} />
+        <Component userId={userId} notification={n} onAccept={onAccept} onReject={onReject} onOpen={onOpen} />
       </ItemContent>
     </Item>
   );

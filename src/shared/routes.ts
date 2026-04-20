@@ -4,14 +4,19 @@ export const ROUTES = {
   CHECK_EMAIL: "/check-email",
 
   HOME: "/",
-  WISHLISTS: "/wishlists",
+  MY_WISHLISTS: "/wishlists",
+  MY_WISHLIST: "/wishlists/:id",
   FRIENDS: "/friends",
-  WISHLIST: "/wishlist/:id",
   NOTIFICATIONS: "/notifications",
-  USERS: "/users/:userId",
+
+  // USER: "/users/:user",
+  USER_WISHLISTS: "/users/:userId/wishlists",
+  USER_WISHLIST: "/users/:userId/wishlists/:id",
 } as const;
 
 export const buildRoutes = {
-  wishlist: (id: string) => `/wishlist/${id}`,
-  Users: (userId: string) => `/users/${userId}`,
+  // user: (userId: string) => `/users/${userId}`,
+  myWishlist: (wishlistId: string) => `/wishlists/${wishlistId}`,
+  userWishlists: (userId: string) => `/users/${userId}/wishlists`,
+  userWishlist: (userId: string, wishlistId: string) => `/users/${userId}/wishlists/${wishlistId}`,
 };

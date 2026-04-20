@@ -3,7 +3,7 @@ import type { NotificationCardProps } from "../notification-card";
 import { Button } from "@/shared/ui/kit/button";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 
-export function FriendPendingNotification({ userId, notification, onAccept, onReject }: NotificationCardProps) {
+export function FriendPendingNotification({ userId, notification, onAccept, onReject, onOpen }: NotificationCardProps) {
   const isRequestInitiator = notification.metadata?.request_sender_id === userId;
   const data = {
     username: isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username,
@@ -17,7 +17,9 @@ export function FriendPendingNotification({ userId, notification, onAccept, onRe
 
       <ItemTitle>
         <span>{title}</span>
-        <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
+        <div className="cursor-pointer" onClick={() => onOpen(notification.sender_id)}>
+          <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
+        </div>
       </ItemTitle>
 
       {!isRequestInitiator && (

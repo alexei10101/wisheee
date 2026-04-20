@@ -6,8 +6,8 @@ export const wishlistService = {
   async getAll(userId: string): Promise<ServiceResult<Wishlist[]>> {
     return safeQuery(wishlistRepository.getAll(userId));
   },
-  async get(id: string): Promise<ServiceResult<WishlistWithItems>> {
-    return safeQuery(wishlistRepository.get(id));
+  async get(id: string, isOwner: boolean): Promise<ServiceResult<WishlistWithItems>> {
+    return safeQuery<WishlistWithItems>(wishlistRepository.get(id, isOwner));
   },
   async create(userId: string, data: Omit<Wishlist, "user_id" | "id">): Promise<ServiceResult<Wishlist>> {
     return safeQuery(wishlistRepository.create(userId, data));

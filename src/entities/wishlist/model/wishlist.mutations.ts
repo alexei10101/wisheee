@@ -10,6 +10,7 @@ export const useCreateWishlist = () => {
   return useMutation({
     mutationFn: async ({ userId, data }: { userId: string; data: Omit<Wishlist, "user_id" | "id"> }) => {
       const result = await wishlistService.create(userId, data);
+      console.log(unwrap(result));
       return unwrap(result);
     },
     onSuccess: (created, variables) => {

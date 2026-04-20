@@ -14,6 +14,9 @@ export const wishlistItemService = {
   async update(updatedData: Partial<WishlistItem>): Promise<ServiceResult<WishlistItem>> {
     return safeQuery(wishlistItemRepository.update(updatedData));
   },
+  async reserve(userId: string, wishlistItemId: string): Promise<ServiceResult<WishlistItem>> {
+    return safeQuery(wishlistItemRepository.reserve(userId, wishlistItemId));
+  },
   async uploadImage(userId: string, wishlistItemId: string, file: File): Promise<ServiceResult<{ publicUrl: string }>> {
     const webpFile = await convertToWebp(file);
     const filePath = `${userId}/${wishlistItemId}/image.webp`;

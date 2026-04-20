@@ -14,11 +14,14 @@ export const useCreateWishlistItem = () => {
       return unwrap(result);
     },
     onSuccess: (created, variables) => {
-      queryClient.setQueryData(wishlistKeys.detail(variables.data.wishlist_id), (old: WishlistWithItems | undefined) => {
-        if (!old) return old;
+      queryClient.setQueryData(
+        wishlistKeys.detail(variables.data.wishlist_id, { withResolver: false }),
+        (old: WishlistWithItems | undefined) => {
+          if (!old) return old;
 
-        return { ...old, wishlist_items: [...(old.wishlist_items ?? []), created] };
-      });
+          return { ...old, wishlist_items: [created, ...(old.wishlist_items ?? [])] };
+        },
+      );
     },
   });
 };
@@ -59,6 +62,28 @@ export const useUpdateWishlistItem = () => {
         return {
           ...old,
           wishlist_items: old.wishlist_items.map((w) => (w.id === updated.id ? updated : w)),
+        };
+      });
+    },
+  });
+};
+
+export const useReserveWishlistItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ userId, wishlistItemId }: { userId: string; wishlistItemId: string }) => {
+      const result = await wishlistItemService.reserve(userId, wishlistItemId);
+      console.log(unwrap(result));
+      return unwrap(result);
+    },
+    onSuccess: (reservedItem) => {
+      queryClient.setQueryData(wishlistKeys.detail(reservedItem.wishlist_id), (old: WishlistWithItems | undefined) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          wishlist_items: old.wishlist_items.map((w) => (w.id === reservedItem.id ? reservedItem : w)),
         };
       });
     },

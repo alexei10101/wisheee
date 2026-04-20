@@ -1,7 +1,7 @@
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { useCreateWishlistItemWithImage } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { useWishlist, useWishlists } from "@/entities/wishlist/model/wishlist.queries";
+import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
@@ -33,7 +33,6 @@ const wishlistItemSchema = z.object({
 
 export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
   const { data: user } = useCurrentUser();
-  const { data: activeWishlist } = useWishlist(wishlistId);
   const { data: wishlists } = useWishlists(user?.id);
 
   const createWishlistItem = useCreateWishlistItemWithImage(user?.id);
@@ -41,7 +40,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistItemSchema),
     defaultValues: {
-      wishlist_id: activeWishlist?.id,
+      wishlist_id: wishlistId,
       title: "",
       description: "",
       link: "",
@@ -68,7 +67,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
     const file = form.getValues("image");
 
     try {
-      await createWishlistItem?.mutateAsync({ data, file });
+      await createWishlistItem.mutateAsync({ data, file });
     } catch (error) {
       console.log("Ошибка создания карточки: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {

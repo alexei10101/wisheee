@@ -6,7 +6,7 @@ export const userKeys = {
   me: (userId: string) => ["user", userId ?? ""] as const,
 };
 
-export const useUser = (userId?: string | null) => {
+export const useUser = (userId?: string | null, options?: { enabled: boolean }) => {
   return useQuery({
     queryKey: userKeys.me(userId!),
     queryFn: async (): Promise<User> => {
@@ -17,7 +17,7 @@ export const useUser = (userId?: string | null) => {
       if (!data.avatar_url) return { ...data, avatar_url: "/default-avatar.webp", friends: friendIds };
       return { ...data, friends: friendIds };
     },
-    enabled: !!userId,
+    enabled: options?.enabled,
     staleTime: 1000 * 60 * 5,
   });
 };

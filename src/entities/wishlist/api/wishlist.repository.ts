@@ -2,12 +2,13 @@ import { supabase } from "@/shared/api/supabase-client";
 import type { Wishlist } from "../model/wishlist";
 
 export const wishlistRepository = {
-  async get(id: string) {
+  async get(id: string, isOwner: boolean) {
+    const query = `*, wishlist_items (id, wishlist_id, title, description, link, price, created_at, image_url${isOwner ? ", reserver" : ""})`;
     return supabase
       .from("wishlists")
-      .select(`*, wishlist_items (*)`)
+      .select(query)
       .eq("id", id)
-      .order("created_at", { foreignTable: "wishlist_items", ascending: true })
+      .order("created_at", { foreignTable: "wishlist_items", ascending: false })
       .single();
   },
   async getAll(userId: String) {

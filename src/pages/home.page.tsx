@@ -5,7 +5,7 @@ import { PageLoader } from "@/shared/ui/page-loader";
 
 function HomePage() {
   const { userId } = useAuth();
-  const { data: user, isLoading } = useUser(userId);
+  const { data: user, isLoading } = useUser(userId, { enabled: true });
 
   if (isLoading) return <PageLoader />;
   return (

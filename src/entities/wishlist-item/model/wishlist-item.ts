@@ -6,4 +6,5 @@ export type WishlistItem = {
   link: string;
   price: number;
   image_url: string | null;
+  reserver?: string | null;
 };

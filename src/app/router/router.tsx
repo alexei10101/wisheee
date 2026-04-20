@@ -17,7 +17,6 @@ const WishlistsPageLazy = lazy(() => import("../../pages/wishlists.page"));
 const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
 const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 const NotificationsPage = lazy(() => import("../../pages/notifications.page"));
-const UsersPage = lazy(() => import("../../pages/users.page"));
 
 const router = createBrowserRouter([
   {
@@ -36,10 +35,12 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: HomePageLazy },
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
-          { path: ROUTES.WISHLISTS, Component: WishlistsPageLazy },
-          { path: ROUTES.WISHLIST, Component: WishlistPageLazy },
+          { path: ROUTES.MY_WISHLIST, Component: WishlistPageLazy },
+          { path: ROUTES.MY_WISHLISTS, Component: WishlistsPageLazy },
           { path: ROUTES.NOTIFICATIONS, Component: NotificationsPage },
-          { path: ROUTES.USERS, Component: UsersPage },
+
+          { path: ROUTES.USER_WISHLISTS, Component: WishlistsPageLazy },
+          { path: ROUTES.USER_WISHLIST, Component: WishlistPageLazy },
         ],
       },
       {

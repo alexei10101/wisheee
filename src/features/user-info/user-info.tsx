@@ -17,7 +17,7 @@ export function UserInfo({ user }: UserInfoProps) {
 
       <div className="flex flex-col text-xl mt-3 items-center sm:items-start">
         <Button variant="link" className="cursor-pointer p-0">
-          <Link to={ROUTES.WISHLISTS} className="flex items-center gap-1">
+          <Link to={ROUTES.MY_WISHLISTS} className="flex items-center gap-1">
             <ScrollText />
             Вишлисты
           </Link>

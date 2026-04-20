@@ -1,7 +1,7 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import type { Permissions } from "@/shared/lib/permissions";
 import { Button } from "@/shared/ui/kit/button";
-import { Pencil, Trash } from "lucide-react";
+import { BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
@@ -11,6 +11,7 @@ type WishlistItemProps = {
   permissions: Permissions;
   handleDelete?: (id: string) => void;
   handleUpdate?: (id: string) => void;
+  handleReserve?: (id: string) => void;
   isMobile: boolean;
   onOpen: (link: string) => void;
 };
@@ -20,6 +21,7 @@ export const WishlistItemCard = memo(function ({
   permissions,
   handleDelete,
   handleUpdate,
+  handleReserve,
   isMobile,
   onOpen,
 }: WishlistItemProps) {
@@ -27,10 +29,20 @@ export const WishlistItemCard = memo(function ({
   const wasDragging = useRef(false);
 
   return (
-    <div className="relative w-full sm:max-w-2xl overflow-hidden">
+    <div className="relative w-full sm:w-auto grow">
       {isMobile && permissions.canUpdate && permissions.canDelete && (
         <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
-          <Button variant="ghost" onClick={handleUpdate ? () => handleUpdate(wishlistItem.id) : undefined} className="hover:bg-white">
+          <Button
+            variant="ghost"
+            onClick={
+              handleUpdate
+                ? () => {
+                    handleUpdate(wishlistItem.id);
+                    setOpened(false);
+                  }
+                : undefined
+            }
+            className="hover:bg-white">
             <Pencil />
           </Button>
           <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined} className="hover:bg-white">
@@ -39,8 +51,30 @@ export const WishlistItemCard = memo(function ({
         </div>
       )}
 
+      {isMobile && permissions.canReserve && (
+        <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
+          <Button
+            variant="ghost"
+            onClick={
+              handleReserve
+                ? () => {
+                    handleReserve(wishlistItem.id);
+                    setOpened(false);
+                  }
+                : undefined
+            }
+            className="hover:bg-white">
+            <BookmarkPlus />
+          </Button>
+          <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)} className="hover:bg-white">
+            <ExternalLink />
+          </Button>
+        </div>
+      )}
+
       <motion.div
-        drag={isMobile && permissions.canDelete && permissions.canUpdate ? "x" : false}
+        className={`${wishlistItem.reserver && "opacity-20"}`}
+        drag={isMobile ? "x" : false}
         dragConstraints={{ left: -72, right: 0 }}
         dragElastic={0.1}
         dragSnapToOrigin
@@ -59,7 +93,7 @@ export const WishlistItemCard = memo(function ({
         transition={{ type: "spring", stiffness: 200, damping: 30 }}>
         <Item
           variant="outline"
-          className="rounded-xl sm:rounded-2xl bg-card shadow-sm p-0 sm:p-4 flex sm:gap-4 relative sm:w-100 cursor-pointer"
+          className="rounded-xl sm:rounded-2xl bg-card shadow-sm p-0 sm:p-4 flex sm:gap-4 relative cursor-pointer overflow-hidden"
           onClick={(e) => {
             const target = e.target as HTMLElement;
             if (target.closest("button")) return;
@@ -67,7 +101,7 @@ export const WishlistItemCard = memo(function ({
             if (!opened) onOpen(wishlistItem.link);
             else setOpened(false);
           }}>
-          <ItemMedia className="w-24 h-24 rounded-xl overflow-hidden bg-muted shrink-0 -mt-1">
+          <ItemMedia className="w-24 h-24 rounded-s-xl bg-muted shrink-0 -mt-1">
             {wishlistItem.image_url && <img src={wishlistItem.image_url} className="object-cover" />}
             {!wishlistItem.image_url && (
               <div className="w-full h-full flex items-center text-xs text-center text-muted-foreground">Нет изображения</div>
