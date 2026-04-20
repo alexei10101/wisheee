@@ -11,10 +11,10 @@ export function FriendAcceptedNotification({ notification, onOpen }: Omit<Notifi
   return (
     <>
       <ItemDescription>Новый друг</ItemDescription>
-      <ItemTitle>
-        <div className="cursor-pointer" onClick={() => onOpen(notification.sender_id)}>
+      <ItemTitle className="inline-flex w-full flex-wrap items-center gap-1">
+        <button className="leading-0" onClick={() => onOpen(notification.sender_id)}>
           <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
-        </div>
+        </button>
         <span>теперь у вас в друзьях!</span>
       </ItemTitle>
     </>

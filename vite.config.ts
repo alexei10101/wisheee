@@ -24,13 +24,6 @@ const manifest: Partial<ManifestOptions | false> = {
 export default defineConfig({
   server: {
     host: "0.0.0.0",
-    proxy: {
-      "/api": {
-        target: "https://wisheee-backend.vercel.app",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/api"),
-      },
-    },
   },
   plugins: [
     react(),

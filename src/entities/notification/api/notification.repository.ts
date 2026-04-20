@@ -35,18 +35,6 @@ export const notificationRepository = {
           onUpdate(payload.new as AppNotification);
         },
       )
-      // .on(
-      //   "postgres_changes",
-      //   {
-      //     event: "UPDATE",
-      //     schema: "public",
-      //     table: "notifications",
-      //     filter: `sender_id=eq.${userId}`,
-      //   },
-      //   (payload) => {
-      //     onUpdate(payload.new as AppNotification);
-      //   },
-      // )
       .subscribe();
 
     return channel;

@@ -12,7 +12,7 @@ type UserInfoProps = {
 
 export function UserInfo({ user }: UserInfoProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center">
       {user ? <UserBadge user={{ username: user.username, avatar_url: user.avatar_url }} variant="vertical" size="lg" /> : <Skeleton />}
 
       <div className="flex flex-col text-xl mt-3 items-center sm:items-start">

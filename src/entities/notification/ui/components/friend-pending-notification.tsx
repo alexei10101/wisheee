@@ -15,11 +15,11 @@ export function FriendPendingNotification({ userId, notification, onAccept, onRe
     <>
       <ItemDescription>Заявка в друзья</ItemDescription>
 
-      <ItemTitle>
+      <ItemTitle className="inline-flex w-full flex-wrap items-center gap-1">
         <span>{title}</span>
-        <div className="cursor-pointer" onClick={() => onOpen(notification.sender_id)}>
+        <button className="leading-0" onClick={() => onOpen(notification.sender_id)}>
           <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
-        </div>
+        </button>
       </ItemTitle>
 
       {!isRequestInitiator && (

@@ -4,6 +4,7 @@ import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "
 import { friendRequestRepository } from "../api/friend-request.repository";
 import { notificationService } from "@/entities/notification/model/notification.service";
 import { friendService } from "@/entities/friend/model/friend.service";
+import type { Session } from "@supabase/supabase-js";
 
 export const friendsRequestService = {
   async createFriendRequest(senderId: string, receiverId: string, metadata: FriendRequestMetadata): Promise<ServiceResult<FriendRequest>> {
@@ -16,7 +17,7 @@ export const friendsRequestService = {
     return safeQuery(friendRequestRepository.checkRequestExisting(senderId, receiverId));
   },
 
-  async acceptFriendRequest(senderId: string, receiverId: string, requestId: string): Promise<ServiceResult> {
+  async acceptFriendRequest(senderId: string, receiverId: string, requestId: string, session: Session): Promise<ServiceResult> {
     if (!senderId || !receiverId) return { error: "Нет id", result: null };
     const status: FriendRequestStatus = "accepted";
 
@@ -30,7 +31,7 @@ export const friendsRequestService = {
       return { error: friendship.error, result: null };
     }
 
-    const notification = await notificationService.updateFriendNotification(senderId, requestId, status);
+    const notification = await notificationService.updateFriendNotification(session, requestId, status);
     if (notification.error) {
       console.error("Ошибка обновления уведомлений:", notification.error);
       return { error: notification.error, result: null };
@@ -38,7 +39,7 @@ export const friendsRequestService = {
 
     return { error: null, result: null };
   },
-  async rejectFriendRequest(senderId: string, receiverId: string, requestId: string): Promise<ServiceResult> {
+  async rejectFriendRequest(senderId: string, receiverId: string, requestId: string, session: Session): Promise<ServiceResult> {
     if (!senderId || !receiverId) return { error: "Нет id", result: null };
     const status: FriendRequestStatus = "rejected";
 
@@ -46,7 +47,7 @@ export const friendsRequestService = {
     if (updating.error) return { error: updating.error, result: null };
     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
 
-    const notification = await notificationService.updateFriendNotification(senderId, requestId, status);
+    const notification = await notificationService.updateFriendNotification(session, requestId, status);
     if (notification.error) {
       console.error("Ошибка обновления уведомлений:", notification.error);
       return { error: notification.error, result: null };

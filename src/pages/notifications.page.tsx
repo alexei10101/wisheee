@@ -5,10 +5,12 @@ import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
+import { useAuth } from "@/app/auth.context";
 
 function NotificationPage() {
   const { data: user, isLoading: userIsLoading } = useCurrentUser();
   const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
+  const { session } = useAuth();
 
   if (userIsLoading || notificationsIsLoading) return <PageLoader />;
   return (
@@ -16,7 +18,7 @@ function NotificationPage() {
       <div className="mb-3 sm:mb-5">
         <PageHeader title="Мои уведомления" left={<BackButton />} right={<MarkNotificationsAsRead userId={user?.id} />} />
       </div>
-      <NotificationList userId={user?.id} notifications={notifications ?? []} />
+      <NotificationList userId={user?.id} session={session} notifications={notifications ?? []} />
     </main>
   );
 }

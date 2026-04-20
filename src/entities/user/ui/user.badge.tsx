@@ -19,7 +19,7 @@ type UserBadgeProps = {
 export function UserBadge({ user, variant, size }: UserBadgeProps) {
   if (!user.username) console.log("no user");
   return (
-    <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "gap-2"} `)}>
+    <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "gap-2"} inline-flex flex-nowrap w-fit`)}>
       <ItemMedia>
         <Avatar className={`${size ? sizeClasses[size] : sizeClasses.sm}`}>
           <AvatarImage src={user.avatar_url} onError={(e) => (e.currentTarget.src = "/default-avatar.webp")} className="object-cover" />
@@ -28,7 +28,7 @@ export function UserBadge({ user, variant, size }: UserBadgeProps) {
           </AvatarFallback>
         </Avatar>
       </ItemMedia>
-      <ItemContent>
+      <ItemContent className="flex-0">
         <ItemTitle className={cn(size === "lg" && "text-base sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
           {user?.username.length < 13 && user?.username}
         </ItemTitle>

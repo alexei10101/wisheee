@@ -22,8 +22,16 @@ export function FriendRejectedNotification({ userId, notification, onOpen }: Omi
   return (
     <>
       <ItemDescription>Отклоненная заявка в друзья</ItemDescription>
-      <ItemTitle>
-        {isRequestInitiator ? <>Пользователь {userBadge} отклонил заявку в друзья</> : <>Вы отклонили заявку в друзья от {userBadge}</>}
+      <ItemTitle className="inline-flex w-full flex-wrap gap-1">
+        {isRequestInitiator ? (
+          <>
+            Пользователь <button className="leading-0">{userBadge}</button> отклонил заявку в друзья
+          </>
+        ) : (
+          <>
+            Вы отклонили заявку в друзья от <button className="leading-0">{userBadge}</button>
+          </>
+        )}
       </ItemTitle>
     </>
   );

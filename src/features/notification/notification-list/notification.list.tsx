@@ -5,13 +5,15 @@ import { useAcceptFriendRequest, useRejectFriendRequest } from "@/entities/reque
 import type { AppNotification } from "@/entities/notification/model/notification";
 import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
+import type { Session } from "@supabase/supabase-js";
 
 type NotificationListProps = {
   userId: string | undefined;
   notifications: AppNotification[];
+  session: Session | null;
 };
 
-export function NotificationList({ userId, notifications }: NotificationListProps) {
+export function NotificationList({ userId, notifications, session }: NotificationListProps) {
   const navigate = useNavigate();
   const onOpen = (userId: string) => navigate(buildRoutes.userWishlists(userId));
 
@@ -20,9 +22,9 @@ export function NotificationList({ userId, notifications }: NotificationListProp
 
   const handleAcceptingRequest = useCallback(
     async (receiverId: string, requestId: string) => {
-      if (!userId) return;
+      if (!userId || !session) return;
       try {
-        await acceptFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId });
+        await acceptFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, session });
       } catch (error) {
         console.log(error);
       }
@@ -31,9 +33,9 @@ export function NotificationList({ userId, notifications }: NotificationListProp
   );
   const handleRejectingRequest = useCallback(
     async (receiverId: string, requestId: string) => {
-      if (!userId) return;
+      if (!userId || !session) return;
       try {
-        await rejectFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId });
+        await rejectFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, session });
       } catch (error) {
         console.log(error);
       }
