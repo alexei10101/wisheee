@@ -8,6 +8,7 @@ import type { Permissions } from "@/shared/lib/permissions";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { useReserveWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
+import { useAuth } from "@/app/auth.context";
 
 type WishlistItemList = {
   permissions: Permissions;
@@ -22,6 +23,7 @@ type WishlistItemDialogState =
 
 export function WishlistItemList({ permissions, wishlist, style }: WishlistItemList) {
   const { data: user } = useCurrentUser();
+  const { session } = useAuth();
   const reserveWishlistItem = useReserveWishlistItem();
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
   const isMobile = !useMediaQuery("(min-width: 640px)");
@@ -33,8 +35,8 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
 
   const handleReserve = (wishlistItemId: string) => {
     try {
-      if (!user?.id) return;
-      reserveWishlistItem.mutateAsync({ userId: user.id, wishlistItemId });
+      if (!user?.id || !session) return;
+      reserveWishlistItem.mutateAsync({ userId: user.id, wishlistItemId, accessToken: session.access_token });
     } catch (error) {
       console.log(error);
     }

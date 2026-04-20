@@ -11,9 +11,6 @@ export const wishlistItemRepository = {
   async update(updatedData: Partial<WishlistItem>) {
     return supabase.from("wishlist_items").update(updatedData).eq("id", updatedData.id).select().single();
   },
-  async reserve(userId: string, wishlistItemId: string) {
-    return supabase.from("wishlist_items").update({ reserver: userId }).eq("id", wishlistItemId).select().single();
-  },
   async uploadImage(file: File, filePath: string) {
     return supabase.storage.from("wishlist-images").upload(filePath, file, { upsert: true });
   },

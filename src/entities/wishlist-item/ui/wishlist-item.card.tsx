@@ -5,6 +5,7 @@ import { BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
+import { cn } from "@/shared/lib/css";
 
 type WishlistItemProps = {
   wishlistItem: WishlistItem;
@@ -73,7 +74,7 @@ export const WishlistItemCard = memo(function ({
       )}
 
       <motion.div
-        className={`${wishlistItem.reserver && "opacity-20"}`}
+        className="relative"
         drag={isMobile ? "x" : false}
         dragConstraints={{ left: -72, right: 0 }}
         dragElastic={0.1}
@@ -91,6 +92,11 @@ export const WishlistItemCard = memo(function ({
         }}
         animate={{ x: opened ? -72 : 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 30 }}>
+        <div
+          className={cn("bg-gray-800 z-10 absolute inset-0 rounded-xl transition-opacity", {
+            "opacity-20": !!wishlistItem.reserver,
+            "opacity-0": !wishlistItem.reserver,
+          })}></div>
         <Item
           variant="outline"
           className="rounded-xl sm:rounded-2xl bg-card shadow-sm p-0 sm:p-4 flex sm:gap-4 relative cursor-pointer overflow-hidden"

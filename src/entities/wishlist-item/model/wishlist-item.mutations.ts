@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { wishlistItemService } from "./wishlist-item.service";
 import type { WishlistItem } from "./wishlist-item";
-import { unwrap } from "@/shared/api/helper-unwrap";
+import { unwrap, unwrapApiResponse } from "@/shared/api/helper-unwrap";
 import { wishlistKeys } from "@/entities/wishlist/model/wishlist.queries";
 import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
 
@@ -72,18 +72,17 @@ export const useReserveWishlistItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, wishlistItemId }: { userId: string; wishlistItemId: string }) => {
-      const result = await wishlistItemService.reserve(userId, wishlistItemId);
-      console.log(unwrap(result));
-      return unwrap(result);
+    mutationFn: async ({ userId, wishlistItemId, accessToken }: { userId: string; wishlistItemId: string; accessToken: string }) => {
+      const reserved = await wishlistItemService.reserve(userId, wishlistItemId, accessToken);
+      return unwrapApiResponse(reserved);
     },
-    onSuccess: (reservedItem) => {
-      queryClient.setQueryData(wishlistKeys.detail(reservedItem.wishlist_id), (old: WishlistWithItems | undefined) => {
+    onSuccess: (reserved) => {
+      queryClient.setQueryData(wishlistKeys.detail(reserved.wishlist_id, { withResolver: true }), (old: WishlistWithItems | undefined) => {
         if (!old) return old;
 
         return {
           ...old,
-          wishlist_items: old.wishlist_items.map((w) => (w.id === reservedItem.id ? reservedItem : w)),
+          wishlist_items: old.wishlist_items.map((w) => (w.id === reserved.id ? reserved : w)),
         };
       });
     },

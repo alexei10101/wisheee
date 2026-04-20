@@ -32,9 +32,9 @@ export const friendsRequestService = {
     }
 
     const notification = await notificationService.updateFriendNotification(session, requestId, status);
-    if (notification.error) {
-      console.error("Ошибка обновления уведомлений:", notification.error);
-      return { error: notification.error, result: null };
+    if (!notification.ok) {
+      console.error("Ошибка обновления уведомлений:", notification.error.message);
+      return { error: notification.error.message, result: null };
     }
 
     return { error: null, result: null };
@@ -48,9 +48,9 @@ export const friendsRequestService = {
     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
 
     const notification = await notificationService.updateFriendNotification(session, requestId, status);
-    if (notification.error) {
-      console.error("Ошибка обновления уведомлений:", notification.error);
-      return { error: notification.error, result: null };
+    if (!notification.ok) {
+      console.error("Ошибка обновления уведомлений:", notification.error.message);
+      return { error: notification.error.message, result: null };
     }
 
     return { error: null, result: null };

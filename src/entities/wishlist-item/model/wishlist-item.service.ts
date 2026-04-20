@@ -2,6 +2,8 @@ import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import type { WishlistItem } from "./wishlist-item";
 import { wishlistItemRepository } from "../api/wishlist-item.repository";
 import { convertToWebp } from "@/shared/utils/convert-image";
+import { wishlistItemApi } from "../api/client";
+import type { ApiResponse } from "@/shared/api/edge-response.type";
 
 export const wishlistItemService = {
   async create(data: Omit<WishlistItem, "id" | "image_url">): Promise<ServiceResult<WishlistItem>> {
@@ -14,8 +16,8 @@ export const wishlistItemService = {
   async update(updatedData: Partial<WishlistItem>): Promise<ServiceResult<WishlistItem>> {
     return safeQuery(wishlistItemRepository.update(updatedData));
   },
-  async reserve(userId: string, wishlistItemId: string): Promise<ServiceResult<WishlistItem>> {
-    return safeQuery(wishlistItemRepository.reserve(userId, wishlistItemId));
+  async reserve(userId: string, wishlistItemId: string, accessToken: string): Promise<ApiResponse<WishlistItem>> {
+    return wishlistItemApi.reserveWishlistItem(userId, wishlistItemId, accessToken);
   },
   async uploadImage(userId: string, wishlistItemId: string, file: File): Promise<ServiceResult<{ publicUrl: string }>> {
     const webpFile = await convertToWebp(file);
