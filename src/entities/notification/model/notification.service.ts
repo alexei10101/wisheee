@@ -3,7 +3,6 @@ import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
 import { notificationRepository } from "../api/notification.repository";
 import type { AppNotification } from "./notification";
 import { notificationApi } from "../api/client";
-import type { Session } from "@supabase/supabase-js";
 import type { ApiResponse } from "@/shared/api/edge-response.type";
 
 export const notificationService = {
@@ -16,8 +15,12 @@ export const notificationService = {
   ): Promise<ServiceResult> {
     return safeQuery(notificationRepository.createFriendNotification(senderId, receiverId, requestId, metadata, status));
   },
-  async updateFriendNotification(session: Session, entityId: string, status: Omit<FriendRequestStatus, "pending">): Promise<ApiResponse> {
-    return notificationApi.updateFriendRequestStatus(session.access_token, entityId, status);
+  async updateFriendNotification(
+    accessToken: string,
+    entityId: string,
+    status: Omit<FriendRequestStatus, "pending">,
+  ): Promise<ApiResponse> {
+    return notificationApi.updateFriendRequestStatus(accessToken, entityId, status);
   },
   async fetchNotifications(userId: string): Promise<ServiceResult<AppNotification[]>> {
     return safeQuery(notificationRepository.fetchNotifications(userId));
@@ -25,7 +28,4 @@ export const notificationService = {
   async markAllNotificationsAsRead(userId: string) {
     return safeQuery(notificationRepository.markAllAsRead(userId));
   },
-  //   async markNotificationsAsRead(userId: string, ids: string[]) {
-  //     return safeQuery(notificationRepository.markAsRead(userId, ids));
-  //   },
 };

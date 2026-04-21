@@ -11,7 +11,7 @@ type SearchListProps = {
 
 export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {
   const navigate = useNavigate();
-  const onOpen = (userId: string) => navigate(buildRoutes.user(userId));
+  const onOpen = (userId: string) => navigate(buildRoutes.userWishlists(userId));
 
   if (!list) return;
 

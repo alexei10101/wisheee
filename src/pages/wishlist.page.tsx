@@ -1,3 +1,4 @@
+import { useAuth } from "@/app/auth.context";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { useUser } from "@/entities/user/model/user.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
@@ -12,6 +13,7 @@ import { useParams } from "react-router";
 
 function WishlistPage() {
   const { data: me } = useCurrentUser();
+  const { session } = useAuth();
   const { userId: paramUserId, id } = useParams<{ userId: string; id: string }>();
 
   const {
@@ -22,7 +24,7 @@ function WishlistPage() {
     enabled: !!paramUserId,
   });
 
-  const { data: activeWishlist, isLoading: isWishlistLoading, isError: isWishlistError } = useWishlist(id, !!paramUserId);
+  const { data: activeWishlist, isLoading: isWishlistLoading, isError: isWishlistError } = useWishlist(session?.access_token, id);
 
   const relation = getUserRelation({ viewerId: me?.id, ownerId: paramUserId ?? me?.id });
   const permissions = getPermissions(relation);

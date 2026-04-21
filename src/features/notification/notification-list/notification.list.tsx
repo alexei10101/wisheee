@@ -22,9 +22,9 @@ export function NotificationList({ userId, notifications, session }: Notificatio
 
   const handleAcceptingRequest = useCallback(
     async (receiverId: string, requestId: string) => {
-      if (!userId || !session) return;
+      if (!userId || !session?.access_token) return;
       try {
-        await acceptFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, session });
+        await acceptFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, accessToken: session.access_token });
       } catch (error) {
         console.log(error);
       }
@@ -33,9 +33,9 @@ export function NotificationList({ userId, notifications, session }: Notificatio
   );
   const handleRejectingRequest = useCallback(
     async (receiverId: string, requestId: string) => {
-      if (!userId || !session) return;
+      if (!userId || !session?.access_token) return;
       try {
-        await rejectFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, session });
+        await rejectFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, accessToken: session.access_token });
       } catch (error) {
         console.log(error);
       }

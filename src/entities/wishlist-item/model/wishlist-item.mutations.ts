@@ -14,14 +14,11 @@ export const useCreateWishlistItem = () => {
       return unwrap(result);
     },
     onSuccess: (created, variables) => {
-      queryClient.setQueryData(
-        wishlistKeys.detail(variables.data.wishlist_id, { withResolver: false }),
-        (old: WishlistWithItems | undefined) => {
-          if (!old) return old;
+      queryClient.setQueryData(wishlistKeys.detail(variables.data.wishlist_id), (old: WishlistWithItems | undefined) => {
+        if (!old) return old;
 
-          return { ...old, wishlist_items: [created, ...(old.wishlist_items ?? [])] };
-        },
-      );
+        return { ...old, wishlist_items: [created, ...(old.wishlist_items ?? [])] };
+      });
     },
   });
 };
@@ -77,7 +74,7 @@ export const useReserveWishlistItem = () => {
       return unwrapApiResponse(reserved);
     },
     onSuccess: (reserved) => {
-      queryClient.setQueryData(wishlistKeys.detail(reserved.wishlist_id, { withResolver: true }), (old: WishlistWithItems | undefined) => {
+      queryClient.setQueryData(wishlistKeys.detail(reserved.wishlist_id), (old: WishlistWithItems | undefined) => {
         if (!old) return old;
 
         return {

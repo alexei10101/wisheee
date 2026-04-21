@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { wishlistService } from "./wishlist.service";
-import { unwrap } from "@/shared/api/helper-unwrap";
+import { unwrap, unwrapApiResponse } from "@/shared/api/helper-unwrap";
 import type { Wishlist } from "./wishlist";
 
 export const wishlistKeys = {
   all: ["wishlists"] as const,
   list: (userId: string) => ["wishlists", userId],
-  detail: (wishlistId: string, opts?: { withResolver: boolean }) => ["wishlists", "detail", wishlistId, opts?.withResolver ?? false],
+  detail: (wishlistId: string) => ["wishlists", "detail", wishlistId],
 } as const;
 
 export const useWishlists = (userId?: string, wishlists?: Wishlist[]) =>
@@ -21,13 +21,13 @@ export const useWishlists = (userId?: string, wishlists?: Wishlist[]) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const useWishlist = (id: string | undefined, isOwner: boolean) =>
+export const useWishlist = (accessToken?: string, id?: string) =>
   useQuery({
-    queryKey: wishlistKeys.detail(id!, isOwner ? { withResolver: isOwner } : undefined),
+    queryKey: wishlistKeys.detail(id!),
     queryFn: async () => {
-      const result = await wishlistService.get(id!, isOwner);
-      return unwrap(result);
+      const result = await wishlistService.get(accessToken!, id!);
+      return unwrapApiResponse(result);
     },
-    enabled: !!id,
+    enabled: !!id && !!accessToken,
     staleTime: 1000 * 60 * 5,
   });

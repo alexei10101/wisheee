@@ -5,6 +5,7 @@ const EDGE_BASE_URL = import.meta.env.VITE_SUPABASE_FUNCTIONS_URL;
 export const EdgeOperation = {
   updateFriendNotification: "update-friend-notifications",
   reserveWishlistItem: "reserve-wishlist-item",
+  getWishlist: "get-wishlist",
 } as const;
 export type EdgeOperation = (typeof EdgeOperation)[keyof typeof EdgeOperation];
 
