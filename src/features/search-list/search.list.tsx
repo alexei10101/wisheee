@@ -5,7 +5,7 @@ import { memo } from "react";
 import { useNavigate } from "react-router";
 
 type SearchListProps = {
-  list: User[] | null;
+  list: (User & { isFriend: boolean })[] | null;
   addFriend: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
 };
 
@@ -26,6 +26,7 @@ export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {
               variant={"thin"}
               user={user}
               onOpen={onOpen}
+              isFriend={user.isFriend}
               onAddFriend={() => addFriend(user.id, user.username, user.avatar_url ?? "")}
             />
           ))}

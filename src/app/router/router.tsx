@@ -7,6 +7,7 @@ import { AuthProvider } from "../auth.context";
 import ProtectedRoute from "./protected.route";
 import PublicRoute from "./public.route";
 import { RootLayout } from "./root.layout";
+import { Toaster } from "sonner";
 
 const LoginPageLazy = lazy(() => import("../../pages/auth/login.page"));
 const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
         <AuthProvider>
           <RootLayout>
             <App />
+            <Toaster duration={2000} position="bottom-center" />
           </RootLayout>
         </AuthProvider>
       </TooltipProvider>

@@ -1,20 +1,22 @@
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
-import { Plus, X } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { memo } from "react";
 import type { User } from "../model/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
 import { Skeleton } from "@/shared/ui/kit/skeleton";
+import { toast } from "sonner";
 
 type UserCardProps = {
   variant: "default" | "thin";
   user: User;
   onOpen: (userId: string) => void;
+  isFriend?: boolean;
   onAddFriend?: () => Promise<void> | undefined;
 };
 
-export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: UserCardProps) {
+export const UserCard = memo(function ({ variant, user, onOpen, isFriend, onAddFriend }: UserCardProps) {
   return (
     <Item
       variant="outline"
@@ -26,12 +28,16 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
       }}
       className={cn(
         "relative flex flex-row w-full mx-auto cursor-pointer group bg-white shadow",
-        variant === "default" && "max-w-2xl py-6",
+        variant === "default" && "max-w-2xl py-2 sm:py-6",
         variant === "thin" && "py-1 px-3 rounded-md",
       )}>
       <ItemMedia>
         <Avatar className="size-7">
-          <AvatarImage src={user.avatar_url} onError={(e) => (e.currentTarget.src = "/default-avatar.webp")} className="object-cover" />
+          <AvatarImage
+            src={(user && user.avatar_url) ?? "/default-avatar.webp"}
+            onError={(e) => (e.currentTarget.src = "/default-avatar.webp")}
+            className="object-cover"
+          />
           <AvatarFallback>
             <Skeleton className={`pb-1 w-7 h-7 rounded-full`} />
           </AvatarFallback>
@@ -44,7 +50,7 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
       <ItemActions className="ml-auto sm:opacity-0 group-hover:opacity-100 transition-opacity">
         {variant === "default" && (
           <div>
-            <Button className="absolute right-2 -translate-y-4" variant="ghost">
+            <Button className="absolute right-2 -translate-y-4" variant="ghost" onClick={() => toast("Не, в другой раз")}>
               <X />
             </Button>
           </div>
@@ -54,8 +60,9 @@ export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: U
             size="sm"
             className="absolute right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
             variant="ghost"
-            onClick={onAddFriend}>
-            <Plus />
+            onClick={onAddFriend}
+            disabled={isFriend}>
+            {isFriend ? <Check /> : <Plus />}
           </Button>
         )}
       </ItemActions>

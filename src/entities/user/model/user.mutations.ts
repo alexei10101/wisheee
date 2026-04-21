@@ -3,6 +3,7 @@ import { authRepository } from "../api/auth.repository";
 import { userKeys } from "./user.queries";
 import { userRepository } from "../api/user.repository";
 import type { User } from "./user";
+import { toast } from "sonner";
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -13,12 +14,26 @@ export const useLogin = () => {
       if (error) throw error;
       return data;
     },
-
-    onSuccess: (data) => {
+    onMutate: () => {
+      const toastId = toast.loading("Вход...");
+      return { toastId };
+    },
+    onSuccess: (data, _vars, ctx) => {
+      toast.success("Вы успешно вошли", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       const userId = data.session?.user?.id;
       if (!userId) return;
-
       prefetchUser(queryClient, userId);
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка авторизации", {
+        id: ctx?.toastId,
+      });
     },
   });
 };
@@ -32,14 +47,30 @@ export const useSignUp = () => {
       if (error) throw error;
       if (!authData.user?.id) throw Error("No id");
       const { error: addUsernameError } = await userRepository.update(authData.user.id, { username, avatar_url: "" });
-      if (addUsernameError) console.log(addUsernameError);
+      if (addUsernameError) throw addUsernameError;
       return authData;
     },
-    onSuccess: (data) => {
+    onMutate: () => {
+      const toastId = toast.loading("Регистрация...");
+      return { toastId };
+    },
+    onSuccess: (data, _vars, ctx) => {
+      toast.success("Регистрация выполнена успешно", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       const userId = data.session?.user?.id;
       if (!userId) return;
 
       prefetchUser(queryClient, userId);
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка регистрации", {
+        id: ctx?.toastId,
+      });
     },
   });
 };
@@ -49,9 +80,25 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: () => authRepository.logout(),
-    onSuccess: () => {
+    onMutate: () => {
+      const toastId = toast.loading("Выход...");
+      return { toastId };
+    },
+    onSuccess: (_data, _vars, ctx) => {
+      toast.success("Вы успешно вышли из аккаунта", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       queryClient.removeQueries({ queryKey: ["user"] });
       queryClient.removeQueries({ queryKey: ["wishlists"] });
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка -__-", {
+        id: ctx?.toastId,
+      });
     },
   });
 };
@@ -65,11 +112,27 @@ export const useUpdateUser = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: (updated) => {
+    onMutate: () => {
+      const toastId = toast.loading("Обновление аккаунта...");
+      return { toastId };
+    },
+    onSuccess: (updated, _vars, ctx) => {
+      toast.success("Изменения успешно внесены", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       const userId = updated.id;
       if (!userId) return;
 
       queryClient.setQueryData(userKeys.me(userId), (user: User) => ({ ...user, ...updated }));
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка внесения изменений", {
+        id: ctx?.toastId,
+      });
     },
   });
 };

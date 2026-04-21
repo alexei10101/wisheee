@@ -4,9 +4,10 @@ import { CheckCheck } from "lucide-react";
 
 type MarkNotificationsAsReadProps = {
   userId: string | undefined;
+  isAvailable: boolean;
 };
 
-export function MarkNotificationsAsRead({ userId }: MarkNotificationsAsReadProps) {
+export function MarkNotificationsAsRead({ userId, isAvailable }: MarkNotificationsAsReadProps) {
   const markAsRead = useMarkAllAsRead();
 
   const handleMarkAllAsRead = async () => {
@@ -20,7 +21,7 @@ export function MarkNotificationsAsRead({ userId }: MarkNotificationsAsReadProps
 
   return (
     <Button
-      disabled={markAsRead.isPending}
+      disabled={markAsRead.isPending || !isAvailable}
       onClick={handleMarkAllAsRead}
       className="flex items-center gap-2 disabled:opacity-50 w-full sm:w-auto">
       <CheckCheck className="sm:w-4 sm:h-4" />
