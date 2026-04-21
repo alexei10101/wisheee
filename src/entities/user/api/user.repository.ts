@@ -12,7 +12,8 @@ export const userRepository = {
         wishlists (
           id,
           title,
-          description
+          description,
+          is_public
         ),
         friends!friends_user_id_fkey (
           friend_id

@@ -1,5 +1,5 @@
 import { Button } from "@/shared/ui/kit/button";
-import { BookCheck, BookOpenCheck, Pencil, Trash } from "lucide-react";
+import { BookCheck, BookOpenCheck, HatGlasses, Pencil, Trash } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import type { Wishlist } from "../model/wishlist";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/shared/ui/kit/item";
@@ -70,7 +70,11 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
             else setOpened(false);
           }}>
           <ItemContent className="flex flex-col gap-3 w-full sm:max-w-1/2">
-            <ItemTitle>{wishlist.title}</ItemTitle>
+            <div className="flex gap-2 items-center">
+              {isMobile && !wishlist.is_public && <HatGlasses size={15} />}
+              <ItemTitle>{wishlist.title}</ItemTitle>
+            </div>
+
             <ItemDescription>{wishlist.description?.trim() || `\u00A0`}</ItemDescription>
           </ItemContent>
 

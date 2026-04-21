@@ -46,7 +46,7 @@ function WishlistPage() {
         )}
         {!paramUserId && (
           <PageHeader
-            title={activeWishlist.title}
+            title={`${activeWishlist.title} ${!activeWishlist.is_public ? "(приватный)" : ""}`}
             subtitle={activeWishlist.description}
             left={<BackButton />}
             right={permissions.canAdd && <WishlistItemCreateButton wishlistId={activeWishlist.id} />}

@@ -111,10 +111,6 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
     if (dirtyFields.price) {
       newData.price = Number(formValues.price ?? 0);
     }
-    // TODO: update image/image url
-    // if (dirtyFields.image) {
-    //   newData.image = formValues.image;
-    // }
     return newData;
   };
 
