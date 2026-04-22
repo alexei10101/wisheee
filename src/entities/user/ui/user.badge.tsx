@@ -32,7 +32,7 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
             onError={() => setLoading(false)}
             className="object-cover"
           />
-          <AvatarFallback>{user.username.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
+          <AvatarFallback>{user?.username?.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
         </Avatar>
       </ItemMedia>
 

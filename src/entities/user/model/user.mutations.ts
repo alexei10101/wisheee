@@ -44,9 +44,10 @@ export const useSignUp = () => {
   return useMutation({
     mutationFn: async ({ email, username, password }: { email: string; username: string; password: string }) => {
       const { data: authData, error } = await authRepository.signUp(email, password);
+      if (error?.code === "over_email_send_rate_limit") toast.error("Попробуйте зарегистрироваться позднее (превышен общий лимит заявок)");
       if (error) throw error;
       if (!authData.user?.id) throw Error("No id");
-      const { error: addUsernameError } = await userRepository.update(authData.user.id, { username, avatar_url: "" });
+      const { error: addUsernameError } = await userRepository.update(authData.user.id, { username, avatar_url: null });
       if (addUsernameError) throw addUsernameError;
       return authData;
     },
