@@ -6,8 +6,8 @@ import { UserBadge } from "@/entities/user/ui/user.badge";
 export function FriendPendingNotification({ userId, notification, onAccept, onReject, onOpen }: NotificationCardProps) {
   const isRequestInitiator = notification.metadata?.request_sender_id === userId;
   const data = {
-    username: isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username,
-    avatar: isRequestInitiator ? notification.metadata?.receiver_avatar : notification.metadata?.sender_avatar,
+    username: (isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username) ?? "",
+    avatar: (isRequestInitiator ? notification.metadata?.receiver_avatar : notification.metadata?.sender_avatar) ?? "",
   };
   const title = isRequestInitiator ? "Вы отправили заявку в друзья пользователю " : "Новая заявка в друзья от ";
 
@@ -18,7 +18,7 @@ export function FriendPendingNotification({ userId, notification, onAccept, onRe
       <ItemTitle className="inline-flex w-full flex-wrap items-center gap-1">
         <span>{title}</span>
         <button className="leading-0" onClick={() => onOpen(notification.sender_id)}>
-          <UserBadge user={{ username: data.username ?? "", avatar_url: data.avatar ?? "" }} />
+          <UserBadge user={{ username: data.username, avatar_url: data.avatar }} />
         </button>
       </ItemTitle>
 

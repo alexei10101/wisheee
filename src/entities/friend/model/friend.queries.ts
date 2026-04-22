@@ -14,11 +14,7 @@ export const useFriends = (userId: string | undefined) =>
     queryFn: async (): Promise<User[]> => {
       if (!userId) return [];
       const response = await friendService.getFriendsInfo(userId);
-      const friends = unwrap(response);
-      const friendsWithCorrectImages = friends.map((friend) =>
-        friend.avatar_url ? friend : { ...friend, avatar_url: "/default-avatar.webp" },
-      );
-      return friendsWithCorrectImages;
+      return unwrap(response);
     },
     enabled: !!userId,
   });

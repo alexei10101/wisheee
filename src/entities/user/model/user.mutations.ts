@@ -81,7 +81,6 @@ const prefetchUser = async (queryClient: QueryClient, userId: string) => {
       const { data, error } = await userRepository.get(userId);
       if (error) throw error;
       const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
-      if (!data.avatar_url) return { ...data, avatar_url: "/default-avatar.webp", friends: friendIds };
       return { ...data, friends: friendIds };
     },
   });

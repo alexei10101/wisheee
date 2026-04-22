@@ -5,15 +5,15 @@ import { UserBadge } from "@/entities/user/ui/user.badge";
 export function FriendRejectedNotification({ userId, notification, onOpen }: Omit<NotificationCardProps, "onAccept" | "onReject">) {
   const isRequestInitiator = notification.metadata?.request_sender_id === userId;
   const data = {
-    username: isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username,
-    avatar: isRequestInitiator ? notification.metadata?.receiver_avatar : notification.metadata?.sender_avatar,
+    username: (isRequestInitiator ? notification.metadata?.receiver_username : notification.metadata?.sender_username) ?? "",
+    avatar: (isRequestInitiator ? notification.metadata?.receiver_avatar : notification.metadata?.sender_avatar) ?? "",
   };
   const userBadge = (
     <div className="cursor-pointer" onClick={() => onOpen(notification.receiver_id)}>
       <UserBadge
         user={{
-          username: data.username ?? "",
-          avatar_url: data.avatar ?? "",
+          username: data.username,
+          avatar_url: data.avatar,
         }}
       />
     </div>

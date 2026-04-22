@@ -3,6 +3,7 @@ import { Item, ItemContent, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
 import type { User } from "../model/user";
 import { cn } from "@/shared/lib/css";
 import { Skeleton } from "@/shared/ui/kit/skeleton";
+import { useState } from "react";
 
 const sizeClasses = {
   sm: "w-8 h-8",
@@ -12,25 +13,31 @@ const sizeClasses = {
 
 type UserBadgeProps = {
   user: Pick<User, "username" | "avatar_url">;
-  variant?: "vertical";
+  variant?: "vertical"; // default - horizontal badge
   size?: "sm" | "xl" | "lg";
 };
 
-export function UserBadge({ user, variant, size }: UserBadgeProps) {
-  if (!user.username) console.log("no user");
+export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
+  const [loading, setLoading] = useState(true);
+  const avatarSize = sizeClasses[size ?? "sm"];
+
   return (
-    <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "gap-2"} inline-flex flex-nowrap w-fit`)}>
+    <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "inline-flex flex-nowrap w-fit gap-2"}`)}>
       <ItemMedia>
-        <Avatar className={`${size ? sizeClasses[size] : sizeClasses.sm}`}>
-          <AvatarImage src={user.avatar_url} onError={(e) => (e.currentTarget.src = "/default-avatar.webp")} className="object-cover" />
-          <AvatarFallback>
-            <Skeleton className={`${size ? sizeClasses[size] : sizeClasses.sm} rounded-full`} />
-          </AvatarFallback>
+        <Avatar className={avatarSize}>
+          {loading && <Skeleton className="absolute inset-0 rounded-full" />}
+          <AvatarImage
+            src={user.avatar_url ?? "/default-avatar.webp"}
+            onLoad={() => setLoading(false)}
+            onError={() => setLoading(false)}
+            className="object-cover"
+          />
+          <AvatarFallback>{user.username.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
         </Avatar>
       </ItemMedia>
       <ItemContent className="flex-0">
         <ItemTitle className={cn(size === "lg" && "text-base sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
-          {user?.username.length < 13 && user?.username}
+          {user.username.length < 13 && user.username}
         </ItemTitle>
       </ItemContent>
     </Item>

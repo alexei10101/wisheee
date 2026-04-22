@@ -1,60 +1,39 @@
-import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
-import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
+import { Item, ItemActions, ItemContent } from "@/shared/ui/kit/item";
 import { Plus, X } from "lucide-react";
 import { memo } from "react";
-import type { User } from "../model/user";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
-import { Skeleton } from "@/shared/ui/kit/skeleton";
+import { UserBadge } from "./user.badge";
 
 type UserCardProps = {
-  variant: "default" | "thin";
-  user: User;
+  id: string;
+  username: string;
+  avatarUrl: string;
   onOpen: (userId: string) => void;
-  onAddFriend?: () => Promise<void> | undefined;
+  onAddFriend?: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
+  onDeleteFriend?: () => void;
 };
 
-export const UserCard = memo(function ({ variant, user, onOpen, onAddFriend }: UserCardProps) {
+export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, onAddFriend, onDeleteFriend }: UserCardProps) {
   return (
     <Item
+      className="relative p-2 sm:p-4 flex flex-row w-full mx-auto cursor-pointer group bg-white shadow"
       variant="outline"
-      key={user.id}
       onClick={(e) => {
         const target = e.target as HTMLElement;
         if (target.closest("button")) return;
-        onOpen(user.id);
-      }}
-      className={cn(
-        "relative flex flex-row w-full mx-auto cursor-pointer group bg-white shadow",
-        variant === "default" && "max-w-2xl py-6",
-        variant === "thin" && "py-1 px-3 rounded-md",
-      )}>
-      <ItemMedia>
-        <Avatar className="size-7">
-          <AvatarImage src={user.avatar_url} onError={(e) => (e.currentTarget.src = "/default-avatar.webp")} className="object-cover" />
-          <AvatarFallback>
-            <Skeleton className={`pb-1 w-7 h-7 rounded-full`} />
-          </AvatarFallback>
-        </Avatar>
-      </ItemMedia>
-      <ItemContent className={cn("flex-row gap-3 max-w-1/2", variant === "thin" && "p-0")}>
-        <ItemTitle className={cn(variant === "thin" && "leading-6.5")}>{user.username}</ItemTitle>
-        <ItemDescription hidden={true}></ItemDescription>
+        onOpen(id);
+      }}>
+      <ItemContent className="flex-row gap-3 max-w-1/2">
+        <UserBadge user={{ avatar_url: avatarUrl, username }} />
       </ItemContent>
-      <ItemActions className="ml-auto sm:opacity-0 group-hover:opacity-100 transition-opacity">
-        {variant === "default" && (
-          <div>
-            <Button className="absolute right-2 -translate-y-4" variant="ghost">
-              <X />
-            </Button>
-          </div>
+      <ItemActions className="absolute right-2 top-2.5 sm:top-4.5 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+        {onDeleteFriend && (
+          <Button size="sm" variant="ghost" onClick={() => onDeleteFriend()}>
+            <X />
+          </Button>
         )}
-        {variant === "thin" && (
-          <Button
-            size="sm"
-            className="absolute right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
-            variant="ghost"
-            onClick={onAddFriend}>
+        {onAddFriend && (
+          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatarUrl)}>
             <Plus />
           </Button>
         )}

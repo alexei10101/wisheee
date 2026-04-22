@@ -23,10 +23,11 @@ export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {
           {list.map((user) => (
             <UserCard
               key={user.id}
-              variant={"thin"}
-              user={user}
+              id={user.id}
+              username={user.username}
+              avatarUrl={user.avatar_url}
               onOpen={onOpen}
-              onAddFriend={() => addFriend(user.id, user.username, user.avatar_url ?? "")}
+              onAddFriend={addFriend}
             />
           ))}
         </div>
