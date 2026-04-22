@@ -27,6 +27,7 @@ export const SearchList = memo(function ({ addFriend, list }: SearchListProps) {
               username={user.username}
               avatarUrl={user.avatar_url}
               onOpen={onOpen}
+              isFriend={user.isFriend}
               onAddFriend={addFriend}
             />
           ))}

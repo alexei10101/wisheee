@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/kit/button";
 import { Item, ItemActions, ItemContent } from "@/shared/ui/kit/item";
-import { Plus, X } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { memo } from "react";
 import { UserBadge } from "./user.badge";
 
@@ -9,11 +9,12 @@ type UserCardProps = {
   username: string;
   avatarUrl: string;
   onOpen: (userId: string) => void;
+  isFriend?: boolean;
   onAddFriend?: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
   onDeleteFriend?: () => void;
 };
 
-export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, onAddFriend, onDeleteFriend }: UserCardProps) {
+export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, isFriend, onAddFriend, onDeleteFriend }: UserCardProps) {
   return (
     <Item
       className="relative p-2 sm:p-4 flex flex-row w-full mx-auto cursor-pointer group bg-white shadow"
@@ -33,8 +34,8 @@ export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, onAddF
           </Button>
         )}
         {onAddFriend && (
-          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatarUrl)}>
-            <Plus />
+          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatarUrl)} disabled={isFriend}>
+            {isFriend ? <Check /> : <Plus />}
           </Button>
         )}
       </ItemActions>
