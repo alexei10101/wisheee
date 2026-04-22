@@ -16,6 +16,7 @@ export const useNotifications = (userId?: string) => {
       const result = await notificationService.fetchNotifications(userId!);
       return unwrap(result);
     },
+    staleTime: 1000 * 60,
     enabled: !!userId,
   });
 };

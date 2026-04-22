@@ -35,6 +35,7 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
           <AvatarFallback>{user.username.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
         </Avatar>
       </ItemMedia>
+
       <ItemContent className="flex-0">
         <ItemTitle className={cn(size === "lg" && "text-base sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
           {user.username.length < 13 && user.username}

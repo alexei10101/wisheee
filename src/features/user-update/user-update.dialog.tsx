@@ -162,7 +162,7 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
           <Button variant="outline" className="sm:w-26" onClick={onClose}>
             Отмена
           </Button>
-          <Button type="submit" form="form" className="sm:w-26">
+          <Button type="submit" form="form" className="sm:w-26" disabled={updateUser.isPending}>
             Сохранить
           </Button>
         </DialogFooter>

@@ -8,6 +8,8 @@ export function FriendAcceptedNotification({ notification, onOpen }: Omit<Notifi
     avatar: notification.metadata?.receiver_avatar ?? notification.metadata?.sender_avatar ?? "",
   };
 
+  // TODO: шляпа с user badge img 
+
   return (
     <>
       <ItemDescription>Новый друг</ItemDescription>

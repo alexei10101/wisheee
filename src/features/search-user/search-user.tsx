@@ -12,14 +12,14 @@ export function SearchUser() {
   const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
-  const [searchResult, setSearchResult] = useState<User[] | null>(null);
+  const [searchResult, setSearchResult] = useState<(User & { isFriend: boolean })[] | null>(null);
 
   const handleAddFriend = useCallback(
     async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
-      if (!user?.id) return;
+      if (!user?.id || user.id === receiverId) return;
       const metadata: FriendRequestMetadata = {
         sender_username: user.username,
-        sender_avatar: user.avatar_url ?? "",
+        sender_avatar: user.avatar_url,
         receiver_username: receiverUsername,
         receiver_avatar: receiverAvatar,
       };
@@ -46,8 +46,11 @@ export function SearchUser() {
         const res = await friendService.searchUsers(debouncedSearch, user.id);
         if (res.error) return console.log(res.error);
         if (!res.result) return setSearchResult(null);
-        setSearchResult(res.result);
-      } catch {}
+        const result = [...res.result.map((u) => ({ ...u, isFriend: user.friends.includes(u.id) }))];
+        setSearchResult(result);
+      } catch (error) {
+        console.log(error);
+      }
     };
     if (!debouncedSearch) return setSearchResult(null);
     handleSearch();

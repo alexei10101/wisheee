@@ -4,6 +4,7 @@ import type { WishlistItem } from "./wishlist-item";
 import { unwrap, unwrapApiResponse } from "@/shared/api/helper-unwrap";
 import { wishlistKeys } from "@/entities/wishlist/model/wishlist.queries";
 import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
+import { toast } from "sonner";
 
 export const useCreateWishlistItem = () => {
   const queryClient = useQueryClient();
@@ -52,7 +53,18 @@ export const useUpdateWishlistItem = () => {
       const result = await wishlistItemService.update(data);
       return unwrap(result);
     },
-    onSuccess: (updated) => {
+    onMutate: () => {
+      const toastId = toast.loading("Обновление желания...");
+      return { toastId };
+    },
+    onSuccess: (updated, _vars, ctx) => {
+      toast.success("Ваше желание успешно обновлено", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       queryClient.setQueryData(wishlistKeys.detail(updated.wishlist_id), (old: WishlistWithItems | undefined) => {
         if (!old) return old;
 
@@ -60,6 +72,11 @@ export const useUpdateWishlistItem = () => {
           ...old,
           wishlist_items: old.wishlist_items.map((w) => (w.id === updated.id ? updated : w)),
         };
+      });
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка обновления", {
+        id: ctx?.toastId,
       });
     },
   });
@@ -73,7 +90,20 @@ export const useReserveWishlistItem = () => {
       const reserved = await wishlistItemService.reserve(userId, wishlistItemId, accessToken);
       return unwrapApiResponse(reserved);
     },
-    onSuccess: (reserved) => {
+    onMutate: () => {
+      const toastId = toast.loading("Обновляем бронь…");
+      return { toastId };
+    },
+    onSuccess: (reserved, _vars, ctx) => {
+      const message = reserved.reserver ? "Товар забронирован" : "Бронь снята";
+
+      toast.success(message, {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
       queryClient.setQueryData(wishlistKeys.detail(reserved.wishlist_id), (old: WishlistWithItems | undefined) => {
         if (!old) return old;
 
@@ -82,6 +112,11 @@ export const useReserveWishlistItem = () => {
           wishlist_items: old.wishlist_items.map((w) => (w.id === reserved.id ? reserved : w)),
         };
       });
+    },
+    onError: (err: any, _vars, ctx) => {
+      const message = err?.code === "ALREADY_RESERVED" ? "Товар уже забронирован другим пользователем" : "Не удалось обновить бронь";
+
+      toast.error(message, { id: ctx?.toastId });
     },
   });
 };

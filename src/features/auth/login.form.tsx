@@ -31,7 +31,6 @@ export function LoginForm() {
     try {
       await login.mutateAsync(data);
     } catch (error) {
-      // TODO: sonner and console
       setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка"));
     }
   });
