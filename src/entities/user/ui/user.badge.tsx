@@ -21,18 +21,17 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
   const [loading, setLoading] = useState(true);
   const avatarSize = sizeClasses[size ?? "sm"];
 
+  const avatarUrl = user.avatar_url || "/default-avatar.webp";
+
   return (
     <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "inline-flex flex-nowrap w-fit gap-2"}`)}>
       <ItemMedia>
         <Avatar className={avatarSize}>
           {loading && <Skeleton className="absolute inset-0 rounded-full" />}
-          <AvatarImage
-            src={user.avatar_url ?? "/default-avatar.webp"}
-            onLoad={() => setLoading(false)}
-            onError={() => setLoading(false)}
-            className="object-cover"
-          />
-          <AvatarFallback>{user?.username?.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
+          <AvatarImage src={avatarUrl} onLoad={() => setLoading(false)} onError={() => setLoading(false)} className="object-cover" />
+          <AvatarFallback className="text-xl flex items-center justify-center">
+            {user?.username?.charAt(0).toUpperCase() ?? "U"}
+          </AvatarFallback>
         </Avatar>
       </ItemMedia>
 
