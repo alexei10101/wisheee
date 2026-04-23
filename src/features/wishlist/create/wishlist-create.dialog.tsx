@@ -48,7 +48,6 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
     try {
       await createWishlist.mutateAsync({ userId: user.id, data });
     } catch (error) {
-      // TODO: sonner and console
       console.log(error);
     } finally {
       closeDialog();
