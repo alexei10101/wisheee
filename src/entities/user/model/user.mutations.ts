@@ -42,20 +42,18 @@ export const useSignUp = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ email, username, password }: { email: string; username: string; password: string }) => {
-      const { data: authData, error } = await authRepository.signUp(email, password);
+    mutationFn: async ({ email, password }: { email: string; username: string; password: string }) => {
+      const { data, error } = await authRepository.signUp(email, password);
       if (error?.code === "over_email_send_rate_limit") toast.error("Попробуйте зарегистрироваться позднее (превышен общий лимит заявок)");
       if (error) throw error;
-      if (!authData.user?.id) throw Error("No id");
-      const { error: addUsernameError } = await userRepository.update(authData.user.id, { username, avatar_url: null });
-      if (addUsernameError) throw addUsernameError;
-      return authData;
+      if (!data.user?.id) throw Error("No id");
+      return data;
     },
     onMutate: () => {
       const toastId = toast.loading("Регистрация...");
       return { toastId };
     },
-    onSuccess: (data, _vars, ctx) => {
+    onSuccess: async (data, vars, ctx) => {
       toast.success("Регистрация выполнена успешно", {
         id: ctx.toastId,
         action: {
@@ -63,10 +61,13 @@ export const useSignUp = () => {
           onClick: () => {},
         },
       });
-      const userId = data.session?.user?.id;
+      const userId = data.session?.user.id;
       if (!userId) return;
 
-      prefetchUser(queryClient, userId);
+      await prefetchUser(queryClient, userId);
+
+      const { error } = await userRepository.update(userId, { username: vars.username, avatar_url: null });
+      if (error) console.log("Ошибка обновления имя пользователя");
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка регистрации", {

@@ -6,9 +6,6 @@ import router from "./router/router.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { registerSW } from "virtual:pwa-register";
-registerSW({ immediate: true });
-
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(

@@ -17,8 +17,25 @@ const manifest: Partial<ManifestOptions | false> = {
     { purpose: "maskable", sizes: "512x512", src: "icon512_maskable.png", type: "image/png" },
     { purpose: "any", sizes: "512x512", src: "icon512_rounded.png", type: "image/png" },
   ],
-  start_url: ".",
+  id: "/",
+  start_url: "/",
   scope: "/",
+  share_target: {
+    action: "/share-target",
+    method: "POST",
+    enctype: "multipart/form-data",
+    params: {
+      title: "title",
+      text: "text",
+      url: "url",
+      files: [
+        {
+          name: "image",
+          accept: ["image/*"],
+        },
+      ],
+    },
+  },
 };
 
 export default defineConfig({
@@ -29,12 +46,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
-      workbox: {
-        globPatterns: ["**/*.{html,css,js,png,svg,ico}"],
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
+      injectManifest: {
+        rollupFormat: "es",
       },
-      includeAssets: ["favicon.svg", "robots.txt", "icons/*.png"],
-      manifest: manifest,
+      devOptions: {
+        enabled: false,
+      },
+      manifest,
     }),
   ],
   resolve: {

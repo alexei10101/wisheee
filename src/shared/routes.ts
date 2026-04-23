@@ -12,10 +12,11 @@ export const ROUTES = {
   // USER: "/users/:user",
   USER_WISHLISTS: "/users/:userId/wishlists",
   USER_WISHLIST: "/users/:userId/wishlists/:id",
+
+  ADD_FROM_SHARE: "/add-from-share",
 } as const;
 
 export const buildRoutes = {
-  // user: (userId: string) => `/users/${userId}`,
   myWishlist: (wishlistId: string) => `/wishlists/${wishlistId}`,
   userWishlists: (userId: string) => `/users/${userId}/wishlists`,
   userWishlist: (userId: string, wishlistId: string) => `/users/${userId}/wishlists/${wishlistId}`,
