@@ -2,7 +2,7 @@ import type { User } from "@/entities/user/model/user";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { ROUTES } from "@/shared/routes";
 import { Button } from "@/shared/ui/kit/button";
-import { Gem, Handshake, ScrollText } from "lucide-react";
+import { Handshake, ScrollText } from "lucide-react";
 import { Link } from "react-router";
 
 type UserInfoProps = {
