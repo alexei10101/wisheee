@@ -45,11 +45,11 @@ export const useDeleteWishlistItem = () => {
   });
 };
 
-export const useUpdateWishlistItem = () => {
+export const useUpdateWishlistItem = (originalWishlistId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ data }: { data: WishlistItem }) => {
+    mutationFn: async ({ data }: { data: Partial<WishlistItem> }) => {
       const result = await wishlistItemService.update(data);
       return unwrap(result);
     },
@@ -65,14 +65,52 @@ export const useUpdateWishlistItem = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(wishlistKeys.detail(updated.wishlist_id), (old: WishlistWithItems | undefined) => {
-        if (!old) return old;
-
-        return {
-          ...old,
-          wishlist_items: old.wishlist_items.map((w) => (w.id === updated.id ? updated : w)),
-        };
-      });
+      if (updated.wishlist_id === originalWishlistId) {
+        queryClient.setQueryData(wishlistKeys.detail(updated.wishlist_id), (old: WishlistWithItems | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            wishlist_items: old.wishlist_items.map((w) =>
+              w.id === updated.id
+                ? {
+                    ...w,
+                    title: updated.title,
+                    description: updated.description,
+                    link: updated.link,
+                    price: updated.price,
+                    image: updated.image_url,
+                  }
+                : w,
+            ),
+          };
+        });
+      } else {
+        queryClient.setQueryData(wishlistKeys.detail(originalWishlistId), (old: WishlistWithItems | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            wishlist_items: old.wishlist_items.filter((w) => w.id !== updated.id),
+          };
+        });
+        queryClient.setQueryData(wishlistKeys.detail(updated.wishlist_id), (old: WishlistWithItems | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            wishlist_items: [
+              {
+                id: updated.id,
+                wishlist_id: updated.wishlist_id,
+                title: updated.title,
+                description: updated.description,
+                link: updated.link,
+                price: updated.price,
+                image: updated.image_url,
+              },
+              ...old.wishlist_items,
+            ],
+          };
+        });
+      }
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка обновления", {

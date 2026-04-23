@@ -9,7 +9,6 @@ import { memo, useEffect } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
-import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
 import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { urlToFile } from "@/shared/utils/convert-image";
 import { Label } from "@/shared/ui/kit/label";
@@ -38,13 +37,12 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   wishlistItem,
 }: WishlistItemUpdateDialogProps) {
   const { data: user } = useCurrentUser();
-  const { data: wishlists } = useWishlists(user?.id);
-  const updateWishlistItem = useUpdateWishlistItem();
+  const updateWishlistItem = useUpdateWishlistItem(wishlistItem.wishlist_id);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(wishlistItemSchema),
     defaultValues: {
-      wishlist_id: "",
+      wishlist_id: wishlistItem.wishlist_id,
       title: "",
       description: "",
       link: "",
@@ -56,7 +54,6 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   useEffect(() => {
     if (open && wishlistItem) {
       form.reset({
-        wishlist_id: wishlistItem.wishlist_id,
         title: wishlistItem.title,
         description: wishlistItem.description,
         link: wishlistItem.link,
@@ -79,7 +76,10 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
     const updatedFields = getUpdatedFields();
     if (!updatedFields || !wishlistItem) return onClose();
 
-    const data = { ...wishlistItem, ...updatedFields };
+    const data = {
+      id: wishlistItem.id,
+      ...updatedFields,
+    };
 
     try {
       updateWishlistItem.mutateAsync({ data });
@@ -128,7 +128,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
           <DialogDescription className="text-sm text-gray-800">Вы можете изменить информацию о подарке</DialogDescription>
         </DialogHeader>
 
-        <form id="wishlist-item-create-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4 mb-5">
+        <form id="wishlist-item-update-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4 mb-5">
           <Controller
             name="title"
             control={form.control}
@@ -136,7 +136,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
               <Field data-invalid={fieldState.invalid}>
                 <Input
                   {...field}
-                  id="wishlist-item-create-form-title"
+                  id="wishlist-item-update-form-title"
                   aria-invalid={fieldState.invalid}
                   placeholder="Название подарка"
                   autoComplete="off"
@@ -150,7 +150,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-create-form-description" placeholder="Описание" autoComplete="off" />
+                <Input {...field} id="wishlist-item-update-form-description" placeholder="Описание" autoComplete="off" />
               </Field>
             )}
           />
@@ -161,14 +161,14 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
             render={({ field }) => (
               <Field>
                 <Select value={field.value} onValueChange={(val) => field.onChange(val)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Выберите вишлист" />
+                  <SelectTrigger>
+                    <SelectValue />
                   </SelectTrigger>
 
-                  <SelectContent>
+                  <SelectContent position="item-aligned" className="z-100">
                     <SelectGroup>
                       <SelectLabel>Мои вишлисты</SelectLabel>
-                      {wishlists?.map((wishlist) => (
+                      {user?.wishlists?.map((wishlist) => (
                         <SelectItem key={wishlist.id} value={wishlist.id}>
                           {wishlist.title}
                         </SelectItem>
@@ -188,7 +188,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                   type="number"
                   min={0}
                   step={1}
-                  id="wishlist-item-create-form-price"
+                  id="wishlist-item-update-form-price"
                   placeholder="Цена"
                   autoComplete="off"
                   value={field.value === 0 || field.value === null ? "" : field.value}
@@ -207,7 +207,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-create-form-link" placeholder="Ссылка на подарок" autoComplete="off" />
+                <Input {...field} id="wishlist-item-update-form-link" placeholder="Ссылка на подарок" autoComplete="off" />
               </Field>
             )}
           />
@@ -268,7 +268,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
           <Button variant="outline" className="sm:w-26" onClick={() => onClose()}>
             Отмена
           </Button>
-          <Button type="submit" form="wishlist-item-create-form" className="sm:w-26">
+          <Button type="submit" form="wishlist-item-update-form" className="sm:w-26">
             Сохранить
           </Button>
         </DialogFooter>
