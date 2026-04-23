@@ -14,10 +14,24 @@ const manifest: Partial<ManifestOptions | false> = {
   background_color: "#E75480",
   orientation: "any",
   icons: [
-    { purpose: "maskable", sizes: "512x512", src: "icon512_maskable.png", type: "image/png" },
-    { purpose: "any", sizes: "512x512", src: "icon512_rounded.png", type: "image/png" },
+    {
+      src: "icons/icon192.png",
+      sizes: "192x192",
+      type: "image/png",
+    },
+    {
+      src: "icons/icon512.png",
+      sizes: "512x512",
+      type: "image/png",
+      purpose: "any",
+    },
+    {
+      src: "icons/icon512_maskable.png",
+      sizes: "512x512",
+      type: "image/png",
+      purpose: "maskable",
+    },
   ],
-  id: "/",
   start_url: "/",
   scope: "/",
   share_target: {
@@ -55,7 +69,7 @@ export default defineConfig({
       devOptions: {
         enabled: false,
       },
-      manifest,
+      manifest: manifest,
     }),
   ],
   resolve: {

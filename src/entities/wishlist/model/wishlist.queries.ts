@@ -21,14 +21,13 @@ export const useWishlists = (userId?: string, wishlists?: Wishlist[]) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const useWishlist = (accessToken?: string, id?: string) =>
+export const useWishlist = (accessToken: string | null | undefined, id: string | null | undefined) =>
   useQuery({
     queryKey: id ? wishlistKeys.detail(id) : ["wishlist", "disabled"],
     queryFn: async () => {
-      if (!accessToken || !id) return null;
-      const result = await wishlistService.get(accessToken, id);
+      const result = await wishlistService.get(accessToken!, id!);
       return unwrapApiResponse(result);
     },
-    enabled: Boolean(id && accessToken),
+    enabled: Boolean(accessToken && id),
     staleTime: 1000 * 60 * 5,
   });

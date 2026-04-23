@@ -30,7 +30,8 @@ function WishlistPage() {
   const permissions = getPermissions(relation);
 
   if (isLoading || isWishlistLoading) return <PageLoader />;
-  if (isError || isWishlistError) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки страницы</div>;
+  if ((!!paramUserId && isError) || isWishlistError)
+    return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки страницы</div>;
   if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
 
   return (
