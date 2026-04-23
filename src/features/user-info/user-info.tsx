@@ -29,12 +29,12 @@ export function UserInfo({ user }: UserInfoProps) {
           </Link>
         </Button>
 
-        <Button variant="link" className="cursor-pointer p-0">
+        {/* <Button variant="link" className="cursor-pointer p-0">
           <Link to={"/"} className="flex items-center gap-1">
             <Gem />
             Забронированные подарки
           </Link>
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
+import { toast } from "sonner";
 
 export const FriendList = memo(function () {
   const { data: user, isLoading: isCurrentUserLoading } = useCurrentUser();
@@ -13,7 +14,7 @@ export const FriendList = memo(function () {
   const navigate = useNavigate();
   const onOpen = (userId: string) => navigate(buildRoutes.userWishlists(userId));
 
-  const handleDeleteFriend = () => {};
+  const handleDeleteFriend = () => toast("Не сегодня :)");
 
   if (isCurrentUserLoading || isLoading) return <PageLoader />;
   if (!friends) return <div>У вас еще нет друзей</div>;
