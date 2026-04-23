@@ -58,7 +58,7 @@ export function AppHeader() {
 
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>
-            <div className="pe-5 cursor-pointer">
+            <div className="pe-5 cursor-pointer leading-0">
               {userIsLoading ? (
                 <div className="flex gap-2 items-center">
                   <Skeleton className="w-8 h-8 rounded-full" />

@@ -23,11 +23,12 @@ export const useWishlists = (userId?: string, wishlists?: Wishlist[]) =>
 
 export const useWishlist = (accessToken?: string, id?: string) =>
   useQuery({
-    queryKey: wishlistKeys.detail(id!),
+    queryKey: id ? wishlistKeys.detail(id) : ["wishlist", "disabled"],
     queryFn: async () => {
-      const result = await wishlistService.get(accessToken!, id!);
+      if (!accessToken || !id) return null;
+      const result = await wishlistService.get(accessToken, id);
       return unwrapApiResponse(result);
     },
-    enabled: !!id && !!accessToken,
+    enabled: Boolean(id && accessToken),
     staleTime: 1000 * 60 * 5,
   });
