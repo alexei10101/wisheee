@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# Wisheee
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Wisheee** — это **PWA-приложение для вишлистов**, где люди делятся желаниями, добавляют друг друга в друзья и **бронируют подарки**, чтобы не было дублей.
 
-Currently, two official plugins are available:
+👉 Открыть: **https://wisheee.vercel.app**  
+Чтобы установить как приложение: открой ссылку в браузере → **Add to Home Screen**
+> Для теста можно использовать аккаунт:  
+> **test@gmail.com / 11111111**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## __Зачем это__
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Обычная проблема — несколько человек покупают один и тот же подарок.
 
-## Expanding the ESLint configuration
+**Wisheee** решает это просто:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ты создаёшь вишлист с желаниями
+- добавляешь друзей
+- друзья **бронируют подарок**, и остальные видят, что он уже занят
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## __Что можно делать__
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- регистрация / логин
+- создание **публичных** и **приватных** вишлистов
+- добавление **подарков**
+- добавление пользователей в друзья
+- бронирование подарков
+- realtime-уведомления об изменениях
+- установка как **PWA** на телефон
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## __** Для мобильных устройств:__
+  карточки **вишлистов** и **подарков** поддерживают drag-жест.  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## __Основные возможности__
+
+- бронирование подарков без конфликтов
+- приватные и публичные вишлисты
+- realtime обновления через Supabase
+- оптимистичные обновления UI
+- полноценное PWA-поведение (особенно на iOS)
+- защита данных на уровне БД через RLS
+
+---
+
+## __Стек__
+
+### Frontend
+
+- **React 19 + TypeScript**
+- **Vite**
+- **TanStack Query** — server state, cache, mutations
+- **React Router**
+- **TailwindCSS 4 + Radix UI**
+- **React Hook Form + Zod**
+- **Framer Motion**
+- **Sonner** — toast
+
+### Backend / Infra
+
+- **Supabase** (PostgreSQL, Auth, Realtime)
+- **Row Level Security (RLS)**
+- **Supabase Edge Functions**
+- **Vercel** — деплой
+- **vite-plugin-pwa**
+
+---
+
