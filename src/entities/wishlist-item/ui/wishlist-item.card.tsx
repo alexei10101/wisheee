@@ -93,7 +93,7 @@ export const WishlistItemCard = memo(function ({
         animate={{ x: opened ? -72 : 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 30 }}>
         <div
-          className={cn("bg-gray-800 z-10 absolute inset-0 rounded-xl transition-opacity", {
+          className={cn("bg-gray-800 z-10 absolute inset-0 rounded-2xl transition-opacity", {
             "opacity-20": !!wishlistItem.reserver,
             "opacity-0": !wishlistItem.reserver,
           })}></div>
@@ -135,7 +135,7 @@ export const WishlistItemCard = memo(function ({
             </ItemActions>
           )}
           {!isMobile && permissions.canReserve && (
-            <ItemActions className="ml-auto hidden sm:flex">
+            <ItemActions className="ml-auto hidden sm:flex z-10">
               <Button
                 variant="ghost"
                 onClick={
@@ -145,9 +145,11 @@ export const WishlistItemCard = memo(function ({
                         setOpened(false);
                       }
                     : undefined
-                }
-                className="hover:bg-white">
+                }>
                 {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
+              </Button>
+              <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)}>
+                <ExternalLink />
               </Button>
             </ItemActions>
           )}
