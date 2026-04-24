@@ -4,7 +4,6 @@ export const friendRepository = {
   async getFriend(friendIds: string[]) {
     return supabase.from("profiles").select(`*`).in("id", friendIds);
   },
-  // TODO: improve fetch, add RLC
   async getFriendsInfo(userId: string) {
     return supabase
       .from("friends")
@@ -18,7 +17,6 @@ export const friendRepository = {
       { user_id: receiverId, friend_id: senderId },
     ]);
   },
-  // TODO: improve fetch, add RLC
   async searchUsers(query: string, id: string) {
     return supabase.from("profiles").select("*").ilike("username", `%${query}%`).neq("id", id).limit(20);
   },

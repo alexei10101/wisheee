@@ -54,10 +54,10 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   useEffect(() => {
     if (open && wishlistItem) {
       form.reset({
-        title: wishlistItem.title,
-        description: wishlistItem.description,
-        link: wishlistItem.link,
-        price: wishlistItem.price,
+        title: wishlistItem.title ?? "",
+        description: wishlistItem.description ?? "",
+        link: wishlistItem.link ?? "",
+        price: wishlistItem.price ?? 0,
       });
     }
   }, [open, wishlistItem, form]);
@@ -74,7 +74,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   const handleUpdate = async () => {
     if (!user?.id || !wishlistItem.id) return;
     const updatedFields = getUpdatedFields();
-    if (!updatedFields || !wishlistItem) return onClose();
+    if (Object.keys(updatedFields).length === 0 || !wishlistItem) return onClose();
 
     const data = {
       id: wishlistItem.id,

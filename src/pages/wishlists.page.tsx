@@ -29,7 +29,7 @@ function WishlistsPage() {
     return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
 
   return (
-    <main className="pt-25 sm:pt-30 px-2 sm:px-8">
+    <main className="pt-25 pb-4 sm:pt-30 px-2 sm:px-8">
       <div className="mb-3 sm:mb-5">
         {paramUserId && user && (
           <PageHeader

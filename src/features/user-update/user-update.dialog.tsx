@@ -2,6 +2,7 @@ import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import type { User } from "@/entities/user/model/user";
 import { useUpdateUser } from "@/entities/user/model/user.mutations";
 import { userService } from "@/entities/user/model/user.service";
+import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
@@ -15,6 +16,7 @@ import * as z from "zod";
 
 type UserUpdateDialogProps = {
   open: boolean;
+  isMobile: boolean;
   onClose: () => void;
 };
 
@@ -24,7 +26,7 @@ const userSchema = z.object({
   avatar_url: z.union([z.instanceof(File), z.null()]).optional(),
 });
 
-export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
+export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogProps) {
   const { data: user } = useCurrentUser();
   const updateUser = useUpdateUser();
 
@@ -128,7 +130,10 @@ export function UserUpdateDialog({ open, onClose }: UserUpdateDialogProps) {
                     }}
                   />
                   <Button
-                    className="absolute top-17 left-4 transition-opacity opacity-0 group-hover:opacity-100"
+                    className={cn(
+                      "absolute  ",
+                      isMobile ? "opacity-100 -top-1 -right-5" : "transition-opacity top-17 left-4 opacity-0 group-hover:opacity-100",
+                    )}
                     type="button"
                     variant="ghost"
                     size="sm"

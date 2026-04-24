@@ -14,6 +14,7 @@ export const useUser = (userId?: string | null, options?: { enabled: boolean }) 
       if (error) throw error;
 
       const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
+      if (!data.username) return { ...data, username: "Пользователь", friends: friendIds };
       return { ...data, friends: friendIds };
     },
     enabled: options?.enabled,

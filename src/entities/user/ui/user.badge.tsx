@@ -30,13 +30,13 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
           {loading && <Skeleton className="absolute inset-0 rounded-full" />}
           <AvatarImage src={avatarUrl} onLoad={() => setLoading(false)} onError={() => setLoading(false)} className="object-cover" />
           <AvatarFallback className="text-xl flex items-center justify-center">
-            {user?.username?.charAt(0).toUpperCase() ?? "U"}
+            {user.username?.charAt(0).toUpperCase() ?? "U"}
           </AvatarFallback>
         </Avatar>
       </ItemMedia>
 
       <ItemContent className="flex-0">
-        <ItemTitle className={cn(size === "lg" && "text-base sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
+        <ItemTitle className={cn(size === "lg" && "text-xl sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
           {user.username.length < 13 && user.username}
         </ItemTitle>
       </ItemContent>

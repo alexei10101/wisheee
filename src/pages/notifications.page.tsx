@@ -15,7 +15,7 @@ function NotificationPage() {
 
   if (userIsLoading || notificationsIsLoading) return <PageLoader />;
   return (
-    <main className="bg-gray-100 min-h-screen pt-25 sm:pt-30 px-2 sm:px-8">
+    <main className="bg-gray-100 min-h-screen pt-25 sm:pt-30 px-2 pb-4 sm:px-8">
       <div className="mb-3 sm:mb-5">
         <PageHeader
           title="Мои уведомления"

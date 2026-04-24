@@ -26,8 +26,6 @@ async function handleShare(request: Request): Promise<Response> {
     files: formData.getAll("files"),
   };
 
-  console.log("🔥 SHARE RAW:", raw);
-
   const encoded = encodeURIComponent(JSON.stringify(raw));
 
   return Response.redirect(`/add-from-share?data=${encoded}`, 303);

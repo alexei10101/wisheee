@@ -1,7 +1,7 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import type { Permissions } from "@/shared/lib/permissions";
 import { Button } from "@/shared/ui/kit/button";
-import { BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";
+import { BookmarkMinus, BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
@@ -65,7 +65,7 @@ export const WishlistItemCard = memo(function ({
                 : undefined
             }
             className="hover:bg-white">
-            <BookmarkPlus />
+            {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
           </Button>
           <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)} className="hover:bg-white">
             <ExternalLink />
@@ -122,12 +122,32 @@ export const WishlistItemCard = memo(function ({
           </ItemContent>
 
           {!isMobile && permissions.canUpdate && permissions.canDelete && (
-            <ItemActions className="ml-auto hidden sm:flex">
+            <ItemActions className="ml-auto hidden sm:flex z-10">
               <Button variant="ghost" onClick={handleUpdate ? () => handleUpdate(wishlistItem.id) : undefined}>
                 <Pencil />
               </Button>
               <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined}>
                 <Trash />
+              </Button>
+              <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)}>
+                <ExternalLink />
+              </Button>
+            </ItemActions>
+          )}
+          {!isMobile && permissions.canReserve && (
+            <ItemActions className="ml-auto hidden sm:flex">
+              <Button
+                variant="ghost"
+                onClick={
+                  handleReserve
+                    ? () => {
+                        handleReserve(wishlistItem.id);
+                        setOpened(false);
+                      }
+                    : undefined
+                }
+                className="hover:bg-white">
+                {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
               </Button>
             </ItemActions>
           )}

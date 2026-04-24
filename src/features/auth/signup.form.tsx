@@ -14,7 +14,7 @@ const signupSchema = z
   .object({
     email: z.email("Введите корректный email"),
     username: z.string().min(1, "Добавьте имя пользователя"),
-    password: z.string().min(8, "Пароль должен состоять из 8 символов").max(8, "Пароль должен состоять из 8 символов"),
+    password: z.string().min(8, "Пароль должен содержать минимум 8 символов"),
     repeatPassword: z.string().min(1, "Подтвердите пароль"),
   })
   .refine((data) => data.password === data.repeatPassword, {
@@ -44,7 +44,6 @@ export function SignupForm() {
       await signUp.mutateAsync(data);
       navigate(ROUTES.CHECK_EMAIL);
     } catch (error) {
-      // TODO: sonner and console
       setError("Ошибка при регистрации: " + ((error as Error).message ?? "Неизвестная ошибка"));
     }
   });

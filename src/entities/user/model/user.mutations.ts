@@ -42,18 +42,21 @@ export const useSignUp = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ email, password }: { email: string; username: string; password: string }) => {
-      const { data, error } = await authRepository.signUp(email, password);
-      if (error?.code === "over_email_send_rate_limit") toast.error("Попробуйте зарегистрироваться позднее (превышен общий лимит заявок)");
-      if (error) throw error;
+    mutationFn: async ({ email, username, password }: { email: string; username: string; password: string }) => {
+      const { data, error: signupError } = await authRepository.signUp(email, password);
+      if (signupError?.code === "over_email_send_rate_limit")
+        toast.error("Попробуйте зарегистрироваться позднее (превышен общий лимит заявок)");
+      if (signupError) throw signupError;
       if (!data.user?.id) throw Error("No id");
+      const { error: userUpdateError } = await userRepository.update(data.user?.id, { username, avatar_url: null });
+      if (userUpdateError) console.log("Ошибка обновления имя пользователя");
       return data;
     },
     onMutate: () => {
       const toastId = toast.loading("Регистрация...");
       return { toastId };
     },
-    onSuccess: async (data, vars, ctx) => {
+    onSuccess: async (data, _vars, ctx) => {
       toast.success("Регистрация выполнена успешно", {
         id: ctx.toastId,
         action: {
@@ -65,9 +68,6 @@ export const useSignUp = () => {
       if (!userId) return;
 
       await prefetchUser(queryClient, userId);
-
-      const { error } = await userRepository.update(userId, { username: vars.username, avatar_url: null });
-      if (error) console.log("Ошибка обновления имя пользователя");
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка регистрации", {
@@ -146,6 +146,7 @@ const prefetchUser = async (queryClient: QueryClient, userId: string) => {
       const { data, error } = await userRepository.get(userId);
       if (error) throw error;
       const friendIds = data.friends?.map((f: { friend_id: string }) => f.friend_id) ?? [];
+      if (!data.username) return { ...data, username: "Пользователь", friends: friendIds };
       return { ...data, friends: friendIds };
     },
   });

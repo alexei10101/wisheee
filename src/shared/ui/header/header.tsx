@@ -17,12 +17,14 @@ import { useNotifications } from "@/entities/notification/model/notification.que
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { Skeleton } from "../kit/skeleton";
+import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 
 export function AppHeader() {
   const { data: user, isLoading: userIsLoading } = useCurrentUser();
   const logout = useLogout();
   const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
+  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   const unreadCount = notifications?.filter((n) => !n.is_read).length;
 
@@ -69,7 +71,7 @@ export function AppHeader() {
               )}
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48" align="start">
+          <DropdownMenuContent className="w-48" align={isMobile ? "start" : "end"}>
             {user && (
               <DropdownMenuGroup>
                 <UserUpdateDialogButton closeMenu={() => setDropdownMenuOpen(false)} />

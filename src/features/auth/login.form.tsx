@@ -10,7 +10,7 @@ import { useLogin } from "@/entities/user/model/user.mutations";
 
 const loginSchema = z.object({
   email: z.email("Введите корректный email"),
-  password: z.string().min(8, "Пароль должен состоять из 8 символов.").max(8, "Пароль должен состоять из 8 символов."),
+  password: z.string().min(8, "Пароль должен содержать минимум 8 символов"),
 });
 
 export function LoginForm() {

@@ -35,7 +35,7 @@ function WishlistPage() {
   if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
 
   return (
-    <main className="pt-25 sm:pt-30 px-2 sm:px-8 min-h-screen bg-gray-100">
+    <main className="pt-25 pb-4 sm:pt-30 px-2 sm:px-8 min-h-screen bg-gray-100">
       <div className="mb-3 sm:mb-5">
         {paramUserId && user && (
           <PageHeader
