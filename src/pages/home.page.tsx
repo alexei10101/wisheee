@@ -4,14 +4,10 @@ import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { PageLoader } from "@/shared/ui/page-loader";
 
 function HomePage() {
-  const { data: user, status, fetchStatus, isError } = useCurrentUser();
+  const { data: user, isLoading, isError } = useCurrentUser();
   const isMobile = !useMediaQuery("(min-width: 640px)");
 
-  const isOffline = !navigator.onLine;
-
-  if (isOffline) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вы оффлайн</div>;
-
-  if (status === "pending" && fetchStatus === "fetching") return <PageLoader />;
+  if (isLoading) return <PageLoader />;
   if (isError || !user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки страницы</div>;
   return (
     <main className="pt-25 sm:pt-30 px-8 pb-4 flex justify-center h-full">

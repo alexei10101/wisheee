@@ -1,20 +1,12 @@
 /// <reference lib="webworker" />
 
-import { precacheAndRoute, matchPrecache } from "workbox-precaching";
-import { registerRoute } from "workbox-routing";
+import { precacheAndRoute } from "workbox-precaching";
 
 declare let self: ServiceWorkerGlobalScope & {
   __WB_MANIFEST: any;
 };
 
 precacheAndRoute(self.__WB_MANIFEST);
-
-registerRoute(
-  ({ request }) => request.mode === "navigate",
-  async () => {
-    return (await matchPrecache("/index.html")) as Response;
-  },
-);
 
 self.addEventListener("fetch", (event: FetchEvent) => {
   const url = new URL(event.request.url);

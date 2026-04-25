@@ -17,7 +17,7 @@ export const useUser = (userId?: string | null, options?: { enabled: boolean }) 
       if (!data.username) return { ...data, username: "Пользователь", friends: friendIds };
       return { ...data, friends: friendIds };
     },
-    enabled: options?.enabled && navigator.onLine,
+    enabled: options?.enabled,
     staleTime: 1000 * 60 * 5,
   });
 };

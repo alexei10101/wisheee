@@ -15,11 +15,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
+    const init = async () => {
+      const { data } = await authRepository.getSession();
+      setSession(data.session);
+      setAppReady(true);
+    };
+
+    init();
+
     const {
       data: { subscription },
     } = authRepository.onAuthStateChange((_event, session) => {
       setSession(session);
-      setAppReady(true);
     });
 
     return () => subscription.unsubscribe();
