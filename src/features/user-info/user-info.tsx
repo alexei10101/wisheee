@@ -43,8 +43,8 @@ export function UserInfo({ user, isMobile }: UserInfoProps) {
           <TooltipTrigger asChild>
             <div
               className={cn(
-                "flex items-center gap-2 cursor-pointer p-0 font-medium hover:text-gray-300 transition-colors",
-                isMobile ? "text-xl" : "text-lg",
+                "flex items-center gap-2 cursor-pointer p-0 font-medium",
+                isMobile ? "text-xl text-gray-300" : "text-lg hover:text-gray-300 transition-colors",
               )}>
               <Link to={"/"} className=" p-0 flex items-center gap-1">
                 <Gem size={isMobile ? 30 : 20} />
