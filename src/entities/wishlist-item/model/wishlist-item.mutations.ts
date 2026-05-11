@@ -66,7 +66,7 @@ export const useUpdateWishlistItem = (originalWishlistId: string) => {
         },
       });
       if (updated.wishlist_id === originalWishlistId) {
-        queryClient.setQueryData(wishlistKeys.detail(updated.wishlist_id), (old: WishlistWithItems | undefined) => {
+        queryClient.setQueryData(wishlistKeys.detail(originalWishlistId), (old: WishlistWithItems | undefined) => {
           if (!old) return old;
           return {
             ...old,
@@ -78,7 +78,7 @@ export const useUpdateWishlistItem = (originalWishlistId: string) => {
                     description: updated.description,
                     link: updated.link,
                     price: updated.price,
-                    image: updated.image_url,
+                    image_url: updated.image_url,
                   }
                 : w,
             ),
@@ -104,7 +104,7 @@ export const useUpdateWishlistItem = (originalWishlistId: string) => {
                 description: updated.description,
                 link: updated.link,
                 price: updated.price,
-                image: updated.image_url,
+                image_url: updated.image_url,
               },
               ...old.wishlist_items,
             ],

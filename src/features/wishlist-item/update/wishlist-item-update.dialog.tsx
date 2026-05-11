@@ -14,6 +14,8 @@ import { urlToFile } from "@/shared/utils/convert-image";
 import { Label } from "@/shared/ui/kit/label";
 import { X } from "lucide-react";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { wishlistItemService } from "@/entities/wishlist-item/model/wishlist-item.service";
+import { Spinner } from "@/shared/ui/kit/spinner";
 
 type WishlistItemUpdateDialogProps = {
   open: boolean;
@@ -74,7 +76,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   const handleUpdate = async () => {
     if (!user?.id || !wishlistItem.id) return;
     const updatedFields = getUpdatedFields();
-    if (Object.keys(updatedFields).length === 0 || !wishlistItem) return onClose();
+    if ((Object.keys(updatedFields).length === 0 && !form.formState.dirtyFields.image) || !wishlistItem) return onClose();
 
     const data = {
       id: wishlistItem.id,
@@ -82,9 +84,26 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
     };
 
     try {
-      updateWishlistItem.mutateAsync({ data });
+      const imageValue = form.getValues().image;
+
+      if (imageValue instanceof File) {
+        const uploadResult = await wishlistItemService.uploadImage(user.id, wishlistItem.id, imageValue);
+
+        if (uploadResult.error) {
+          throw new Error(uploadResult.error);
+        }
+
+        data.image_url = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
+      }
+
+      if (imageValue === null) {
+        wishlistItemService.removeImage(user.id, wishlistItem.id);
+        data.image_url = null;
+      }
+
+      await updateWishlistItem.mutateAsync({ data });
     } catch (error) {
-      console.log(error);
+      console.log("Ошибка при обновлении подарка: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {
       onClose();
     }
@@ -268,8 +287,8 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
           <Button variant="outline" className="sm:w-26" onClick={() => onClose()}>
             Отмена
           </Button>
-          <Button type="submit" form="wishlist-item-update-form" className="sm:w-26">
-            Сохранить
+          <Button type="submit" form="wishlist-item-update-form" className="sm:w-26" disabled={updateWishlistItem.isPending}>
+            {updateWishlistItem.isPending ? <Spinner /> : "Сохранить"}
           </Button>
         </DialogFooter>
       </DialogCustomContent>
