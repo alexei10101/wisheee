@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { useCreateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";

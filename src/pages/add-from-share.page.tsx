@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -28,7 +28,7 @@ function AddFromSharePage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      navigate("/login", {
+      navigate("/signin", {
         state: { from: "/add-from-share" },
       });
     }

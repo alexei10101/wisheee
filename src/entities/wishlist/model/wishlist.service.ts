@@ -1,5 +1,5 @@
 import { wishlistRepository } from "../api/wishlist.repository";
-import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
+import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import type { Wishlist, WishlistWithItems } from "./wishlist";
 import { wishlistApi } from "../api/client";
 import type { ApiResponse } from "@/shared/api/edge-response.type";

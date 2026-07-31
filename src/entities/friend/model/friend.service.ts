@@ -1,4 +1,4 @@
-import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
+import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import { friendRepository } from "../api/friend.repository";
 import type { User } from "../../user/model/user";
 

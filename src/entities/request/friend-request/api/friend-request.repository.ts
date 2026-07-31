@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/api/supabase-client";
+import { supabase } from "@/shared/supabase-client";
 import type { FriendRequestMetadata, FriendRequestStatus } from "../model/friend-request";
 
 export const friendRequestRepository = {

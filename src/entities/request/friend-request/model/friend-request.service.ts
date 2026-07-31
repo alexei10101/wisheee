@@ -1,4 +1,4 @@
-import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
+import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
 
 import { friendRequestRepository } from "../api/friend-request.repository";

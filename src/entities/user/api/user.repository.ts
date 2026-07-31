@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/api/supabase-client";
+import { supabase } from "@/shared/supabase-client";
 import type { User } from "../model/user";
 import type { File } from "zod/v4/core";
 

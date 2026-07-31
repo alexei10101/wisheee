@@ -1,4 +1,4 @@
-import { safeQuery, type ServiceResult } from "@/shared/api/safe-query";
+import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import { userRepository } from "../api/user.repository";
 import { convertToWebp } from "@/shared/utils/convert-image";
 

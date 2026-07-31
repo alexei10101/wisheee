@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/api/supabase-client";
+import { supabase } from "@/shared/supabase-client";
 import type { WishlistItem } from "../model/wishlist-item";
 
 export const wishlistItemRepository = {

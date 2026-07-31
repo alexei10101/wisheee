@@ -9,24 +9,25 @@ import {
 } from "@/shared/ui/kit/dropdown-menu";
 import { Bell, House, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { Badge } from "../kit/badge";
-import { useLogout } from "@/entities/user/model/user.mutations";
+import { useLogout } from "@/features/auth/model/auth.mutations";
 import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
 import { useNotifications } from "@/entities/notification/model/notification.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { Skeleton } from "../kit/skeleton";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
+import { useAuth } from "@/app/auth.context";
 
 export function AppHeader() {
-  const { data: user, isLoading: userIsLoading } = useCurrentUser();
+  const { user, isLoading: userIsLoading } = useAuth();
   const logout = useLogout();
-  const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
+  // const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
   const isMobile = !useMediaQuery("(min-width: 640px)");
 
-  const unreadCount = notifications?.filter((n) => !n.is_read).length;
+  // const unreadCount = notifications?.filter((n) => !n.is_read).length;
 
   const handleLogout = async () => {
     setDropdownMenuOpen(false);
@@ -49,12 +50,12 @@ export function AppHeader() {
 
         <Button variant="link" className="p-0  items-center gap-1 hidden sm:flex">
           <Link to={ROUTES.NOTIFICATIONS}>
-            {unreadCount !== 0 && (
+            {/* {unreadCount !== 0 && (
               <Badge variant="secondary" className="text-[11px]">
                 {unreadCount}
               </Badge>
             )}
-            {unreadCount === 0 && <Bell />}
+            {unreadCount === 0 && <Bell />} */}
           </Link>
         </Button>
 
@@ -90,7 +91,7 @@ export function AppHeader() {
             <House size={26} />
           </Link>
 
-          {notificationsIsLoading && <Skeleton className="w-7 h-7 rounded-full" />}
+          {/* {notificationsIsLoading && <Skeleton className="w-7 h-7 rounded-full" />}
           {unreadCount === 0 && !notificationsIsLoading && (
             <Link to={ROUTES.NOTIFICATIONS}>
               <Bell />
@@ -102,7 +103,7 @@ export function AppHeader() {
                 <div className="text-[13px]"> {unreadCount}</div>
               </Link>
             </Badge>
-          )}
+          )} */}
         </div>
       </div>
     </header>

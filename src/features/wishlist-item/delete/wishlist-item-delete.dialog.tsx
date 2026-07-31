@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { memo } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useDeleteWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 
 type WishlistItemDeleteDialogProps = {
   wishlistId: string;

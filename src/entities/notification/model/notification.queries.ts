@@ -9,14 +9,14 @@ export const notificationKeys = {
 };
 
 export const useNotifications = (userId?: string) => {
-  useRealtimeNotifications(userId);
-  return useQuery({
-    queryKey: notificationKeys.friendRequest(userId ?? ""),
-    queryFn: async () => {
-      const result = await notificationService.fetchNotifications(userId!);
-      return unwrap(result);
-    },
-    staleTime: 1000 * 60,
-    enabled: !!userId,
-  });
+  // useRealtimeNotifications(userId);
+  // return useQuery({
+  //   queryKey: notificationKeys.friendRequest(userId ?? ""),
+  //   queryFn: async () => {
+  //     const result = await notificationService.fetchNotifications(userId!);
+  //     return unwrap(result);
+  //   },
+  //   staleTime: 1000 * 60,
+  //   enabled: !!userId,
+  // });
 };

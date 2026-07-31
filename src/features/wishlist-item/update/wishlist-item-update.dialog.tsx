@@ -13,7 +13,7 @@ import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-i
 import { urlToFile } from "@/shared/utils/convert-image";
 import { Label } from "@/shared/ui/kit/label";
 import { X } from "lucide-react";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { wishlistItemService } from "@/entities/wishlist-item/model/wishlist-item.service";
 import { Spinner } from "@/shared/ui/kit/spinner";
 

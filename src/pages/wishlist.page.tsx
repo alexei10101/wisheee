@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/auth.context";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { useUser } from "@/entities/user/model/user.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";

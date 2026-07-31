@@ -1,11 +1,11 @@
 import { ROUTES } from "@/shared/routes";
 import { Navigate, Outlet } from "react-router";
-import { useAuth } from "@/app/auth.context";
 import { AppHeader } from "@/shared/ui/header/header";
+import { useAuth } from "../auth.context";
 
 function ProtectedRoute() {
-  const { session } = useAuth();
-  if (!session) return <Navigate to={ROUTES.LOGIN} replace />;
+  const { user } = useAuth();
+  if (!user) return <Navigate to={ROUTES.SIGNIN} replace />;
 
   return (
     <>

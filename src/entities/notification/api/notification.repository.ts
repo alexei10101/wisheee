@@ -1,5 +1,5 @@
 import type { FriendNotificationMetadata, FriendRequestStatus } from "@/entities/request/friend-request/model/friend-request";
-import { supabase } from "@/shared/api/supabase-client";
+import { supabase } from "@/shared/supabase-client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import type { AppNotification } from "../model/notification";
 

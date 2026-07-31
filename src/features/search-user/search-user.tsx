@@ -5,7 +5,7 @@ import type { FriendRequestMetadata } from "@/entities/request/friend-request/mo
 import type { User } from "@/entities/user/model/user";
 import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
 import { SearchList } from "../search-list/search.list";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 
 export function SearchUser() {
   const { data: user } = useCurrentUser();

@@ -10,7 +10,7 @@ import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 
 type WishlistUpdateDialogProps = {
   open: boolean;

@@ -6,32 +6,33 @@ import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useState } from "react";
 import { Spinner } from "@/shared/ui/kit/spinner";
-import { useLogin } from "@/entities/user/model/user.mutations";
+import { useSignIn } from "@/features/auth/model/auth.mutations";
+import { getErrorMessage } from "@/shared/lib/get-error-message";
 
-const loginSchema = z.object({
+const signInSchema = z.object({
   email: z.email("Введите корректный email"),
   password: z.string().min(8, "Пароль должен содержать минимум 8 символов"),
 });
 
-export function LoginForm() {
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+export function SignInForm() {
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const login = useLogin();
+  const login = useSignIn();
   const [error, setError] = useState<string>("");
 
-  const handleLogin = form.handleSubmit(async (data: z.infer<typeof loginSchema>) => {
+  const handleLogin = form.handleSubmit(async (data: z.infer<typeof signInSchema>) => {
     setError("");
 
     try {
       await login.mutateAsync(data);
     } catch (error) {
-      setError("Ошибка при входе: " + ((error as Error).message ?? "Неизвестная ошибка"));
+      setError("Ошибка при входе: " + getErrorMessage(error));
     }
   });
 

@@ -6,7 +6,7 @@ import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { useState } from "react";
 import { Spinner } from "@/shared/ui/kit/spinner";
-import { useSignUp } from "@/entities/user/model/user.mutations";
+import { useSignUp } from "@/features/auth/model/auth.mutations";
 import { useNavigate } from "react-router";
 import { ROUTES } from "@/shared/routes";
 

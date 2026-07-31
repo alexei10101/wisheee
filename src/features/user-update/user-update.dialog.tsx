@@ -1,6 +1,6 @@
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import type { User } from "@/entities/user/model/user";
-import { useUpdateUser } from "@/entities/user/model/user.mutations";
+import { useUpdateUser } from "@/features/auth/model/auth.mutations";
 import { userService } from "@/entities/user/model/user.service";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
@@ -92,10 +92,10 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
         return;
       }
 
-      await updateUser.mutateAsync({
-        id: user.id,
-        updateData: newData,
-      });
+      // await updateUser.mutateAsync({
+      //   id: user.id,
+      //   updateData: newData,
+      // });
     } catch (error) {
       console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {

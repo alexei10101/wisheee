@@ -5,16 +5,16 @@ export type ServiceResult<T = null> = {
 
 export async function safeQuery<T>(query: PromiseLike<{ data: T | null; error: any }>): Promise<ServiceResult<T>> {
   try {
-    const { data, error } = await query;
+    const { data } = await query;
 
-    if (error) {
-      return { error: error.message, result: null };
-    }
+    // if (error) {
+    //   return { error: error.message, result: null };
+    // }
 
     return { error: null, result: data };
-  } catch (e) {
+  } catch (error) {
     return {
-      error: e instanceof Error ? e.message : "Неизвестная ошибка",
+      error: error instanceof Error ? error.message : "Неизвестная ошибка",
       result: null,
     };
   }

@@ -3,7 +3,7 @@ import { WishlistCreateButton } from "@/features/wishlist/create/wishlist-create
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
 import { BackButton } from "@/shared/ui/back.button";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { useParams } from "react-router";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { useUser } from "@/entities/user/model/user.queries";

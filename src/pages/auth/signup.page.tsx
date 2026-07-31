@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { ROUTES } from "../../shared/routes";
-import { AuthLayout } from "@/features/auth/auth.layout";
-import { SignupForm } from "@/features/auth/signup.form";
+import { AuthLayout } from "@/features/auth/ui/auth.layout";
+import { SignupForm } from "@/features/auth/ui/signup.form";
 
 function SignupPage() {
   return (
@@ -11,7 +11,7 @@ function SignupPage() {
       form={<SignupForm />}
       footerText={
         <>
-          Есть аккаунт? <Link to={ROUTES.LOGIN}>Войти</Link>
+          Есть аккаунт? <Link to={ROUTES.SIGNIN}>Войти</Link>
         </>
       }
     />

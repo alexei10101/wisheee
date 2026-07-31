@@ -6,7 +6,7 @@ import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog"
 import { useState } from "react";
 import type { Permissions } from "@/shared/lib/permissions";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { useReserveWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { useAuth } from "@/app/auth.context";
 

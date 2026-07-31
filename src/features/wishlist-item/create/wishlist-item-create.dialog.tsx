@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { useCreateWishlistItemWithImage } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";

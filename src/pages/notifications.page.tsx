@@ -3,7 +3,7 @@ import { MarkNotificationsAsRead } from "@/features/notification/mark-notificati
 import { NotificationList } from "@/features/notification/notification-list/notification.list";
 import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
-import { useCurrentUser } from "@/entities/user/model/use-current-user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { useAuth } from "@/app/auth.context";
 

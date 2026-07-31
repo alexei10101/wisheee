@@ -1,42 +1,30 @@
-import { authRepository } from "@/entities/user/api/auth.repository";
-import type { Session } from "@supabase/supabase-js";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import type { User } from "@/entities/user/model/user";
+import { useCurrentUser } from "@/features/auth/model/use-current-user";
+import { createContext, useContext } from "react";
 
 type AuthContextType = {
-  session: Session | null;
-  appReady: boolean;
-  userId: string | null;
+  user: User | null;
+  isLoading: boolean;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [appReady, setAppReady] = useState(false);
+  const query = useCurrentUser();
 
-  useEffect(() => {
-    const init = async () => {
-      const { data } = await authRepository.getSession();
-      setSession(data.session);
-      setAppReady(true);
-    };
-
-    init();
-
-    const {
-      data: { subscription },
-    } = authRepository.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  return <AuthContext.Provider value={{ session, appReady, userId: session?.user?.id ?? null }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user: query.data ?? null,
+        isLoading: query.isLoading,
+      }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  if (!ctx) throw new Error("auth context error");
   return ctx;
 }
