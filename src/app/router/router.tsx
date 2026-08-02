@@ -5,7 +5,8 @@ import { TooltipProvider } from "@/shared/ui/kit/tooltip";
 import ProtectedRoute from "./protected.route";
 import PublicRoute from "./public.route";
 import { RootLayout } from "./root.layout";
-import { AuthProvider } from "../auth.context";
+import ErrorPage from "@/pages/404.page";
+import AppInitializer from "../app-initializer";
 
 const SignInPageLazy = lazy(() => import("../../pages/auth/signin.page"));
 const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
         </TooltipProvider>
       </AuthProvider>
     ),
+    errorElement: <ErrorPage />,
     children: [
       {
         element: <ProtectedRoute />,
