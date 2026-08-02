@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
+import { useCurrentUser } from "@/entities/user/model/user.queries";
 import { UserInfo } from "@/features/user-info/user-info";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { PageLoader } from "@/shared/ui/page-loader";

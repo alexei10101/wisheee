@@ -29,8 +29,8 @@ export const WishlistList = function WishlistList({ permissions, user, style }: 
 
   return (
     <section className={style}>
-      {wishlists?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлистов пока нет</div>}
-      {wishlists && (
+      {/* {wishlists?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлистов пока нет</div>} */}
+      {/* {wishlists && (
         <div className="flex flex-col gap-2 sm:gap-4 sm:items-center">
           {wishlists.map((wishlist) => (
             <WishlistCard
@@ -50,7 +50,7 @@ export const WishlistList = function WishlistList({ permissions, user, style }: 
             <WishlistDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistId={dialog.wishlistId} />
           )}
         </div>
-      )}
+      )} */}
     </section>
   );
 };

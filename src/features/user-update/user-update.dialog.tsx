@@ -1,6 +1,4 @@
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import type { User } from "@/entities/user/model/user";
-import { useUpdateUser } from "@/features/auth/model/auth.mutations";
+import type { UserUpdateDto } from "@/entities/user/model/user";
 import { userService } from "@/entities/user/model/user.service";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
@@ -13,6 +11,8 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
+import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useUpdateUser } from "@/entities/user/model/user.mutations";
 
 type UserUpdateDialogProps = {
   open: boolean;
@@ -22,8 +22,8 @@ type UserUpdateDialogProps = {
 
 type FormValues = z.infer<typeof userSchema>;
 const userSchema = z.object({
-  username: z.string().min(1, "Введите имя"),
-  avatar_url: z.union([z.instanceof(File), z.null()]).optional(),
+  username: z.string().min(2, "Минимум 2 символа"),
+  avatar: z.union([z.instanceof(File), z.null()]).optional(),
 });
 
 export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogProps) {
@@ -34,12 +34,12 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
     resolver: zodResolver(userSchema),
     defaultValues: {
       username: "",
-      avatar_url: undefined,
+      avatar: undefined,
     },
   });
 
-  const avatarFile = updateUserForm.watch("avatar_url");
-  const previewUrl = avatarFile instanceof File ? URL.createObjectURL(avatarFile) : avatarFile === null ? null : user?.avatar_url;
+  const avatarFile = updateUserForm.watch("avatar");
+  const previewUrl = avatarFile instanceof File ? URL.createObjectURL(avatarFile) : avatarFile === null ? null : user?.avatar;
 
   useEffect(() => {
     return () => {
@@ -63,13 +63,13 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
     const formValues = updateUserForm.getValues();
     const dirtyFields = updateUserForm.formState.dirtyFields;
 
-    const newData = {} as Pick<User, "username"> & { avatar_url: string | null };
+    const updated = {} as UserUpdateDto;
     if (dirtyFields.username) {
-      newData.username = formValues.username.trim();
+      updated.username = formValues.username.trim();
     }
 
     try {
-      const avatarValue = formValues.avatar_url;
+      const avatarValue = formValues.avatar;
 
       if (avatarValue instanceof File) {
         const uploadResult = await userService.uploadAvatar(user.id, avatarValue);
@@ -78,24 +78,21 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
           throw new Error(uploadResult.error);
         }
 
-        newData.avatar_url = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
+        updated.avatar = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
       }
 
       if (avatarValue === null) {
         userService.removeAvatar(user.id);
-        newData.avatar_url = null;
+        updated.avatar = null;
       }
 
-      if (Object.keys(newData).length === 0) {
+      if (Object.keys(updated).length === 0) {
         console.log("Поля не изменены");
         onClose();
         return;
       }
 
-      // await updateUser.mutateAsync({
-      //   id: user.id,
-      //   updateData: newData,
-      // });
+      await updateUser.mutateAsync(updated);
     } catch (error) {
       console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {
@@ -114,7 +111,7 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>
         <form id="form" onSubmit={updateUserForm.handleSubmit(handleFormSubmit)} className="flex gap-4">
           <Controller
-            name="avatar_url"
+            name="avatar"
             control={updateUserForm.control}
             render={({ field }) => (
               <Field className="w-20">
@@ -137,7 +134,7 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => updateUserForm.setValue("avatar_url", null)}>
+                    onClick={() => updateUserForm.setValue("avatar", null)}>
                     <X />
                   </Button>
                 </Label>

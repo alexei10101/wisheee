@@ -1,7 +1,5 @@
-import { AuthService } from "@/features/auth/model/auth.service";
+import { authRepository } from "@/features/auth/api/auth.repository";
 import axios from "axios";
-
-const authService = new AuthService();
 
 export const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api`,
@@ -16,13 +14,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      !originalRequest ||
-      // originalRequest.url?.includes("/auth/refresh") ||
-      error.response?.status !== 401 ||
-      originalRequest._retry ||
-      error.response?.data.code === "NO_SESSION"
-    ) {
+    if (!originalRequest || error.response?.status !== 401 || originalRequest._retry || error.response?.data.code === "NO_SESSION") {
       return Promise.reject(error);
     }
 
@@ -31,7 +23,7 @@ api.interceptors.response.use(
     if (!isRefreshing) {
       isRefreshing = true;
 
-      refreshPromise = authService.refresh().finally(() => {
+      refreshPromise = authRepository.refresh().finally(() => {
         isRefreshing = false;
         refreshPromise = null;
       });
@@ -41,7 +33,7 @@ api.interceptors.response.use(
       await refreshPromise;
       return api(originalRequest);
     } catch (e) {
-      await authService.logout();
+      await authRepository.logout();
       return Promise.reject(e);
     }
   },

@@ -12,7 +12,7 @@ const sizeClasses = {
 };
 
 type UserBadgeProps = {
-  user: Pick<User, "username" | "avatar_url">;
+  user: Pick<User, "username" | "avatar">;
   variant?: "vertical"; // default - horizontal badge
   size?: "sm" | "xl" | "lg";
 };
@@ -20,8 +20,7 @@ type UserBadgeProps = {
 export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
   const [loading, setLoading] = useState(true);
   const avatarSize = sizeClasses[size ?? "sm"];
-
-  const avatarUrl = user.avatar_url || "/default-avatar.webp";
+  const avatarUrl = user.avatar || "/default-avatar.webp";
 
   return (
     <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "inline-flex flex-nowrap w-fit gap-2"}`)}>
@@ -37,7 +36,7 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
 
       <ItemContent className="flex-0">
         <ItemTitle className={cn(size === "lg" && "text-xl sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
-          {user.username.length < 13 && user.username}
+          {user.username?.length < 13 && user.username}
         </ItemTitle>
       </ItemContent>
     </Item>

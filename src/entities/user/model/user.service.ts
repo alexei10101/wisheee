@@ -1,8 +1,19 @@
 import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import { userRepository } from "../api/user.repository";
 import { convertToWebp } from "@/shared/utils/convert-image";
+import type { User, UserUpdateDto } from "./user";
 
 export const userService = {
+  me(): Promise<User | null> {
+    return userRepository.me();
+  },
+  getById(id: string): Promise<User | null> {
+    return userRepository.getById(id);
+  },
+  update(data: UserUpdateDto): Promise<User | null> {
+    return userRepository.update(data);
+  },
+
   async uploadAvatar(userId: string, file: File): Promise<ServiceResult<{ publicUrl: string }>> {
     const webpFile = await convertToWebp(file, 160);
     const filePath = `${userId}/avatar/avatar.webp`;

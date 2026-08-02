@@ -13,7 +13,7 @@ const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
 const CheckEmailPageLazy = lazy(() => import("../../pages/auth/check-email.page"));
 
 const HomePageLazy = lazy(() => import("../../pages/home.page"));
-// const WishlistsPageLazy = lazy(() => import("../../pages/wishlists.page"));
+const WishlistsPageLazy = lazy(() => import("../../pages/wishlists.page"));
 // const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
 // const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 // const NotificationsLazy = lazy(() => import("../../pages/notifications.page"));
@@ -23,11 +23,11 @@ const HomePageLazy = lazy(() => import("../../pages/home.page"));
 const router = createBrowserRouter([
   {
     element: (
-      <AuthProvider>
+      <AppInitializer>
         <TooltipProvider>
           <RootLayout />
         </TooltipProvider>
-      </AuthProvider>
+      </AppInitializer>
     ),
     errorElement: <ErrorPage />,
     children: [
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
           { index: true, Component: HomePageLazy },
           // { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
           // { path: ROUTES.MY_WISHLIST, Component: WishlistPageLazy },
-          // { path: ROUTES.MY_WISHLISTS, Component: WishlistsPageLazy },
+          { path: ROUTES.MY_WISHLISTS, Component: WishlistsPageLazy },
           // { path: ROUTES.NOTIFICATIONS, Component: NotificationsLazy },
 
           // { path: ROUTES.USER_WISHLISTS, Component: WishlistsPageLazy },

@@ -3,23 +3,16 @@ import { WishlistCreateButton } from "@/features/wishlist/create/wishlist-create
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
 import { BackButton } from "@/shared/ui/back.button";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { useParams } from "react-router";
 import { UserBadge } from "@/entities/user/ui/user.badge";
-import { useUser } from "@/entities/user/model/user.queries";
+import { useCurrentUser, useUser } from "@/entities/user/model/user.queries";
 import { PageLoader } from "@/shared/ui/page-loader";
 
 function WishlistsPage() {
   const { data: me } = useCurrentUser();
   const { userId: paramUserId } = useParams<{ userId: string }>();
 
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useUser(paramUserId, {
-    enabled: !!paramUserId,
-  });
+  const { data: user, isLoading, isError } = useUser(paramUserId);
 
   const relation = getUserRelation({ viewerId: me?.id, ownerId: paramUserId ?? me?.id });
   const permissions = getPermissions(relation);
@@ -35,12 +28,12 @@ function WishlistsPage() {
           <PageHeader
             title={`Вишлисты пользователя ${user?.username}`}
             left={<BackButton />}
-            user={<UserBadge user={{ username: user.username, avatar_url: user.avatar_url }} />}
+            user={<UserBadge user={{ username: user.username, avatar: user.avatar }} />}
           />
         )}
         {!paramUserId && <PageHeader title="Мои вишлисты" left={<BackButton />} right={permissions.canAdd && <WishlistCreateButton />} />}
       </div>
-      <WishlistList user={user ?? me} permissions={permissions} />
+      {/* <WishlistList user={user ?? me} permissions={permissions} /> */}
     </main>
   );
 }

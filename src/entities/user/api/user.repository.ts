@@ -1,32 +1,29 @@
 import { supabase } from "@/shared/supabase-client";
-import type { User } from "../model/user";
+import type { User, UserUpdateDto } from "../model/user";
 import type { File } from "zod/v4/core";
+import { api } from "@/shared/api/api";
+import type { ApiResponse } from "@/shared/api/types";
 
 export const userRepository = {
-  async get(id: string) {
-    return supabase
-      .from("profiles")
-      .select(
-        `
-        *,
-        wishlists (
-          id,
-          title,
-          description,
-          is_public
-        ),
-        friends!friends_user_id_fkey (
-          friend_id
-        )
-      `,
-      )
-      .eq("id", id)
-      .order("created_at", { foreignTable: "wishlists", ascending: false })
-      .single();
+  async me(): Promise<User | null> {
+    const { data } = await api.get<ApiResponse<User | null>>("/users/me");
+    return data.data;
   },
-  async update(id: string, updateData: Pick<User, "username"> & { avatar_url: string | null }) {
-    return supabase.from("profiles").update(updateData).eq("id", id).select().single();
+  // TODO check errors
+  async getById(id: string): Promise<User | null> {
+    const { data } = await api.get<ApiResponse<User | null>>("/users/" + id);
+    return data.data;
   },
+  // TODO check unique username
+  async update(updateData: UserUpdateDto): Promise<User | null> {
+    const { data } = await api.patch<ApiResponse<User>>("/users/update", updateData);
+    return data.data;
+  },
+
+  // old methods
+  // async update(id: string, updateData: Pick<User, "username"> & { avatar_url: string | null }) {
+  //   return supabase.from("profiles").update(updateData).eq("id", id).select().single();
+  // },
   async uploadAvatar(file: File, filePath: string) {
     return supabase.storage.from("avatars").upload(filePath, file, { upsert: true });
   },

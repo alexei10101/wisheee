@@ -1,10 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authRepository } from "../api/auth.repository";
 import { toast } from "sonner";
-import { authKeys } from "./use-current-user";
-import { AuthService } from "./auth.service";
-
-const authService = new AuthService();
+import { userKeys } from "@/entities/user/model/user.queries";
+import { authService } from "./auth.service";
 
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -23,7 +21,7 @@ export const useSignIn = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(authKeys.me(), data);
+      queryClient.setQueryData(userKeys.me(), data);
     },
     onError: (error, _, ctx) => {
       toast.error(error.message, {
@@ -80,40 +78,7 @@ export const useLogout = () => {
         id: ctx?.toastId,
       });
     },
-    onSettled: () => queryClient.setQueryData(authKeys.me(), null),
-  });
-};
-
-export const useUpdateUser = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (user) => user,
-    // mutationFn: async ({ id, updateData }: { id: string; updateData: Pick<User, "username"> & { avatar_url: string | null } }) => {
-    //   const { data, error } = await userRepository.update(id, updateData);
-    //   if (error) throw error;
-    //   return data;
-    // },
-    onMutate: () => {
-      const toastId = toast.loading("Обновление аккаунта...");
-      return { toastId };
-    },
-    // onSuccess: (updated, _vars, ctx) => {
-    //   toast.success("Изменения успешно внесены", {
-    //     id: ctx.toastId,
-    //     action: {
-    //       label: "Ок",
-    //       onClick: () => {},
-    //     },
-    //   });
-    //   const userId = updated.id;
-    //   if (!userId) return;
-    // queryClient.setQueryData(userKeys.me(userId), (user: User) => ({ ...user, ...updated }));
-    // },
-    onError: (_err, _vars, ctx) => {
-      toast.error("Ошибка внесения изменений", {
-        id: ctx?.toastId,
-      });
-    },
+    onSettled: () => queryClient.setQueryData(userKeys.me(), null),
   });
 };
 

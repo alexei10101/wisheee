@@ -14,7 +14,7 @@ type UserInfoProps = {
 export function UserInfo({ user, isMobile }: UserInfoProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-center">
-      <UserBadge user={{ username: user.username ?? "", avatar_url: user.avatar_url ?? "" }} variant="vertical" size="lg" />
+      <UserBadge user={{ username: user.username ?? "", avatar: user.avatar ?? "" }} variant="vertical" size="lg" />
 
       <div className={cn("flex flex-col mt-3 items-center sm:items-start", isMobile && "gap-2")}>
         <div

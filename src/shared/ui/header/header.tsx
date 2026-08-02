@@ -15,13 +15,12 @@ import { useLogout } from "@/features/auth/model/auth.mutations";
 import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
 import { useNotifications } from "@/entities/notification/model/notification.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
 import { Skeleton } from "../kit/skeleton";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
-import { useAuth } from "@/app/auth.context";
+import { useCurrentUser } from "@/entities/user/model/user.queries";
 
 export function AppHeader() {
-  const { user, isLoading: userIsLoading } = useAuth();
+  const { data: user, isLoading: userIsLoading } = useCurrentUser();
   const logout = useLogout();
   // const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
@@ -68,7 +67,7 @@ export function AppHeader() {
                   <Skeleton className="w-25 h-5" />
                 </div>
               ) : (
-                user && <UserBadge user={{ username: user.username, avatar_url: user.avatar_url }} />
+                user && <UserBadge user={{ username: user.username, avatar: user.avatar }} />
               )}
             </div>
           </DropdownMenuTrigger>

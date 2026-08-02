@@ -1,10 +1,10 @@
 import { ROUTES } from "@/shared/routes";
 import { Navigate, Outlet } from "react-router";
-import { useAuth } from "../auth.context";
+import { useCurrentUser } from "@/entities/user/model/user.queries";
 
 function PublicRoute() {
-  const { user } = useAuth();
-  if (user) return <Navigate to={ROUTES.HOME} replace />;
+  const { data } = useCurrentUser();
+  if (data) return <Navigate to={ROUTES.HOME} replace />;
 
   return <Outlet />;
 }
