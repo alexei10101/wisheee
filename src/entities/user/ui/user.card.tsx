@@ -7,14 +7,14 @@ import { UserBadge } from "./user.badge";
 type UserCardProps = {
   id: string;
   username: string;
-  avatarUrl: string;
+  avatar: string;
   onOpen: (userId: string) => void;
   isFriend?: boolean;
   onAddFriend?: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
   onDeleteFriend?: () => void;
 };
 
-export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, isFriend, onAddFriend, onDeleteFriend }: UserCardProps) {
+export const UserCard = memo(function ({ id, username, avatar, onOpen, isFriend, onAddFriend, onDeleteFriend }: UserCardProps) {
   return (
     <Item
       className="relative p-2 sm:p-4 flex flex-row w-full mx-auto cursor-pointer group bg-white shadow"
@@ -25,7 +25,7 @@ export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, isFrie
         onOpen(id);
       }}>
       <ItemContent className="flex-row gap-3 max-w-1/2">
-        <UserBadge user={{ avatar: avatarUrl, username }} />
+        <UserBadge user={{ avatar, username }} />
       </ItemContent>
       <ItemActions className="absolute right-2 top-2.5 sm:top-4.5 sm:opacity-0 group-hover:opacity-100 transition-opacity">
         {onDeleteFriend && (
@@ -34,7 +34,7 @@ export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, isFrie
           </Button>
         )}
         {onAddFriend && (
-          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatarUrl)} disabled={isFriend}>
+          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatar)} disabled={isFriend}>
             {isFriend ? <Check /> : <Plus />}
           </Button>
         )}

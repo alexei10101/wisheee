@@ -6,6 +6,10 @@ export const userService = {
     return userRepository.me();
   },
 
+  search(query: string): Promise<User[]> {
+    return userRepository.search(query);
+  },
+
   getById(id: string): Promise<User | null> {
     return userRepository.getById(id);
   },

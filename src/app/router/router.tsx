@@ -16,7 +16,7 @@ const HomePageLazy = lazy(() => import("../../pages/profile/my-profile.page"));
 const WishlistsPageLazy = lazy(() => import("../../pages/wishlist/my-wishlists.page"));
 
 // const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
-// const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
+const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 // const NotificationsLazy = lazy(() => import("../../pages/notifications.page"));
 
 // const AddFromShareLazy = lazy(() => import("../../pages/add-from-share.page"));
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: HomePageLazy },
           { path: ROUTES.MY_WISHLISTS, Component: WishlistsPageLazy },
-          // { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
+          { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
           // { path: ROUTES.MY_WISHLIST, Component: WishlistPageLazy },
           // { path: ROUTES.NOTIFICATIONS, Component: NotificationsLazy },
 

@@ -9,6 +9,10 @@ export const userRepository = {
     const { data } = await api.get<ApiResponse<User | null>>("/users/me");
     return data.data;
   },
+  async search(query: string): Promise<User[]> {
+    const { data } = await api.get<ApiResponse<User[]>>(`/users/search?q=${query}`);
+    return data.data;
+  },
   // TODO check errors
   async getById(id: string): Promise<User | null> {
     const { data } = await api.get<ApiResponse<User | null>>("/users/" + id);

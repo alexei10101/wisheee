@@ -1,33 +1,31 @@
-import { friendService } from "@/entities/friend/model/friend.service";
 import { Input } from "@/shared/ui/kit/input";
 import { useCallback, useEffect, useState } from "react";
-import type { FriendRequestMetadata } from "@/entities/request/friend-request/model/friend-request";
 import type { User } from "@/entities/user/model/user";
-import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
 import { SearchList } from "../search-list/search.list";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { userService } from "@/entities/user/model/user.service";
 
 export function SearchUser() {
-  const { data: user } = useCurrentUser();
-  const sendFriendRequest = useSendFriendRequest();
+  const user = useRequiredUser();
+  // const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
-  const [searchResult, setSearchResult] = useState<(User & { isFriend: boolean })[] | null>(null);
+  const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
     async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
-      if (!user?.id || user.id === receiverId) return;
-      const metadata: FriendRequestMetadata = {
-        sender_username: user.username,
-        sender_avatar: user.avatar_url,
-        receiver_username: receiverUsername,
-        receiver_avatar: receiverAvatar,
-      };
-      try {
-        await sendFriendRequest.mutateAsync({ senderId: user.id, receiverId, metadata });
-      } catch (error) {
-        console.log(error);
-      }
+      //   if (!user?.id || user.id === receiverId) return;
+      //   const metadata: FriendRequestMetadata = {
+      //     sender_username: user.username,
+      //     sender_avatar: user.avatar_url,
+      //     receiver_username: receiverUsername,
+      //     receiver_avatar: receiverAvatar,
+      //   };
+      //   try {
+      //     await sendFriendRequest.mutateAsync({ senderId: user.id, receiverId, metadata });
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
     },
     [user?.id],
   );
@@ -40,18 +38,15 @@ export function SearchUser() {
   }, [search]);
 
   useEffect(() => {
-    if (!user?.id) return;
     const handleSearch = async () => {
       try {
-        const res = await friendService.searchUsers(debouncedSearch, user.id);
-        if (res.error) return console.log(res.error);
-        if (!res.result) return setSearchResult(null);
-        const result = [...res.result.map((u) => ({ ...u, isFriend: user.friends.includes(u.id) }))];
-        setSearchResult(result);
+        const result = await userService.search(debouncedSearch);
+        setSearchResult(result ?? []);
       } catch (error) {
         console.log(error);
       }
     };
+
     if (!debouncedSearch) return setSearchResult(null);
     handleSearch();
   }, [debouncedSearch]);
