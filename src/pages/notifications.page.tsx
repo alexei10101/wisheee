@@ -4,7 +4,7 @@ import { NotificationList } from "@/features/notification/notification-list/noti
 import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import { PageLoader } from "@/shared/ui/page-loader";
+import { PageLoader } from "@/shared/ui/local-loader";
 import { useAuth } from "@/app/auth.context";
 
 function NotificationPage() {

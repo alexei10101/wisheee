@@ -15,12 +15,11 @@ import { useLogout } from "@/features/auth/model/auth.mutations";
 import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
 import { useNotifications } from "@/entities/notification/model/notification.queries";
 import { UserBadge } from "@/entities/user/ui/user.badge";
-import { Skeleton } from "../kit/skeleton";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
-import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
 
 export function AppHeader() {
-  const { data: user, isLoading: userIsLoading } = useCurrentUser();
+  const user = useRequiredUser();
   const logout = useLogout();
   // const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
@@ -61,14 +60,7 @@ export function AppHeader() {
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>
             <div className="pe-5 cursor-pointer leading-0">
-              {userIsLoading ? (
-                <div className="flex gap-2 items-center">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="w-25 h-5" />
-                </div>
-              ) : (
-                user && <UserBadge user={{ username: user.username, avatar: user.avatar }} />
-              )}
+              <UserBadge user={{ username: user.username, avatar: user.avatar }} />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" align={isMobile ? "start" : "end"}>

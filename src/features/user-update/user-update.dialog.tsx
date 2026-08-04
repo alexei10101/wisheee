@@ -11,8 +11,8 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { useCurrentUser } from "@/entities/user/model/user.queries";
 import { useUpdateUser } from "@/entities/user/model/user.mutations";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
 
 type UserUpdateDialogProps = {
   open: boolean;
@@ -27,7 +27,7 @@ const userSchema = z.object({
 });
 
 export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogProps) {
-  const { data: user } = useCurrentUser();
+  const user = useRequiredUser();
   const updateUser = useUpdateUser();
 
   const updateUserForm = useForm<FormValues>({

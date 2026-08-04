@@ -1,24 +1,32 @@
-import { supabase } from "@/shared/supabase-client";
-import type { Wishlist } from "../model/wishlist";
+import { api } from "@/shared/api/api";
+import type { CreateWishlistType, UpdateWishlistType } from "../model/wishlist.validation";
+import type { Wishlist, WishlistWithItems } from "../model/wishlist";
+import type { ApiResponse } from "@/shared/api/types";
 
 export const wishlistRepository = {
-  async getAll(userId: String) {
-    return supabase.from("wishlists").select("*").eq("user_id", userId).order("created_at", { ascending: false });
+  async getList(userId?: string): Promise<Wishlist[]> {
+    const url = userId ? `/users/${userId}/wishlists` : "/wishlists";
+    const { data } = await api.get<ApiResponse<Wishlist[]>>(url);
+    return data.data;
   },
-  async create(id: string, data: Omit<Wishlist, "user_id" | "id">) {
-    return supabase
-      .from("wishlists")
-      .insert({
-        user_id: id,
-        ...data,
-      })
-      .select("*")
-      .single();
+
+  async getById(wishlistId: string): Promise<WishlistWithItems | null> {
+    const { data } = await api.get<ApiResponse<WishlistWithItems | null>>(`/wishlists/${wishlistId}`);
+    return data.data;
   },
-  async delete(userId: string, wishlistId: string) {
-    return supabase.from("wishlists").delete().eq("id", wishlistId).eq("user_id", userId);
+
+  async create(createData: CreateWishlistType): Promise<Wishlist> {
+    const { data } = await api.post<ApiResponse<Wishlist>>("/wishlists", createData);
+    return data.data;
   },
-  async update(userId: string, wishlistId: string, editData: Partial<Wishlist>) {
-    return supabase.from("wishlists").update(editData).eq("id", wishlistId).eq("user_id", userId).select().single();
+
+  async update(wishlistId: string, updateData: UpdateWishlistType): Promise<Wishlist | null> {
+    const { data } = await api.patch<ApiResponse<Wishlist | null>>(`/wishlists/${wishlistId}`, updateData);
+    return data.data;
+  },
+
+  async delete(wishlistId: string): Promise<string> {
+    const { data } = await api.delete<ApiResponse<null>>(`/wishlists/${wishlistId}`);
+    return data.message;
   },
 };

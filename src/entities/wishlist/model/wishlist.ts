@@ -2,12 +2,13 @@ import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item"
 
 export type Wishlist = {
   id: string;
-  user_id: string;
+  ownerId: string;
   title: string;
-  description: string;
-  is_public: boolean;
+  description: string | null;
+  isPublic: boolean;
+  createdAt: Date;
 };
 
 export type WishlistWithItems = Wishlist & {
-  wishlist_items: WishlistItem[];
+  items: WishlistItem[];
 };

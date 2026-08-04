@@ -20,7 +20,7 @@ export const useUpdateUser = () => {
       return { toastId };
     },
     onSuccess: (updated, _vars, ctx) => {
-      toast.success("Изменения успешно внесены", {
+      toast.success("Изменения успешно внесены.", {
         id: ctx.toastId,
         action: {
           label: "Ок",

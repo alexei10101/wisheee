@@ -6,15 +6,13 @@ export const ROUTES = {
 
   HOME: "/",
   MY_WISHLISTS: "/wishlists",
-  MY_WISHLIST: "/wishlists/:id",
+  MY_WISHLIST: "/wishlists/:wishlistId",
   FRIENDS: "/friends",
   NOTIFICATIONS: "/notifications",
 
   // USER: "/users/:user",
-  USER_WISHLISTS: "/users/:userId/wishlists",
-  USER_WISHLIST: "/users/:userId/wishlists/:id",
-
-  ADD_FROM_SHARE: "/add-from-share",
+  USER_WISHLISTS: "/users/:id/wishlists",
+  USER_WISHLIST: "/users/:id/wishlists/:wishlistId",
 } as const;
 
 export const buildRoutes = {

@@ -25,7 +25,7 @@ export const UserCard = memo(function ({ id, username, avatarUrl, onOpen, isFrie
         onOpen(id);
       }}>
       <ItemContent className="flex-row gap-3 max-w-1/2">
-        <UserBadge user={{ avatar_url: avatarUrl, username }} />
+        <UserBadge user={{ avatar: avatarUrl, username }} />
       </ItemContent>
       <ItemActions className="absolute right-2 top-2.5 sm:top-4.5 sm:opacity-0 group-hover:opacity-100 transition-opacity">
         {onDeleteFriend && (

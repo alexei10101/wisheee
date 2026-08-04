@@ -1,30 +1,21 @@
-import { useAuth } from "@/app/auth.context";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import { useUser } from "@/entities/user/model/user.queries";
+import { useRequiredUser, useUser } from "@/entities/user/model/user.hooks";
 import { UserBadge } from "@/entities/user/ui/user.badge";
-import { useWishlist } from "@/entities/wishlist/model/wishlist.queries";
 import { WishlistItemCreateButton } from "@/features/wishlist-item/create/wishlist-item-create.button";
 import { WishlistItemList } from "@/features/wishlist-item/list/wishlist-item.list";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
 import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
-import { PageLoader } from "@/shared/ui/page-loader";
+import { PageLoader } from "@/shared/ui/local-loader";
 import { useParams } from "react-router";
 
 function WishlistPage() {
-  const { data: me } = useCurrentUser();
-  const { session } = useAuth();
+  const me = useRequiredUser();
   const { userId: paramUserId, id } = useParams<{ userId: string; id: string }>();
 
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useUser(paramUserId, {
-    enabled: !!paramUserId,
-  });
+  const { data: user, isLoading, isError } = useUser(paramUserId);
+  // const [wishlists, setWishlists] = useState<Wishlist[]>();
 
-  const { data: activeWishlist, isLoading: isWishlistLoading, isError: isWishlistError } = useWishlist(session?.access_token, id);
+  // const { data: activeWishlist, isLoading: isWishlistLoading, isError: isWishlistError } = useWishlist(session?.access_token, id);
 
   const relation = getUserRelation({ viewerId: me?.id, ownerId: paramUserId ?? me?.id });
   const permissions = getPermissions(relation);

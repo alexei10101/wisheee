@@ -16,7 +16,7 @@ export const userRepository = {
   },
   // TODO check unique username
   async update(updateData: UserUpdateDto): Promise<User | null> {
-    const { data } = await api.patch<ApiResponse<User>>("/users/update", updateData);
+    const { data } = await api.patch<ApiResponse<User>>("/users/me", updateData);
     return data.data;
   },
 

@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { memo } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useDeleteWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
 
 type WishlistDeleteDialogProps = {
   open: boolean;
@@ -13,13 +13,14 @@ type WishlistDeleteDialogProps = {
 };
 
 export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, onClose, wishlistId }: WishlistDeleteDialogProps) {
-  const { data: user } = useCurrentUser();
+  const user = useRequiredUser();
+  if (!user) throw Error("Неаутентифицирован");
   const deleteWishlist = useDeleteWishlist();
 
   const handleDelete = async () => {
     if (!user?.id) return;
     try {
-      await deleteWishlist.mutateAsync({ userId: user.id, wishlistId });
+      await deleteWishlist.mutateAsync({ wishlistId });
     } catch (error) {
       console.log(error);
     } finally {

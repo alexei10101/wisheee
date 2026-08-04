@@ -1,7 +1,6 @@
 import { Dialog, DialogDescription, DialogPortal, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogFooter, DialogHeader } from "@/shared/ui/kit/dialog";
 import { Button } from "@/shared/ui/kit/button";
-import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError } from "@/shared/ui/kit/field";
@@ -10,7 +9,8 @@ import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { UpdateWishlistSchema, type UpdateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
 
 type WishlistUpdateDialogProps = {
   open: boolean;
@@ -18,19 +18,12 @@ type WishlistUpdateDialogProps = {
   wishlist: Wishlist;
 };
 
-type FormValues = z.infer<typeof wishlistSchema>;
-const wishlistSchema = z.object({
-  title: z.string().min(1, "Введите название вишлиста"),
-  description: z.string(),
-  isPublic: z.boolean(),
-});
-
 export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
-  const { data: user } = useCurrentUser();
+  const user = useRequiredUser();
   const updateWishlist = useUpdateWishlist();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(wishlistSchema),
+  const form = useForm<UpdateWishlistType>({
+    resolver: zodResolver(UpdateWishlistSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -43,7 +36,7 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
       form.reset({
         title: wishlist.title ?? "",
         description: wishlist.description ?? "",
-        isPublic: wishlist.is_public ?? true,
+        isPublic: wishlist.isPublic ?? true,
       });
     }
   }, [wishlist, open, form]);
@@ -51,11 +44,11 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
   const handleUpdate = async () => {
     if (!user?.id || !wishlist.id) return;
 
-    const updatedFields = getUpdatedFields();
-    if (!updatedFields) return onClose();
+    const updateData = getUpdatedFields();
+    if (!updateData) return onClose();
 
     try {
-      updateWishlist.mutateAsync({ userId: user.id, wishlistId: wishlist.id, updatedFields });
+      updateWishlist.mutateAsync({ wishlistId: wishlist.id, updateData });
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,26 +56,18 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
     }
   };
 
-  const getUpdatedFields = () => {
+  const getUpdatedFields = (): UpdateWishlistType | null => {
     const formValues = form.getValues();
     const dirtyFields = form.formState.dirtyFields;
 
-    const newData = {} as Partial<Wishlist>;
-    if (dirtyFields.title) {
-      newData.title = formValues.title;
-    }
+    const newData = {} as UpdateWishlistType;
+    if (dirtyFields.title) newData.title = formValues.title;
 
-    if (dirtyFields.description) {
-      newData.description = formValues.description;
-    }
+    if (dirtyFields.description) newData.description = formValues.description;
 
-    if (dirtyFields.isPublic) {
-      newData.is_public = formValues.isPublic;
-    }
+    if (dirtyFields.isPublic) newData.isPublic = formValues.isPublic;
 
-    if (Object.keys(newData).length === 0) {
-      return null;
-    }
+    if (Object.keys(newData).length === 0) return null;
 
     return newData;
   };

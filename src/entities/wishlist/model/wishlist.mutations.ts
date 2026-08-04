@@ -1,20 +1,33 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { wishlistService } from "./wishlist.service";
-import { unwrap } from "@/shared/api/helper-unwrap";
-import type { Wishlist, WishlistWithItems } from "./wishlist";
-import { wishlistKeys } from "./wishlist.queries";
 import { toast } from "sonner";
+import { wishlistRepository } from "../api/wishlist.repository";
+import type { UpdateWishlistType } from "./wishlist.validation";
+import { wishlistKeys } from "./wishlist.queries";
+import type { Wishlist } from "./wishlist";
 
 export const useCreateWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, data }: { userId: string; data: Omit<Wishlist, "user_id" | "id"> }) => {
-      const result = await wishlistService.create(userId, data);
-      return unwrap(result);
+    mutationFn: wishlistRepository.create,
+    onMutate: () => {
+      const toastId = toast.loading("Создание вишлиста...");
+      return { toastId };
     },
-    onSuccess: (created, variables) => {
-      queryClient.setQueryData(wishlistKeys.list(variables.userId), (old: Wishlist[] = []) => [created, ...old]);
+    onSuccess: (created, _, ctx) => {
+      toast.success("Вишлист добавлен", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
+      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old) => (old ? [created, ...old] : [created]));
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка добавления", {
+        id: ctx?.toastId,
+      });
     },
   });
 };
@@ -23,15 +36,25 @@ export const useDeleteWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, wishlistId }: { userId: string; wishlistId: string }) => {
-      const { error } = await wishlistService.delete(userId, wishlistId);
-      if (error) throw error;
-      return wishlistId;
+    mutationFn: async ({ wishlistId }: { wishlistId: string }) => wishlistRepository.delete(wishlistId),
+    onMutate: () => {
+      const toastId = toast.loading("Удаление вишлиста...");
+      return { toastId };
     },
-    onSuccess: (_, variables) => {
-      queryClient.setQueryData(wishlistKeys.list(variables.userId), (old: Wishlist[] = []) =>
-        old.filter((w) => w.id !== variables.wishlistId),
-      );
+    onSuccess: (_, variables, ctx) => {
+      toast.success("Вишлист удален", {
+        id: ctx.toastId,
+        action: {
+          label: "Ок",
+          onClick: () => {},
+        },
+      });
+      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old = []) => old.filter((wishlist) => wishlist.id !== variables.wishlistId));
+    },
+    onError: (_err, _vars, ctx) => {
+      toast.error("Ошибка удаления", {
+        id: ctx?.toastId,
+      });
     },
   });
 };
@@ -40,15 +63,15 @@ export const useUpdateWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, wishlistId, updatedFields }: { userId: string; wishlistId: string; updatedFields: Partial<Wishlist> }) => {
-      const result = await wishlistService.update(userId, wishlistId, updatedFields);
-      return unwrap(result);
-    },
+    mutationFn: async ({ wishlistId, updateData }: { wishlistId: string; updateData: UpdateWishlistType }) =>
+      wishlistRepository.update(wishlistId, updateData),
     onMutate: () => {
       const toastId = toast.loading("Обновление вишлиста...");
       return { toastId };
     },
-    onSuccess: (updated, variables, ctx) => {
+    onSuccess: (updated, _, ctx) => {
+      if (!updated) throw new Error("Ошибка обновления вишлиста.");
+
       toast.success("Вишлист успешно обновлен", {
         id: ctx.toastId,
         action: {
@@ -56,10 +79,10 @@ export const useUpdateWishlist = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(wishlistKeys.list(variables.userId), (old: Wishlist[] = []) =>
-        old.map((w) => (w.id === updated.id ? updated : w)),
+
+      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old = []) =>
+        old.map((wishlist) => (wishlist.id === updated?.id ? updated : wishlist)),
       );
-      queryClient.setQueryData(wishlistKeys.detail(variables.wishlistId), (old: WishlistWithItems) => ({ ...old, ...updated }));
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка обновления", {

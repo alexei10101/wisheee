@@ -9,14 +9,14 @@ import { motion } from "framer-motion";
 
 type WishlistCardProps = {
   wishlist: Wishlist;
-  onOpen: (id: string) => void;
+  // onOpen: (id: string) => void;
   onUpdate: () => void;
   onDelete: () => void;
   permissions: Permissions;
   isMobile: boolean;
 };
 
-export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpdate, onDelete, permissions, isMobile }: WishlistCardProps) {
+export const WishlistCard = memo(function WishlistCard({ wishlist, onUpdate, onDelete, permissions, isMobile }: WishlistCardProps) {
   const [opened, setOpened] = useState(false);
   const wasDragging = useRef(false);
   const size = isMobile ? "sm" : "default";
@@ -66,12 +66,12 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
             const target = e.target as HTMLElement;
             if (target.closest("button")) return;
             if (wasDragging.current) return;
-            if (!opened) onOpen(wishlist.id);
+            // if (!opened) onOpen(wishlist.id);
             else setOpened(false);
           }}>
           <ItemContent className="flex flex-col gap-3 w-full sm:max-w-1/2">
             <div className="flex gap-2 items-center">
-              {isMobile && !wishlist.is_public && <HatGlasses size={15} />}
+              {isMobile && !wishlist.isPublic && <HatGlasses size={15} />}
               <ItemTitle>{wishlist.title}</ItemTitle>
             </div>
 
@@ -82,10 +82,10 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onOpen, onUpd
             <ItemActions className="ml-auto hidden sm:flex">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost">{wishlist.is_public ? <BookOpenCheck /> : <BookCheck />}</Button>
+                  <Button variant="ghost">{wishlist.isPublic ? <BookOpenCheck /> : <BookCheck />}</Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{wishlist.is_public ? "Публичный" : "Приватный"}</p>
+                  <p>{wishlist.isPublic ? "Публичный" : "Приватный"}</p>
                 </TooltipContent>
               </Tooltip>
 

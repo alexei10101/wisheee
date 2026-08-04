@@ -5,7 +5,7 @@ export function RootLayout() {
   return (
     <>
       <Toaster duration={2000} position="bottom-center" />
-      <Outlet />;
+      <Outlet />
     </>
   );
 }

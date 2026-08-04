@@ -1,7 +1,7 @@
 import { ROUTES } from "@/shared/routes";
 import { Navigate, Outlet } from "react-router";
 import { AppHeader } from "@/shared/ui/header/header";
-import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useCurrentUser } from "@/entities/user/model/user.hooks";
 
 function ProtectedRoute() {
   const { data } = useCurrentUser();

@@ -1,5 +1,6 @@
-import { useCurrentUser } from "@/entities/user/model/user.queries";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { useCreateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
+import { CreateWishlistSchema, type CreateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
@@ -8,31 +9,19 @@ import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { memo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
 type WishlistCreateDialogProps = {
   open: boolean;
   onClose: () => void;
 };
 
-type FormValues = z.infer<typeof wishlistSchema>;
-const wishlistSchema = z.object({
-  title: z.string().min(1, "Введите название вишлиста"),
-  description: z.string(),
-  isPublic: z.boolean(),
-});
-
 export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, onClose }: WishlistCreateDialogProps) {
-  const { data: user } = useCurrentUser();
+  const user = useRequiredUser();
+  if (!user) throw Error("Неаутентифицирован");
   const createWishlist = useCreateWishlist();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(wishlistSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      isPublic: true,
-    },
+  const form = useForm<CreateWishlistType>({
+    resolver: zodResolver(CreateWishlistSchema),
   });
 
   const closeDialog = () => {
@@ -43,10 +32,14 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
   const handleCreate = async () => {
     if (!user?.id) return;
 
-    const data = { title: form.getValues("title"), description: form.getValues("description"), is_public: form.getValues("isPublic") };
+    const createData = {
+      title: form.getValues("title"),
+      description: form.getValues("description"),
+      is_public: form.getValues("isPublic"),
+    };
 
     try {
-      await createWishlist.mutateAsync({ userId: user.id, data });
+      await createWishlist.mutateAsync(createData);
     } catch (error) {
       console.log(error);
     } finally {

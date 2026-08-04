@@ -2,7 +2,7 @@ import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { UserInfo } from "@/features/user-info/user-info";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 
-function HomePage() {
+function MyProfilePage() {
   const user = useRequiredUser();
   const isMobile = !useMediaQuery("(min-width: 640px)");
 
@@ -13,4 +13,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default MyProfilePage;
