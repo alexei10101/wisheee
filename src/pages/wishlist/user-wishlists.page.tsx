@@ -25,16 +25,14 @@ function WishlistsPage() {
   return (
     <main className="page">
       <div className="mb-3 sm:mb-5">
-        {isWishlistsLoading && <LocalLoader />}
-        {!isWishlistsLoading && (
-          <PageHeader
-            title={`Вишлисты пользователя ${user?.username}`}
-            left={<BackButton />}
-            user={<UserBadge user={{ username: user.username, avatar: user.avatar }} />}
-          />
-        )}
+        <PageHeader
+          title={`Вишлисты пользователя ${user?.username}`}
+          left={<BackButton />}
+          user={<UserBadge user={{ username: user.username, avatar: user.avatar }} />}
+        />
       </div>
-      <WishlistList wishlists={wishlists ?? []} permissions={permissions} />
+      {isWishlistsLoading && <LocalLoader />}
+      {!isWishlistsLoading && <WishlistList wishlists={wishlists ?? []} permissions={permissions} />}
     </main>
   );
 }
