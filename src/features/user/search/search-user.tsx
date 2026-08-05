@@ -1,9 +1,9 @@
 import { Input } from "@/shared/ui/kit/input";
 import { useCallback, useEffect, useState } from "react";
 import type { User } from "@/entities/user/model/user";
-import { SearchList } from "../search-list/search.list";
+import { SearchList } from "../list/search.list";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
-import { userService } from "@/entities/user/model/user.service";
+import { userRepository } from "@/entities/user/api/user.repository";
 
 export function SearchUser() {
   const user = useRequiredUser();
@@ -40,7 +40,7 @@ export function SearchUser() {
   useEffect(() => {
     const handleSearch = async () => {
       try {
-        const result = await userService.search(debouncedSearch);
+        const result = await userRepository.search(debouncedSearch);
         setSearchResult(result ?? []);
       } catch (error) {
         console.log(error);
@@ -55,7 +55,7 @@ export function SearchUser() {
     <>
       <Input className="bg-white" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
       <div className="mt-5">
-        <SearchList list={searchResult} addFriend={handleAddFriend} />
+        <SearchList users={searchResult} addFriend={handleAddFriend} />
       </div>
     </>
   );

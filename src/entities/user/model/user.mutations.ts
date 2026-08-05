@@ -27,7 +27,7 @@ export const useUpdateUser = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(userKeys.me(), (user: User) => ({ ...user, ...updated }));
+      queryClient.setQueryData(userKeys.me, (user: User) => ({ ...user, ...updated }));
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка внесения изменений", {

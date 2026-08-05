@@ -21,7 +21,7 @@ export const useSignIn = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(userKeys.me(), data);
+      queryClient.setQueryData(userKeys.me, data);
     },
     onError: (error, _, ctx) => {
       toast.error(error.message, {
@@ -78,7 +78,7 @@ export const useLogout = () => {
         id: ctx?.toastId,
       });
     },
-    onSettled: () => queryClient.setQueryData(userKeys.me(), null),
+    onSettled: () => queryClient.setQueryData(userKeys.me, null),
   });
 };
 

@@ -1,5 +1,4 @@
 import type { UserUpdateDto } from "@/entities/user/model/user";
-import { userService } from "@/entities/user/model/user.service";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/shared/ui/kit/dialog";
@@ -69,30 +68,24 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
     }
 
     try {
-      const avatarValue = formValues.avatar;
-
-      if (avatarValue instanceof File) {
-        const uploadResult = await userService.uploadAvatar(user.id, avatarValue);
-
-        if (uploadResult.error) {
-          throw new Error(uploadResult.error);
-        }
-
-        updated.avatar = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
-      }
-
-      if (avatarValue === null) {
-        userService.removeAvatar(user.id);
-        updated.avatar = null;
-      }
-
-      if (Object.keys(updated).length === 0) {
-        console.log("Поля не изменены");
-        onClose();
-        return;
-      }
-
-      await updateUser.mutateAsync(updated);
+      // const avatarValue = formValues.avatar;
+      // if (avatarValue instanceof File) {
+      //   const uploadResult = await userService.uploadAvatar(user.id, avatarValue);
+      //   if (uploadResult.error) {
+      //     throw new Error(uploadResult.error);
+      //   }
+      //   updated.avatar = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
+      // }
+      // if (avatarValue === null) {
+      //   userService.removeAvatar(user.id);
+      //   updated.avatar = null;
+      // }
+      // if (Object.keys(updated).length === 0) {
+      //   console.log("Поля не изменены");
+      //   onClose();
+      //   return;
+      // }
+      // await updateUser.mutateAsync(updated);
     } catch (error) {
       console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"));
     } finally {

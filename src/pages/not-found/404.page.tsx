@@ -15,7 +15,7 @@ export default function ErrorPage() {
   }
 
   return (
-    <div className="container">
+    <div className="flex flex-col items-center justify-center h-screen  text-center mx-auto">
       <h1 style={styles.heading}>Упс!</h1>
       <p style={styles.text}>Ошибочка вышла...</p>
       <p style={styles.errorText}>

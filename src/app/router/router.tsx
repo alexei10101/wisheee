@@ -13,10 +13,13 @@ const SignupPageLazy = lazy(() => import("../../pages/auth/signup.page"));
 const CheckEmailPageLazy = lazy(() => import("../../pages/auth/check-email.page"));
 
 const HomePageLazy = lazy(() => import("../../pages/profile/my-profile.page"));
-const WishlistsPageLazy = lazy(() => import("../../pages/wishlist/my-wishlists.page"));
+
+const MyWishlistsPageLazy = lazy(() => import("../../pages/wishlist/my-wishlists.page"));
+const UserWishlistsPageLazy = lazy(() => import("../../pages/wishlist/user-wishlists.page"));
+
+const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 
 // const WishlistPageLazy = lazy(() => import("../../pages/wishlist.page"));
-const FriendsPageLazy = lazy(() => import("../../pages/friends.page"));
 // const NotificationsLazy = lazy(() => import("../../pages/notifications.page"));
 
 // const AddFromShareLazy = lazy(() => import("../../pages/add-from-share.page"));
@@ -36,12 +39,12 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { index: true, Component: HomePageLazy },
-          { path: ROUTES.MY_WISHLISTS, Component: WishlistsPageLazy },
+          { path: ROUTES.MY_WISHLISTS, Component: MyWishlistsPageLazy },
           { path: ROUTES.FRIENDS, Component: FriendsPageLazy },
           // { path: ROUTES.MY_WISHLIST, Component: WishlistPageLazy },
           // { path: ROUTES.NOTIFICATIONS, Component: NotificationsLazy },
 
-          // { path: ROUTES.USER_WISHLISTS, Component: WishlistsPageLazy },
+          { path: ROUTES.USER_WISHLISTS, Component: UserWishlistsPageLazy },
           // { path: ROUTES.USER_WISHLIST, Component: WishlistPageLazy },
         ],
       },

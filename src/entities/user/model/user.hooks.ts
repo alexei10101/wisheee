@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { userKeys } from "./user.queries";
-import { userService } from "./user.service";
 import type { User } from "./user";
+import { userRepository } from "../api/user.repository";
 
 export const useCurrentUser = () => {
   return useQuery({
-    queryKey: userKeys.me(),
-    queryFn: userService.me,
+    queryKey: userKeys.me,
+    queryFn: userRepository.me,
     staleTime: 1000 * 60 * 5,
   });
 };
@@ -20,7 +20,7 @@ export const useRequiredUser = (): User => {
 export const useUser = (userId: string | undefined) => {
   return useQuery({
     queryKey: userKeys.user(userId!),
-    queryFn: () => userService.getById(userId!),
+    queryFn: () => userRepository.getById(userId!),
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });

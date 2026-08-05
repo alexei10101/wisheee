@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 type WishlistCardProps = {
   wishlist: Wishlist;
-  // onOpen: (id: string) => void;
+  onOpen: (id: string) => void;
   onUpdate: () => void;
   onDelete: () => void;
   permissions: Permissions;

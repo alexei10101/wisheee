@@ -7,13 +7,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/kit/dropdown-menu";
-import { Bell, House, LogOut } from "lucide-react";
+import { House, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router";
-import { Badge } from "../kit/badge";
+import { Link } from "react-router";
 import { useLogout } from "@/features/auth/model/auth.mutations";
-import { UserUpdateDialogButton } from "@/features/user-update/user-update.button";
-import { useNotifications } from "@/entities/notification/model/notification.queries";
+import { UserUpdateDialogButton } from "@/features/user/update/user-update.button";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
@@ -21,11 +19,8 @@ import { useRequiredUser } from "@/entities/user/model/user.hooks";
 export function AppHeader() {
   const user = useRequiredUser();
   const logout = useLogout();
-  // const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState<boolean>(false);
   const isMobile = !useMediaQuery("(min-width: 640px)");
-
-  // const unreadCount = notifications?.filter((n) => !n.is_read).length;
 
   const handleLogout = async () => {
     setDropdownMenuOpen(false);
@@ -38,22 +33,11 @@ export function AppHeader() {
 
   return (
     <header className="absolute bg-white top-4 left-2 sm:left-8 right-2 sm:right-8 rounded-full shadow py-3 px-2.5 flex items-center">
-      <p className="font-extrabold ms-4 hidden sm:block">WISHEEE</p>
+      <p className="font-extrabold ms-4 hidden sm:block font-cormorant text-xl">WISHEEE</p>
       <div className="sm:ml-auto flex items-center gap-5 justify-between w-full sm:w-auto">
         <Button variant="link" className="cursor-pointer p-0 hidden sm:flex">
           <Link to={ROUTES.HOME} className="flex items-center gap-1">
             <House />
-          </Link>
-        </Button>
-
-        <Button variant="link" className="p-0  items-center gap-1 hidden sm:flex">
-          <Link to={ROUTES.NOTIFICATIONS}>
-            {/* {unreadCount !== 0 && (
-              <Badge variant="secondary" className="text-[11px]">
-                {unreadCount}
-              </Badge>
-            )}
-            {unreadCount === 0 && <Bell />} */}
           </Link>
         </Button>
 
@@ -81,20 +65,6 @@ export function AppHeader() {
           <Link to={ROUTES.HOME}>
             <House size={26} />
           </Link>
-
-          {/* {notificationsIsLoading && <Skeleton className="w-7 h-7 rounded-full" />}
-          {unreadCount === 0 && !notificationsIsLoading && (
-            <Link to={ROUTES.NOTIFICATIONS}>
-              <Bell />
-            </Link>
-          )}
-          {unreadCount !== 0 && !notificationsIsLoading && (
-            <Badge asChild variant="secondary">
-              <Link to={ROUTES.NOTIFICATIONS}>
-                <div className="text-[13px]"> {unreadCount}</div>
-              </Link>
-            </Badge>
-          )} */}
         </div>
       </div>
     </header>

@@ -1,23 +1,11 @@
-import { supabase } from "@/shared/supabase-client";
+import type { User } from "@/entities/user/model/user";
+import { api } from "@/shared/api/api";
+import type { ApiResponse } from "@/shared/api/types";
 
-export const friendRepository = {
-  async getFriend(friendIds: string[]) {
-    return supabase.from("profiles").select(`*`).in("id", friendIds);
-  },
-  async getFriendsInfo(userId: string) {
-    return supabase
-      .from("friends")
-      .select(`friend:profiles!friends_friend_id_fkey (*)`)
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-  },
-  async createFriendship(senderId: string, receiverId: string) {
-    return supabase.from("friends").insert([
-      { user_id: senderId, friend_id: receiverId },
-      { user_id: receiverId, friend_id: senderId },
-    ]);
-  },
-  async searchUsers(query: string, id: string) {
-    return supabase.from("profiles").select("*").ilike("username", `%${query}%`).neq("id", id).limit(20);
+export const friendsRepository = {
+  async getList(userId?: string) {
+    const url = userId ? `/users/${userId}/friends` : "/friends";
+    const { data } = await api.get<ApiResponse<User[]>>(url);
+    return data.data;
   },
 };

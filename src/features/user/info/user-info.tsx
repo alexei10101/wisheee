@@ -1,0 +1,30 @@
+import type { User } from "@/entities/user/model/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/kit/avatar";
+import { Item, ItemContent, ItemMedia } from "@/shared/ui/kit/item";
+
+type UserInfoProps = {
+  user: User;
+  isMobile: boolean;
+  avatar: string | null;
+};
+
+export function UserInfo({ user, avatar }: UserInfoProps) {
+  return (
+    <div className="flex flex-col gap-10 items-center">
+      <Item className="self-start px-0">
+        <ItemMedia>
+          <Avatar className="w-20 h-20">
+            <AvatarImage src={avatar ?? "/default-avatar.webp"} className="object-cover" />
+            <AvatarFallback className="text-xl flex items-center justify-center">
+              {user.username?.charAt(0).toUpperCase() ?? "U"}
+            </AvatarFallback>
+          </Avatar>
+        </ItemMedia>
+        <ItemContent className="self-start">
+          <p> ★ Wishlist Master Lv.4 </p>
+          <p> 18 желаний • 12 исполненных • с нами 2 года </p>
+        </ItemContent>
+      </Item>
+    </div>
+  );
+}

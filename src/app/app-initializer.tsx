@@ -14,7 +14,7 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
       try {
         const user = await authRepository.init();
 
-        queryClient.setQueryData(userKeys.me(), user);
+        queryClient.setQueryData(userKeys.me, user);
       } catch (error) {
         console.error(error);
       } finally {

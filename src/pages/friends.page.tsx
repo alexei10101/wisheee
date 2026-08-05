@@ -1,5 +1,5 @@
-import { FriendList } from "@/features/friend-list/friend.list";
-import { SearchUser } from "@/features/search-user/search-user";
+import { FriendList } from "@/features/user/list/friend.list";
+import { SearchUser } from "@/features/user/search/search-user";
 import { BackButton } from "@/shared/ui/back.button";
 import { Button } from "@/shared/ui/kit/button";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -11,7 +11,7 @@ function FriendsPage() {
   const toggleMode = () => setMode((prev) => (prev === "search" ? "all" : "search"));
 
   return (
-    <main className="pt-25 pb-4 sm:pt-30 px-2 sm:px-8 min-h-screen bg-gray-100">
+    <main className="page bg-gray-100">
       <div className="mb-3 sm:mb-5">
         <PageHeader
           title={mode === "all" ? "Мои друзья" : "Добавить друга"}

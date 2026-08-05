@@ -11,19 +11,19 @@ import { AppLoader } from "@/shared/ui/app-loader";
 
 function WishlistsPage() {
   const me = useRequiredUser();
-  const { userId: paramUserId } = useParams<{ userId: string }>();
-  const { data: user, isLoading: isUserLoading } = useUser(paramUserId);
+  const { id } = useParams<{ id: string }>();
+  const { data: user, isLoading: isUserLoading } = useUser(id);
   const { data: wishlists, isLoading: isWishlistsLoading } = useUserWishlists(user?.id);
 
-  const relation = getUserRelation({ viewerId: me?.id, ownerId: paramUserId ?? me?.id });
+  const relation = getUserRelation({ viewerId: me?.id, ownerId: id ?? me?.id });
   const permissions = getPermissions(relation);
 
   if (isUserLoading) return <AppLoader />;
   if (!user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
-  if (paramUserId && !user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
+  if (id && !user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
 
   return (
-    <main className="pt-25 pb-4 sm:pt-30 px-2 sm:px-8">
+    <main className="page">
       <div className="mb-3 sm:mb-5">
         {isWishlistsLoading && <LocalLoader />}
         {!isWishlistsLoading && (

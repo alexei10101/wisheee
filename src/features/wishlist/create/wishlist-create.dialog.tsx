@@ -22,6 +22,11 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
 
   const form = useForm<CreateWishlistType>({
     resolver: zodResolver(CreateWishlistSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      isPublic: true,
+    },
   });
 
   const closeDialog = () => {
