@@ -15,7 +15,7 @@ export function DialogCustomOverlay() {
   return (
     <DialogOverlay asChild>
       <motion.div
-        className="fixed inset-0 bg-[#7f7f7f] z-100"
+        className="fixed inset-0 z-100 bg-foreground/40 backdrop-blur-sm"
         initial="hidden"
         animate="visible"
         exit="hidden"
@@ -36,7 +36,7 @@ export function DialogCustomContent({ children }: { children: React.ReactNode })
         exit="hidden"
         variants={contentVariants}
         transition={{ type: "spring", stiffness: 150, damping: 25 }}>
-        <div className="h-full w-full bg-white rounded-sm sm:rounded-lg sm:shadow-lg flex flex-col overflow-hidden">
+        <div className="flex h-full w-full flex-col overflow-hidden rounded-sm border border-border bg-card text-card-foreground shadow-2xl sm:rounded-lg sm:shadow-primary/10">
           <div className="flex-1 overflow-y-auto p-2 sm:p-6 no-scrollbar">{children}</div>
         </div>
       </motion.div>

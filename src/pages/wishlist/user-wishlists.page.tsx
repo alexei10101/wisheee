@@ -19,8 +19,8 @@ function WishlistsPage() {
   const permissions = getPermissions(relation);
 
   if (isUserLoading) return <AppLoader />;
-  if (!user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
-  if (id && !user) return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки профиля</div>;
+  if (!user) return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки профиля</div>;
+  if (id && !user) return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки профиля</div>;
 
   return (
     <main className="page">

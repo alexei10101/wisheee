@@ -83,7 +83,7 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
         <DialogCustomContent>
           <DialogHeader className="pb-7">
             <DialogTitle className="font-semibold">Редактирование вишлиста</DialogTitle>
-            <DialogDescription className="text-sm text-gray-800">Вы можете изменить информацию о вишлисте</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">Вы можете изменить информацию о вишлисте</DialogDescription>
           </DialogHeader>
           {wishlist && (
             <form id="wishlist-edit-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4">
@@ -117,7 +117,7 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
                 control={form.control}
                 render={({ field }) => (
                   <Field>
-                    <div className="leading-none text-sm flex pe-3 py-1 gap-2 text-[#0a0a0a]">
+                    <div className="flex gap-2 py-1 pe-3 text-sm leading-none text-foreground">
                       <input
                         id="wishlist-form-isPublic"
                         type="checkbox"

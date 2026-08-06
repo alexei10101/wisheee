@@ -144,7 +144,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
       <DialogCustomContent>
         <DialogHeader className="pb-7">
           <DialogTitle className="font-semibold">Редактирование подарка</DialogTitle>
-          <DialogDescription className="text-sm text-gray-800">Вы можете изменить информацию о подарке</DialogDescription>
+          <DialogDescription className="text-sm text-muted-foreground">Вы можете изменить информацию о подарке</DialogDescription>
         </DialogHeader>
 
         <form id="wishlist-item-update-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4 mb-5">

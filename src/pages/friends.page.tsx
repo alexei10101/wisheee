@@ -11,7 +11,7 @@ function FriendsPage() {
   const toggleMode = () => setMode((prev) => (prev === "search" ? "all" : "search"));
 
   return (
-    <main className="page bg-gray-100">
+    <main className="page bg-background">
       <div className="mb-3 sm:mb-5">
         <PageHeader
           title={mode === "all" ? "Мои друзья" : "Добавить друга"}

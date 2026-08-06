@@ -39,7 +39,7 @@ export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, o
         <DialogCustomContent>
           <DialogHeader>
             <DialogTitle className="font-semibold">Удалить вишлист?</DialogTitle>
-            <DialogDescription className="text-sm text-gray-800">Также будут удалены ваши желания в этом вишлисте</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">Также будут удалены ваши желания в этом вишлисте</DialogDescription>
           </DialogHeader>
 
           <DialogFooter className="mt-3">

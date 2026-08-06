@@ -61,7 +61,7 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onUpdate, onD
         <Item
           size={size}
           variant="outline"
-          className="cursor-pointer shadow bg-gray-50 relative z-10"
+          className="relative z-10 cursor-pointer bg-card shadow-sm"
           onClick={(e) => {
             const target = e.target as HTMLElement;
             if (target.closest("button")) return;

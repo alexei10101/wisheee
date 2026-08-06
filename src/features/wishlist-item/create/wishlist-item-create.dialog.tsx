@@ -86,7 +86,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
       <DialogCustomContent>
         <DialogHeader className="pb-7">
           <DialogTitle className="font-semibold">Создать подарок</DialogTitle>
-          <DialogDescription className="text-sm text-gray-800">Заполните данные для нового подарка</DialogDescription>
+          <DialogDescription className="text-sm text-muted-foreground">Заполните данные для нового подарка</DialogDescription>
         </DialogHeader>
 
         <form id="wishlist-item-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4 mb-5 ">

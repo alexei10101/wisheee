@@ -53,7 +53,7 @@ export function SearchUser() {
 
   return (
     <>
-      <Input className="bg-white" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
+      <Input className="bg-card" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
       <div className="mt-5">
         <SearchList users={searchResult} addFriend={handleAddFriend} />
       </div>

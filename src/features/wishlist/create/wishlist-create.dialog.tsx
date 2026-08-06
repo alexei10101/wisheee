@@ -64,7 +64,7 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
         <DialogCustomContent>
           <DialogHeader className="pb-7">
             <DialogTitle className="font-semibold">Создать вишлист</DialogTitle>
-            <DialogDescription className="text-sm text-gray-800">Заполните данные для нового списка желаний</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">Заполните данные для нового списка желаний</DialogDescription>
           </DialogHeader>
 
           <form id="wishlist-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4">
@@ -97,7 +97,7 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
               name="isPublic"
               control={form.control}
               render={({ field }) => (
-                <div className="leading-none text-sm flex pe-3 py-1 gap-2 text-[#0a0a0a]">
+                <div className="flex gap-2 py-1 pe-3 text-sm leading-none text-foreground">
                   <input
                     id="wishlist-create-form-is-public"
                     type="checkbox"

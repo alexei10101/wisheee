@@ -15,6 +15,7 @@ import { UserUpdateDialogButton } from "@/features/user/update/user-update.butto
 import { UserBadge } from "@/entities/user/ui/user.badge";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { ThemeToggleButton } from "@/features/theme/theme-toggle.button";
 
 export function AppHeader() {
   const user = useRequiredUser();
@@ -32,7 +33,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="absolute bg-white top-4 left-2 sm:left-8 right-2 sm:right-8 rounded-full shadow py-3 px-2.5 flex items-center">
+    <header className="absolute z-40 top-4 left-2 right-2 flex items-center rounded-full border border-border/60 bg-card/85 px-2.5 py-3 shadow-lg shadow-foreground/5 backdrop-blur-xl transition-colors sm:left-8 sm:right-8">
       <p className="font-extrabold ms-4 hidden sm:block font-cormorant text-xl">WISHEEE</p>
       <div className="sm:ml-auto flex items-center gap-5 justify-between w-full sm:w-auto">
         <Button variant="link" className="cursor-pointer p-0 hidden sm:flex">
@@ -40,6 +41,8 @@ export function AppHeader() {
             <House />
           </Link>
         </Button>
+
+        <ThemeToggleButton />
 
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>

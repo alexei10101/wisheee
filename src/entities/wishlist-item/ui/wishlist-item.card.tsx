@@ -43,10 +43,10 @@ export const WishlistItemCard = memo(function ({
                   }
                 : undefined
             }
-            className="hover:bg-white">
+            className="hover:bg-accent">
             <Pencil />
           </Button>
-          <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined} className="hover:bg-white">
+          <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined} className="hover:bg-accent">
             <Trash />
           </Button>
         </div>
@@ -64,10 +64,10 @@ export const WishlistItemCard = memo(function ({
                   }
                 : undefined
             }
-            className="hover:bg-white">
+            className="hover:bg-accent">
             {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
           </Button>
-          <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)} className="hover:bg-white">
+          <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)} className="hover:bg-accent">
             <ExternalLink />
           </Button>
         </div>

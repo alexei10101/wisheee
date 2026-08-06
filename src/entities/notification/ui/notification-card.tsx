@@ -18,8 +18,8 @@ const NotificationCard = ({ userId, notification: n, onAccept, onReject, onOpen 
   const Component = notificationComponents[n.type];
   if (!Component) return null;
   return (
-    <Item variant="outline" size="sm" className="bg-white shadow">
-      <ItemMedia className="bg-white" variant="icon">
+    <Item variant="outline" size="sm" className="bg-card shadow-sm">
+      <ItemMedia className="bg-card" variant="icon">
         {n.is_read ? <MailOpen /> : <Mail />}
       </ItemMedia>
 

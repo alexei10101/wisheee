@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { Toaster } from "sonner";
+import { Toaster } from "@/shared/ui/kit/sonner";
 
 export function RootLayout() {
   return (

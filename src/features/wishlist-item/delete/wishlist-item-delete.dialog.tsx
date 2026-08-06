@@ -45,7 +45,7 @@ export const WishlistItemDeleteDialog = memo(function WishlistItemDeleteDialog({
         <DialogCustomContent>
           <DialogHeader className="pb-7">
             <DialogTitle className="font-semibold">Вы уверены, что хотите удалить подарок?</DialogTitle>
-            <DialogDescription hidden={true} className="text-sm text-gray-800">
+            <DialogDescription hidden={true} className="text-sm text-muted-foreground">
               Безвозвратно удалить подарок
             </DialogDescription>
           </DialogHeader>

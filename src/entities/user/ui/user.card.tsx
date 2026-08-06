@@ -17,7 +17,7 @@ type UserCardProps = {
 export const UserCard = memo(function ({ id, username, avatar, onOpen, isFriend, onAddFriend, onDeleteFriend }: UserCardProps) {
   return (
     <Item
-      className="relative p-2 sm:p-4 flex flex-row w-full mx-auto cursor-pointer group bg-white shadow"
+      className="relative mx-auto flex w-full cursor-pointer flex-row bg-card p-2 text-card-foreground shadow-sm transition-colors sm:p-4"
       variant="outline"
       onClick={(e) => {
         const target = e.target as HTMLElement;

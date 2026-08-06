@@ -22,11 +22,11 @@ function WishlistPage() {
 
   if (isLoading || isWishlistLoading) return <PageLoader />;
   if ((!!paramUserId && isError) || isWishlistError)
-    return <div className="pt-25 bg-gray-100 min-h-screen px-4 text-red-500">Ошибка загрузки страницы</div>;
-  if (!activeWishlist) return <div className="pt-25 bg-gray-100 min-h-screen px-4">Вишлист не найден</div>;
+    return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки страницы</div>;
+  if (!activeWishlist) return <div className="min-h-screen bg-background px-4 pt-25">Вишлист не найден</div>;
 
   return (
-    <main className="page bg-gray-100">
+    <main className="page bg-background">
       <div className="mb-3 sm:mb-5">
         {paramUserId && user && (
           <PageHeader
