@@ -32,9 +32,9 @@ api.interceptors.response.use(
     try {
       await refreshPromise;
       return api(originalRequest);
-    } catch (e) {
+    } catch (error) {
       await authRepository.logout();
-      return Promise.reject(e);
+      return Promise.reject(error);
     }
   },
 );

@@ -11,8 +11,8 @@ export const useUpdateUser = () => {
       try {
         const data = await userRepository.update(updated);
         return data;
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
       }
     },
     onMutate: () => {

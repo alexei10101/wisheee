@@ -4,18 +4,14 @@ import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import { memo, useEffect } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
-import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
-import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { urlToFile } from "@/shared/utils/convert-image";
-import { Label } from "@/shared/ui/kit/label";
-import { X } from "lucide-react";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import { wishlistItemService } from "@/entities/wishlist-item/model/wishlist-item.service";
+import type { WishlistItem } from "@/entities/wishlist-item/model/item";
+import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/item.mutations";
 import { Spinner } from "@/shared/ui/kit/spinner";
+import { UpdateWishlistItemSchema, type UpdateWishlistItemType } from "@/entities/wishlist-item/model/item.validation";
+import { useMyWishlists } from "@/entities/wishlist/model/wishlist.hooks";
 
 type WishlistItemUpdateDialogProps = {
   open: boolean;
@@ -23,114 +19,100 @@ type WishlistItemUpdateDialogProps = {
   wishlistItem: WishlistItem;
 };
 
-type FormValues = z.infer<typeof wishlistItemSchema>;
-const wishlistItemSchema = z.object({
-  wishlist_id: z.string(),
-  title: z.string().min(1, "Введите название вишлиста"),
-  description: z.string(),
-  link: z.string(),
-  price: z.number().nullable(),
-  image: z.union([z.instanceof(File), z.null()]).optional(),
-});
-
 export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
   open,
   onClose,
   wishlistItem,
 }: WishlistItemUpdateDialogProps) {
-  const { data: user } = useCurrentUser();
-  const updateWishlistItem = useUpdateWishlistItem(wishlistItem.wishlist_id);
+  const { data: wishlists } = useMyWishlists();
+  const updateWishlistItem = useUpdateWishlistItem();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(wishlistItemSchema),
+  const form = useForm<UpdateWishlistItemType>({
+    resolver: zodResolver(UpdateWishlistItemSchema),
     defaultValues: {
-      wishlist_id: wishlistItem.wishlist_id,
+      wishlistId: wishlistItem.wishlistId,
       title: "",
       description: "",
       link: "",
       price: null,
-      image: null,
     },
   });
 
   useEffect(() => {
     if (open && wishlistItem) {
       form.reset({
-        title: wishlistItem.title ?? "",
-        description: wishlistItem.description ?? "",
-        link: wishlistItem.link ?? "",
-        price: wishlistItem.price ?? 0,
+        wishlistId: wishlistItem.wishlistId,
+        title: wishlistItem.title,
+        description: wishlistItem.description,
+        link: wishlistItem.link,
+        price: wishlistItem.price,
       });
     }
   }, [open, wishlistItem, form]);
 
-  useEffect(() => {
-    if (open && wishlistItem) {
-      if (!wishlistItem.image_url) return;
-      urlToFile(wishlistItem.image_url).then((file) => {
-        form.setValue("image", file);
-      });
-    }
-  }, [open, wishlistItem]);
+  // useEffect(() => {
+  //   if (open && wishlistItem) {
+  //     if (!wishlistItem.image_url) return;
+  //     urlToFile(wishlistItem.image_url).then((file) => {
+  //       form.setValue("image", file);
+  //     });
+  //   }
+  // }, [open, wishlistItem]);
 
   const handleUpdate = async () => {
-    if (!user?.id || !wishlistItem.id) return;
-    const updatedFields = getUpdatedFields();
-    if ((Object.keys(updatedFields).length === 0 && !form.formState.dirtyFields.image) || !wishlistItem) return onClose();
-
-    const data = {
-      id: wishlistItem.id,
-      ...updatedFields,
-    };
+    const data = getUpdatedFields();
+    if ((Object.keys(data).length === 0 && !form.formState.dirtyFields.image) || !wishlistItem) return onClose();
 
     try {
-      const imageValue = form.getValues().image;
-
-      if (imageValue instanceof File) {
-        const uploadResult = await wishlistItemService.uploadImage(user.id, wishlistItem.id, imageValue);
-
-        if (uploadResult.error) {
-          throw new Error(uploadResult.error);
-        }
-
-        data.image_url = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
-      }
-
-      if (imageValue === null) {
-        wishlistItemService.removeImage(user.id, wishlistItem.id);
-        data.image_url = null;
-      }
-
-      await updateWishlistItem.mutateAsync({ data });
+      await updateWishlistItem.mutateAsync({
+        itemId: wishlistItem.id,
+        previousWishlistId: wishlistItem.wishlistId,
+        data,
+      });
     } catch (error) {
-      console.log("Ошибка при обновлении подарка: " + ((error as Error).message ?? "Неизвестная ошибка"));
+      updateWishlistItem.mutateAsync({ itemId: wishlistItem.id, data, previousWishlistId: wishlistItem.wishlistId });
     } finally {
       onClose();
     }
+
+    // try {
+    //   const imageValue = form.getValues().image;
+
+    //   if (imageValue instanceof File) {
+    //     const uploadResult = await wishlistItemService.uploadImage(user.id, wishlistItem.id, imageValue);
+
+    //     if (uploadResult.error) {
+    //       throw new Error(uploadResult.error);
+    //     }
+
+    //     data.image_url = `${uploadResult.result?.publicUrl}?t=${Date.now()}`;
+    //   }
+
+    //   if (imageValue === null) {
+    //     wishlistItemService.removeImage(user.id, wishlistItem.id);
+    //     data.image_url = null;
+    //   }
+
+    //   await updateWishlistItem.mutateAsync({ data });
+    // } catch (error) {
+    //   console.log("Ошибка при обновлении подарка: " + ((error as Error).message ?? "Неизвестная ошибка"));
+    // } finally {
+    //   onClose();
+    // }
   };
 
-  const getUpdatedFields = () => {
+  const getUpdatedFields = (): UpdateWishlistItemType => {
     const formValues = form.getValues();
     const dirtyFields = form.formState.dirtyFields;
 
-    const newData = {} as Partial<WishlistItem>;
+    const updateData = {} as UpdateWishlistItemType;
 
-    if (dirtyFields.title) {
-      newData.title = formValues.title;
-    }
-    if (dirtyFields.description) {
-      newData.description = formValues.description;
-    }
-    if (dirtyFields.link) {
-      newData.link = formValues.link;
-    }
-    if (dirtyFields.wishlist_id) {
-      newData.wishlist_id = formValues.wishlist_id;
-    }
-    if (dirtyFields.price) {
-      newData.price = Number(formValues.price ?? 0);
-    }
-    return newData;
+    if (dirtyFields.wishlistId) updateData.wishlistId = formValues.wishlistId;
+    if (dirtyFields.title) updateData.title = formValues.title;
+    if (dirtyFields.description) updateData.description = formValues.description;
+    if (dirtyFields.link) updateData.link = formValues.link;
+    if (dirtyFields.price) updateData.price = Number(formValues.price ?? 0);
+    return updateData;
   };
 
   return (
@@ -175,11 +157,11 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
           />
 
           <Controller
-            name="wishlist_id"
+            name="wishlistId"
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Select value={field.value} onValueChange={(val) => field.onChange(val)}>
+                <Select value={field.value ?? undefined} onValueChange={field.onChange}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -187,7 +169,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                   <SelectContent position="item-aligned" className="z-100">
                     <SelectGroup>
                       <SelectLabel>Мои вишлисты</SelectLabel>
-                      {user?.wishlists?.map((wishlist) => (
+                      {wishlists?.map((wishlist) => (
                         <SelectItem key={wishlist.id} value={wishlist.id}>
                           {wishlist.title}
                         </SelectItem>
@@ -230,7 +212,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
               </Field>
             )}
           />
-          <Controller
+          {/* <Controller
             name="image"
             control={form.control}
             render={({ field }) => {
@@ -280,7 +262,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                 </Field>
               );
             }}
-          />
+          /> */}
         </form>
 
         <DialogFooter className="mt-3">

@@ -16,7 +16,7 @@ type WishlistCardProps = {
   isMobile: boolean;
 };
 
-export const WishlistCard = memo(function WishlistCard({ wishlist, onUpdate, onDelete, permissions, isMobile }: WishlistCardProps) {
+export const WishlistCard = memo(function WishlistCard({ wishlist, onUpdate, onDelete, onOpen, permissions, isMobile }: WishlistCardProps) {
   const [opened, setOpened] = useState(false);
   const wasDragging = useRef(false);
   const size = isMobile ? "sm" : "default";
@@ -66,7 +66,7 @@ export const WishlistCard = memo(function WishlistCard({ wishlist, onUpdate, onD
             const target = e.target as HTMLElement;
             if (target.closest("button")) return;
             if (wasDragging.current) return;
-            // if (!opened) onOpen(wishlist.id);
+            if (!opened) onOpen(wishlist.id);
             else setOpened(false);
           }}>
           <ItemContent className="flex flex-col gap-3 w-full sm:max-w-1/2">

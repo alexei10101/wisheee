@@ -1,4 +1,4 @@
-import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import type { WishlistItem } from "@/entities/wishlist-item/model/item";
 import type { Permissions } from "@/shared/lib/permissions";
 import { Button } from "@/shared/ui/kit/button";
 import { BookmarkMinus, BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";

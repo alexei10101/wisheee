@@ -11,16 +11,15 @@ import { AppLoader } from "@/shared/ui/app-loader";
 
 function WishlistsPage() {
   const me = useRequiredUser();
-  const { id } = useParams<{ id: string }>();
-  const { data: user, isLoading: isUserLoading } = useUser(id);
+  const { userId } = useParams<{ userId: string }>();
+  const { data: user, isLoading: isUserLoading } = useUser(userId);
   const { data: wishlists, isLoading: isWishlistsLoading } = useUserWishlists(user?.id);
 
-  const relation = getUserRelation({ viewerId: me?.id, ownerId: id ?? me?.id });
+  const relation = getUserRelation({ viewerId: me?.id, ownerId: userId ?? me?.id });
   const permissions = getPermissions(relation);
 
   if (isUserLoading) return <AppLoader />;
   if (!user) return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки профиля</div>;
-  if (id && !user) return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки профиля</div>;
 
   return (
     <main className="page">

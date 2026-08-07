@@ -3,7 +3,7 @@ import { memo } from "react";
 type PageHeaderProps = {
   left?: React.ReactNode;
   title?: string;
-  subtitle?: string;
+  subtitle: string | null;
   right?: React.ReactNode;
   user?: React.ReactNode;
 };

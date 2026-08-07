@@ -11,8 +11,8 @@ export const ROUTES = {
   NOTIFICATIONS: "/notifications",
 
   // USER: "/users/:user",
-  USER_WISHLISTS: "/users/:id/wishlists",
-  USER_WISHLIST: "/users/:id/wishlists/:wishlistId",
+  USER_WISHLISTS: "/users/:userId/wishlists",
+  USER_WISHLIST: "/users/:userId/wishlists/:wishlistId",
 } as const;
 
 export const buildRoutes = {

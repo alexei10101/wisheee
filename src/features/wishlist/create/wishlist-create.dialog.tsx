@@ -1,4 +1,3 @@
-import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { useCreateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
 import { CreateWishlistSchema, type CreateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
@@ -16,8 +15,6 @@ type WishlistCreateDialogProps = {
 };
 
 export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, onClose }: WishlistCreateDialogProps) {
-  const user = useRequiredUser();
-  if (!user) throw Error("Неаутентифицирован");
   const createWishlist = useCreateWishlist();
 
   const form = useForm<CreateWishlistType>({
@@ -35,8 +32,6 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
   };
 
   const handleCreate = async () => {
-    if (!user?.id) return;
-
     const createData = {
       title: form.getValues("title"),
       description: form.getValues("description"),

@@ -22,12 +22,12 @@ export async function callEdge<T = null>(path: EdgeOperation, accessToken: strin
 
     const data: ApiResponse<T> = await res.json();
     return data;
-  } catch (e) {
+  } catch (error) {
     return {
       ok: false,
       error: {
         code: "NETWORK_ERROR",
-        message: e instanceof Error ? e.message : "Unknown network error",
+        message: error instanceof Error ? error.message : "Unknown network error",
       },
     };
   }

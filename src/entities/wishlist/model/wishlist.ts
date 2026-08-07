@@ -1,4 +1,4 @@
-import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import type { WishlistItem } from "@/entities/wishlist-item/model/item";
 
 export type Wishlist = {
   id: string;

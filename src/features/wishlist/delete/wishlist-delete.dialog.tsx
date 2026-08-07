@@ -4,7 +4,6 @@ import { Button } from "@/shared/ui/kit/button";
 import { memo } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useDeleteWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useRequiredUser } from "@/entities/user/model/user.hooks";
 
 type WishlistDeleteDialogProps = {
   open: boolean;
@@ -13,12 +12,9 @@ type WishlistDeleteDialogProps = {
 };
 
 export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, onClose, wishlistId }: WishlistDeleteDialogProps) {
-  const user = useRequiredUser();
-  if (!user) throw Error("Неаутентифицирован");
   const deleteWishlist = useDeleteWishlist();
 
   const handleDelete = async () => {
-    if (!user?.id) return;
     try {
       await deleteWishlist.mutateAsync({ wishlistId });
     } catch (error) {
@@ -39,7 +35,9 @@ export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, o
         <DialogCustomContent>
           <DialogHeader>
             <DialogTitle className="font-semibold">Удалить вишлист?</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Также будут удалены ваши желания в этом вишлисте</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Также будут удалены ваши желания в этом вишлисте
+            </DialogDescription>
           </DialogHeader>
 
           <DialogFooter className="mt-3">

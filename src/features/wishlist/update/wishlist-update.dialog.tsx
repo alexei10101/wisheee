@@ -9,7 +9,6 @@ import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { UpdateWishlistSchema, type UpdateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
 
 type WishlistUpdateDialogProps = {
@@ -19,7 +18,6 @@ type WishlistUpdateDialogProps = {
 };
 
 export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
-  const user = useRequiredUser();
   const updateWishlist = useUpdateWishlist();
 
   const form = useForm<UpdateWishlistType>({
@@ -42,7 +40,7 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
   }, [wishlist, open, form]);
 
   const handleUpdate = async () => {
-    if (!user?.id || !wishlist.id) return;
+    if (!wishlist.id) return;
 
     const updateData = getUpdatedFields();
     if (!updateData) return onClose();

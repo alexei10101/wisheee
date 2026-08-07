@@ -1,5 +1,5 @@
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
-import { useWishlists } from "@/entities/wishlist/model/wishlist.hooks";
+import { useMyWishlists } from "@/entities/wishlist/model/wishlist.hooks";
 import { WishlistCreateButton } from "@/features/wishlist/create/wishlist-create.button";
 import { WishlistList } from "@/features/wishlist/list/wishlist.list";
 import { getPermissions, getUserRelation } from "@/shared/lib/permissions";
@@ -9,7 +9,7 @@ import { PageHeader } from "@/shared/ui/page-header";
 
 function MyWishlistsPage() {
   const me = useRequiredUser();
-  const { data: wishlists, isLoading } = useWishlists();
+  const { data: wishlists, isLoading } = useMyWishlists();
 
   const relation = getUserRelation({ viewerId: me.id, ownerId: me.id });
   const permissions = getPermissions(relation);

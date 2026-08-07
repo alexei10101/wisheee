@@ -1,18 +1,15 @@
-import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
+import type { WishlistItem } from "@/entities/wishlist-item/model/item";
 import { WishlistItemCard } from "@/entities/wishlist-item/ui/wishlist-item.card";
-import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
 import { WishlistItemUpdateDialog } from "../update/wishlist-item-update.dialog";
 import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog";
 import { useState } from "react";
 import type { Permissions } from "@/shared/lib/permissions";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import { useReserveWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { useAuth } from "@/app/auth.context";
+import { List } from "@/shared/ui/list";
 
 type WishlistItemList = {
   permissions: Permissions;
-  wishlist: WishlistWithItems;
+  items: WishlistItem[];
   style?: string;
 };
 
@@ -21,10 +18,7 @@ type WishlistItemDialogState =
   | { operation: "delete"; wishlistItemId: string }
   | { operation: null };
 
-export function WishlistItemList({ permissions, wishlist, style }: WishlistItemList) {
-  const { data: user } = useCurrentUser();
-  const { session } = useAuth();
-  const reserveWishlistItem = useReserveWishlistItem();
+export function WishlistItemList({ permissions, items, style }: WishlistItemList) {
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
   const isMobile = !useMediaQuery("(min-width: 640px)");
 
@@ -33,10 +27,8 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  const handleReserve = (wishlistItemId: string) => {
+  const handleReserve = () => {
     try {
-      if (!user?.id || !session) return;
-      reserveWishlistItem.mutateAsync({ userId: user.id, wishlistItemId, accessToken: session.access_token });
     } catch (error) {
       console.log(error);
     }
@@ -44,9 +36,11 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
 
   return (
     <section className={style}>
-      <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-2 sm:gap-4 text-lg overflow-x-hidden">
-        {wishlist.wishlist_items?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлист пуст</div>}
-        {wishlist.wishlist_items?.map((item) => (
+      {items.length === 0 && <div className="text-lg text-center">Вишлист пуст</div>}
+      <List
+        items={items}
+        getKey={(i) => i.id}
+        renderItem={(item) => (
           <WishlistItemCard
             key={item.id}
             wishlistItem={item}
@@ -57,19 +51,13 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
             isMobile={isMobile}
             onOpen={onOpen}
           />
-        ))}
-      </div>
+        )}></List>
 
       {dialog.operation === "update" && (
         <WishlistItemUpdateDialog open onClose={() => setDialog({ operation: null })} wishlistItem={dialog.wishlistItem} />
       )}
       {dialog.operation === "delete" && (
-        <WishlistItemDeleteDialog
-          wishlistId={wishlist.id}
-          open
-          onClose={() => setDialog({ operation: null })}
-          wishlistItemId={dialog.wishlistItemId}
-        />
+        <WishlistItemDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistItemId={dialog.wishlistItemId} />
       )}
     </section>
   );

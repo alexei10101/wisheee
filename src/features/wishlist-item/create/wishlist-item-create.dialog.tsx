@@ -1,19 +1,16 @@
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
-import { useCreateWishlistItemWithImage } from "@/entities/wishlist-item/model/wishlist-item.mutations";
-import { useWishlists } from "@/entities/wishlist/model/wishlist.queries";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { useCreateWishlistItem } from "@/entities/wishlist-item/model/item.mutations";
+import { CreateWishlistItemSchema, type CreateWishlistItemType } from "@/entities/wishlist-item/model/item.validation";
+import { useMyWishlists } from "@/entities/wishlist/model/wishlist.hooks";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
-import { Label } from "@/shared/ui/kit/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
 import { memo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
 type WishlistItemCreateDialogProps = {
   wishlistId: string;
@@ -21,31 +18,21 @@ type WishlistItemCreateDialogProps = {
   onClose: () => void;
 };
 
-type FormValues = z.infer<typeof wishlistItemSchema>;
-const wishlistItemSchema = z.object({
-  wishlist_id: z.string(),
-  title: z.string().min(1, "Введите название вишлиста"),
-  description: z.string(),
-  link: z.string(),
-  price: z.number(),
-  image: z.union([z.instanceof(File), z.null()]).optional(),
-});
-
 export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
-  const { data: user } = useCurrentUser();
-  const { data: wishlists } = useWishlists(user?.id);
+  const user = useRequiredUser();
+  const { data: wishlists } = useMyWishlists();
 
-  const createWishlistItem = useCreateWishlistItemWithImage(user?.id);
+  const createWishlistItem = useCreateWishlistItem();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(wishlistItemSchema),
+  const form = useForm<CreateWishlistItemType>({
+    resolver: zodResolver(CreateWishlistItemSchema),
     defaultValues: {
-      wishlist_id: wishlistId,
+      wishlistId,
       title: "",
       description: "",
       link: "",
-      price: 0,
-      image: null,
+      price: null,
+      image: "",
     },
   });
 
@@ -55,21 +42,20 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
   };
 
   const handleCreate = async () => {
-    if (!user?.id || !form.getValues("wishlist_id")) return;
+    if (!user?.id || !form.getValues("wishlistId")) return;
 
-    const data: Omit<WishlistItem, "id" | "image_url"> = {
-      wishlist_id: form.getValues("wishlist_id"),
+    const data: CreateWishlistItemType = {
+      wishlistId: form.getValues("wishlistId"),
       title: form.getValues("title"),
       description: form.getValues("description"),
       link: form.getValues("link"),
       price: Number(form.getValues("price")) ?? 0,
+      image: "",
     };
-    const file = form.getValues("image");
-
     try {
-      await createWishlistItem.mutateAsync({ data, file });
+      createWishlistItem.mutateAsync(data);
     } catch (error) {
-      console.log("Ошибка создания карточки: " + ((error as Error).message ?? "Неизвестная ошибка"));
+      console.log(error);
     } finally {
       closeDialog();
     }
@@ -117,7 +103,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
           />
 
           <Controller
-            name="wishlist_id"
+            name="wishlistId"
             control={form.control}
             render={({ field }) => (
               <Field>
@@ -166,7 +152,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
               </Field>
             )}
           />
-          <Controller
+          {/* <Controller
             name="image"
             control={form.control}
             render={({ field }) => {
@@ -216,7 +202,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
                 </Field>
               );
             }}
-          />
+          /> */}
         </form>
 
         <DialogFooter>
