@@ -5,7 +5,11 @@ import { FriendRejectedNotification } from "../ui/components/friend-rejected-not
 import { FriendPendingNotification } from "../ui/components/friend-pending-notification";
 import type { AppNotificationType } from "./notification";
 
-type NotificationComponent = ({ notification, onAccept, onReject }: NotificationCardProps) => JSX.Element;
+type NotificationComponent = ({
+  notification,
+  onAccept,
+  onReject,
+}: NotificationCardProps) => JSX.Element;
 
 export const notificationComponents: Record<AppNotificationType, NotificationComponent> = {
   friend_request: FriendPendingNotification,

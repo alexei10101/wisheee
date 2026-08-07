@@ -23,8 +23,9 @@ export function MarkNotificationsAsRead({ userId, isAvailable }: MarkNotificatio
     <Button
       disabled={markAsRead.isPending || !isAvailable}
       onClick={handleMarkAllAsRead}
-      className="flex items-center gap-2 disabled:opacity-50 w-full sm:w-auto">
-      <CheckCheck className="sm:w-4 sm:h-4" />
+      className="flex w-full items-center gap-2 disabled:opacity-50 sm:w-auto"
+    >
+      <CheckCheck className="sm:h-4 sm:w-4" />
       Отметить все как прочитанные
     </Button>
   );

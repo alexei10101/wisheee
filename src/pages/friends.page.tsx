@@ -11,25 +11,27 @@ function FriendsPage() {
   const toggleMode = () => setMode((prev) => (prev === "search" ? "all" : "search"));
 
   return (
-    <main className="page bg-background">
-      <div className="mb-3 sm:mb-5">
-        <PageHeader
-          title={mode === "all" ? "Мои друзья" : "Добавить друга"}
-          left={<BackButton />}
-          right={
-            <Button className="sm:me-4 w-full sm:w-40" onClick={toggleMode}>
-              <span className="flex items-center gap-2" hidden={mode === "search"}>
-                Добавить друга <UserPlus />
-              </span>
-              <span className="flex items-center gap-2" hidden={mode === "all"}>
-                Мои друзья <Users />
-              </span>
-            </Button>
-          }
-        />
+    <main className="page">
+      <div className="page-content">
+        <div className="mb-6 sm:mb-8">
+          <PageHeader
+            title={mode === "all" ? "Мои друзья" : "Добавить друга"}
+            left={<BackButton />}
+            right={
+              <Button className="w-full sm:me-4 sm:w-40" onClick={toggleMode}>
+                <span className="flex items-center gap-2" hidden={mode === "search"}>
+                  Добавить друга <UserPlus />
+                </span>
+                <span className="flex items-center gap-2" hidden={mode === "all"}>
+                  Мои друзья <Users />
+                </span>
+              </Button>
+            }
+          />
+        </div>
+        {mode === "all" && <FriendList />}
+        {mode === "search" && <SearchUser />}
       </div>
-      {mode === "all" && <FriendList />}
-      {mode === "search" && <SearchUser />}
     </main>
   );
 }

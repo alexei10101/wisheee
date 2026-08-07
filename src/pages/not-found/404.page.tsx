@@ -1,10 +1,12 @@
-import { useRouteError, isRouteErrorResponse, Link } from "react-router";
+import { Button } from "@/shared/ui/kit/button";
+import { CircleAlert } from "lucide-react";
+import { isRouteErrorResponse, Link, useRouteError } from "react-router";
 
 export default function ErrorPage() {
   const error = useRouteError();
   console.error(error);
 
-  let errorMessage = "An unexpected error occurred.";
+  let errorMessage = "Произошла непредвиденная ошибка.";
   let errorStatus = "";
 
   if (isRouteErrorResponse(error)) {
@@ -15,25 +17,21 @@ export default function ErrorPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen  text-center mx-auto">
-      <h1 style={styles.heading}>Упс!</h1>
-      <p style={styles.text}>Ошибочка вышла...</p>
-      <p style={styles.errorText}>
-        <i>
-          {errorStatus && `${errorStatus}: `}
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
+      <section className="flex w-full max-w-lg flex-col items-center rounded-3xl border border-border/70 bg-card p-7 text-center shadow-xl shadow-primary/5 sm:p-10">
+        <div className="mb-5 grid size-14 place-items-center rounded-2xl bg-destructive/10 text-destructive">
+          <CircleAlert className="size-7" aria-hidden="true" />
+        </div>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Упс!</h1>
+        <p className="mt-2 text-lg">Ошибочка вышла…</p>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          {errorStatus && <span className="font-medium text-foreground">{errorStatus}: </span>}
           {errorMessage}
-        </i>
-      </p>
-      <Link to="/" style={styles.link}>
-        На главную
-      </Link>
-    </div>
+        </p>
+        <Button asChild className="mt-7">
+          <Link to="/">На главную</Link>
+        </Button>
+      </section>
+    </main>
   );
 }
-
-const styles = {
-  heading: { fontSize: "3rem", color: "#e53e3e", marginBottom: "1rem" },
-  text: { fontSize: "1.25rem", color: "#4a5568", marginBottom: "0.5rem" },
-  errorText: { color: "#718096", marginBottom: "2rem" },
-  link: { color: "#3182ce", textDecoration: "none", fontWeight: "bold" },
-};

@@ -1,4 +1,7 @@
-import type { FriendNotificationMetadata, FriendRequestStatus } from "@/entities/request/friend-request/model/friend-request";
+import type {
+  FriendNotificationMetadata,
+  FriendRequestStatus,
+} from "@/entities/request/friend-request/model/friend-request";
 import { supabase } from "@/shared/supabase-client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import type { AppNotification } from "../model/notification";
@@ -83,12 +86,21 @@ export const notificationRepository = {
     ]);
   },
   async markAllAsRead(userId: string) {
-    return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false);
+    return supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("receiver_id", userId)
+      .eq("is_read", false);
   },
   // async markAsRead(userId: string, ids: string[]) {
   //   return supabase.from("notifications").update({ is_read: true }).eq("receiver_id", userId).eq("is_read", false).in("id", ids);
   // },
   async fetchNotifications(userId: string) {
-    return supabase.from("notifications").select("*").eq("receiver_id", userId).order("created_at", { ascending: false }).limit(30);
+    return supabase
+      .from("notifications")
+      .select("*")
+      .eq("receiver_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(30);
   },
 };

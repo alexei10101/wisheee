@@ -19,19 +19,28 @@ function WishlistsPage() {
   const permissions = getPermissions(relation);
 
   if (isUserLoading) return <AppLoader />;
-  if (!user) return <div className="min-h-screen bg-background px-4 pt-25 text-destructive">Ошибка загрузки профиля</div>;
+  if (!user)
+    return (
+      <div className="min-h-screen bg-background px-4 pt-25 text-destructive">
+        Ошибка загрузки профиля
+      </div>
+    );
 
   return (
     <main className="page">
-      <div className="mb-3 sm:mb-5">
-        <PageHeader
-          title={`Вишлисты пользователя ${user?.username}`}
-          left={<BackButton />}
-          user={<UserBadge user={{ username: user.username, avatar: user.avatar }} />}
-        />
+      <div className="page-content">
+        <div className="mb-6 sm:mb-8">
+          <PageHeader
+            title={`Вишлисты пользователя ${user?.username}`}
+            left={<BackButton />}
+            user={<UserBadge user={{ username: user.username, avatar: user.avatar }} />}
+          />
+        </div>
+        {isWishlistsLoading && <LocalLoader />}
+        {!isWishlistsLoading && (
+          <WishlistList wishlists={wishlists ?? []} permissions={permissions} />
+        )}
       </div>
-      {isWishlistsLoading && <LocalLoader />}
-      {!isWishlistsLoading && <WishlistList wishlists={wishlists ?? []} permissions={permissions} />}
     </main>
   );
 }

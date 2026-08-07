@@ -121,7 +121,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    @apply bg-background text-foreground antialiased;
     min-width: 320px;
   }
   :root {
@@ -131,10 +131,10 @@
     color-scheme: dark;
   }
   h1 {
-    @apply text-4xl font-bold;
+    @apply text-3xl font-bold tracking-tight sm:text-4xl;
   }
   h2 {
-    @apply text-3xl font-semibold;
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl;
   }
   a {
     @apply transition-colors;
@@ -142,14 +142,15 @@
   button {
     @apply cursor-pointer;
   }
-  * {
-    @apply border-border;
-  }
 }
 
 @layer components {
   .page {
-    @apply pt-25 px-8 pb-4 min-h-screen overflow-x-hidden;
+    @apply min-h-screen overflow-x-clip bg-background px-4 pt-24 pb-8 sm:px-6 sm:pt-28 lg:px-8;
+  }
+
+  .page-content {
+    @apply mx-auto w-full max-w-5xl;
   }
 
   .no-spin {

@@ -3,7 +3,9 @@ export type ServiceResult<T = null> = {
   result: T | null;
 };
 
-export async function safeQuery<T>(query: PromiseLike<{ data: T | null; error: any }>): Promise<ServiceResult<T>> {
+export async function safeQuery<T>(
+  query: PromiseLike<{ data: T | null; error: any }>,
+): Promise<ServiceResult<T>> {
   try {
     const { data } = await query;
 

@@ -1,8 +1,18 @@
 import { useCreateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { CreateWishlistSchema, type CreateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
+import {
+  CreateWishlistSchema,
+  type CreateWishlistType,
+} from "@/entities/wishlist/model/wishlist.validation";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
-import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle } from "@/shared/ui/kit/dialog";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+} from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +24,10 @@ type WishlistCreateDialogProps = {
   onClose: () => void;
 };
 
-export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, onClose }: WishlistCreateDialogProps) {
+export const WishlistCreateDialog = memo(function WishlistCreateDialog({
+  open,
+  onClose,
+}: WishlistCreateDialogProps) {
   const createWishlist = useCreateWishlist();
 
   const form = useForm<CreateWishlistType>({
@@ -52,17 +65,24 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
       open={open}
       onOpenChange={(value) => {
         if (!value) closeDialog();
-      }}>
+      }}
+    >
       <DialogPortal>
         <DialogCustomOverlay />
 
         <DialogCustomContent>
           <DialogHeader className="pb-7">
             <DialogTitle className="font-semibold">Создать вишлист</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Заполните данные для нового списка желаний</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Заполните данные для нового списка желаний
+            </DialogDescription>
           </DialogHeader>
 
-          <form id="wishlist-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4">
+          <form
+            id="wishlist-create-form"
+            onSubmit={form.handleSubmit(handleCreate)}
+            className="flex flex-col gap-4"
+          >
             <Controller
               name="title"
               control={form.control}
@@ -75,7 +95,9 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
                     placeholder="Название"
                     autoComplete="off"
                   />
-                  {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -84,7 +106,12 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
               control={form.control}
               render={({ field }) => (
                 <Field>
-                  <Input {...field} id="wishlist-create-form-description" placeholder="Описание" autoComplete="off" />
+                  <Input
+                    {...field}
+                    id="wishlist-create-form-description"
+                    placeholder="Описание"
+                    autoComplete="off"
+                  />
                 </Field>
               )}
             />
@@ -99,7 +126,10 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                   />
-                  <label htmlFor="wishlist-create-form-is-public" className="flex flex-1 cursor-pointer">
+                  <label
+                    htmlFor="wishlist-create-form-is-public"
+                    className="flex flex-1 cursor-pointer"
+                  >
                     Видят все
                   </label>
                 </div>
@@ -111,7 +141,12 @@ export const WishlistCreateDialog = memo(function WishlistCreateDialog({ open, o
             <Button variant="outline" className="sm:w-26" onClick={closeDialog}>
               Отмена
             </Button>
-            <Button type="submit" form="wishlist-create-form" className="sm:w-26" disabled={createWishlist.isPending}>
+            <Button
+              type="submit"
+              form="wishlist-create-form"
+              className="sm:w-26"
+              disabled={createWishlist.isPending}
+            >
               Сохранить
             </Button>
           </DialogFooter>

@@ -1,11 +1,11 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/item";
 import type { Permissions } from "@/shared/lib/permissions";
+import { ActionMenu } from "@/shared/ui/action-menu";
+import { Badge } from "@/shared/ui/kit/badge";
 import { Button } from "@/shared/ui/kit/button";
-import { BookmarkMinus, BookmarkPlus, ExternalLink, Pencil, Trash } from "lucide-react";
-import { memo, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@/shared/ui/kit/item";
-import { cn } from "@/shared/lib/css";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/shared/ui/kit/dropdown-menu";
+import { BookmarkMinus, BookmarkPlus, ExternalLink, Gift, Pencil, Trash2 } from "lucide-react";
+import { memo } from "react";
 
 type WishlistItemProps = {
   wishlistItem: WishlistItem;
@@ -17,144 +17,124 @@ type WishlistItemProps = {
   onOpen: (link: string) => void;
 };
 
-export const WishlistItemCard = memo(function ({
+const priceFormatter = new Intl.NumberFormat("ru-RU");
+
+export const WishlistItemCard = memo(function WishlistItemCard({
   wishlistItem,
   permissions,
   handleDelete,
   handleUpdate,
   handleReserve,
-  isMobile,
   onOpen,
 }: WishlistItemProps) {
-  const [opened, setOpened] = useState(false);
-  const wasDragging = useRef(false);
+  const price = wishlistItem.price;
+  const hasLink = wishlistItem.link.trim().length > 0;
+  const hasPrice = price != null && price !== 0;
+  const isReserved = Boolean(wishlistItem.reserver);
 
   return (
-    <div className="relative w-full sm:w-auto grow">
-      {isMobile && permissions.canUpdate && permissions.canDelete && (
-        <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
-          <Button
-            variant="ghost"
-            onClick={
-              handleUpdate
-                ? () => {
-                    handleUpdate(wishlistItem.id);
-                    setOpened(false);
-                  }
-                : undefined
-            }
-            className="hover:bg-accent">
-            <Pencil />
-          </Button>
-          <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined} className="hover:bg-accent">
-            <Trash />
-          </Button>
-        </div>
-      )}
+    <article className="group relative grid w-full max-w-3xl grid-cols-[6.5rem_minmax(0,1fr)] overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[8rem_minmax(0,1fr)_auto]">
+      <div className="m-2 min-h-26 overflow-hidden rounded-xl bg-muted sm:m-3 sm:min-h-32 sm:rounded-2xl">
+        {wishlistItem.image ? (
+          <img
+            src={wishlistItem.image}
+            alt={wishlistItem.title}
+            className="size-full object-cover"
+          />
+        ) : (
+          <div className="flex size-full min-h-26 flex-col items-center justify-center gap-2 px-2 text-center text-xs text-muted-foreground sm:min-h-32">
+            <Gift className="size-6 text-primary/70" aria-hidden="true" />
+            <span>Нет изображения</span>
+          </div>
+        )}
+      </div>
 
-      {isMobile && permissions.canReserve && (
-        <div className="absolute top-0.5 right-0 flex flex-col items-center gap-2 pr-3 z-0">
-          <Button
-            variant="ghost"
-            onClick={
-              handleReserve
-                ? () => {
-                    handleReserve(wishlistItem.id);
-                    setOpened(false);
-                  }
-                : undefined
-            }
-            className="hover:bg-accent">
-            {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
-          </Button>
-          <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)} className="hover:bg-accent">
-            <ExternalLink />
-          </Button>
-        </div>
-      )}
-
-      <motion.div
-        className="relative"
-        drag={isMobile ? "x" : false}
-        dragConstraints={{ left: -72, right: 0 }}
-        dragElastic={0.1}
-        dragSnapToOrigin
-        onDragStart={() => {
-          wasDragging.current = true;
-        }}
-        onDragEnd={(_, info) => {
-          setTimeout(() => {
-            wasDragging.current = false;
-          }, 0);
-
-          if (info.offset.x < -30) setOpened(true);
-          else setOpened(false);
-        }}
-        animate={{ x: opened ? -72 : 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 30 }}>
-        <div
-          className={cn("bg-gray-800 z-10 absolute inset-0 rounded-2xl transition-opacity", {
-            "opacity-20": !!wishlistItem.reserver,
-            "opacity-0": !wishlistItem.reserver,
-          })}></div>
-        <Item
-          variant="outline"
-          className="rounded-xl sm:rounded-2xl bg-card shadow-sm p-0 sm:p-4 flex sm:gap-4 relative cursor-pointer overflow-hidden"
-          onClick={(e) => {
-            const target = e.target as HTMLElement;
-            if (target.closest("button")) return;
-            if (wasDragging.current) return;
-            if (!opened) onOpen(wishlistItem.link);
-            else setOpened(false);
-          }}>
-          <ItemMedia className="w-24 h-24 rounded-s-xl bg-muted shrink-0 -mt-1">
-            {wishlistItem.image_url && <img src={wishlistItem.image_url} className="object-cover" />}
-            {!wishlistItem.image_url && (
-              <div className="w-full h-full flex items-center text-xs text-center text-muted-foreground">Нет изображения</div>
-            )}
-          </ItemMedia>
-          <ItemContent className="flex flex-col gap-0 sm:gap-3 w-full sm:max-w-1/2 self-start">
-            <ItemTitle className="font-semibold text-base">{wishlistItem.title}</ItemTitle>
-            <ItemDescription className="text-sm text-muted-foreground">{wishlistItem.description?.trim() || `\u00A0`}</ItemDescription>
-            {wishlistItem.price !== 0 && (
-              <p className="absolute bottom-1 right-2 text-muted-foreground text-[12px]">≈{wishlistItem.price.toLocaleString()} ₽</p>
-            )}
-          </ItemContent>
-
-          {!isMobile && permissions.canUpdate && permissions.canDelete && (
-            <ItemActions className="ml-auto hidden sm:flex z-10">
-              <Button variant="ghost" onClick={handleUpdate ? () => handleUpdate(wishlistItem.id) : undefined}>
-                <Pencil />
-              </Button>
-              <Button variant="ghost" onClick={handleDelete ? () => handleDelete(wishlistItem.id) : undefined}>
-                <Trash />
-              </Button>
-              <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)}>
-                <ExternalLink />
-              </Button>
-            </ItemActions>
+      <div className="min-w-0 px-2 py-4 sm:px-3 sm:py-5">
+        <div className="flex min-w-0 flex-wrap items-start gap-2">
+          <h3 className="min-w-0 text-base leading-snug font-semibold tracking-tight sm:text-lg">
+            {wishlistItem.title}
+          </h3>
+          {isReserved && (
+            <Badge
+              variant="secondary"
+              className="border border-primary/15 bg-primary/10 text-primary"
+            >
+              Забронировано
+            </Badge>
           )}
-          {!isMobile && permissions.canReserve && (
-            <ItemActions className="ml-auto hidden sm:flex z-10">
-              <Button
-                variant="ghost"
-                onClick={
-                  handleReserve
-                    ? () => {
-                        handleReserve(wishlistItem.id);
-                        setOpened(false);
-                      }
-                    : undefined
-                }>
-                {wishlistItem.reserver ? <BookmarkMinus /> : <BookmarkPlus />}
-              </Button>
-              <Button variant="ghost" onClick={() => onOpen(wishlistItem.link)}>
-                <ExternalLink />
-              </Button>
-            </ItemActions>
-          )}
-        </Item>
-      </motion.div>
-    </div>
+        </div>
+
+        {wishlistItem.description.trim() && (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {wishlistItem.description}
+          </p>
+        )}
+
+        {hasPrice && (
+          <p className="mt-3 text-base font-semibold tabular-nums sm:text-lg">
+            {priceFormatter.format(price)} ₽
+          </p>
+        )}
+      </div>
+
+      <div className="col-span-2 flex items-center justify-end gap-2 border-t border-border/60 px-2 py-2 sm:col-span-1 sm:border-t-0 sm:px-4 sm:py-4">
+        {permissions.canReserve && handleReserve && (
+          <Button
+            type="button"
+            variant={isReserved ? "secondary" : "default"}
+            className="min-h-10 flex-1 sm:flex-none"
+            onClick={() => handleReserve(wishlistItem.id)}
+          >
+            {isReserved ? (
+              <BookmarkMinus aria-hidden="true" />
+            ) : (
+              <BookmarkPlus aria-hidden="true" />
+            )}
+            {isReserved ? "Снять бронь" : "Забронировать"}
+          </Button>
+        )}
+
+        {hasLink && (
+          <Button
+            type="button"
+            variant={permissions.canReserve ? "outline" : "default"}
+            className="min-h-10 flex-1 sm:flex-none"
+            aria-label="Открыть магазин"
+            onClick={() => onOpen(wishlistItem.link)}
+          >
+            <ExternalLink aria-hidden="true" />
+            <span aria-hidden="true" className="sm:hidden lg:inline">
+              Открыть магазин
+            </span>
+            <span aria-hidden="true" className="hidden sm:inline lg:hidden">
+              Открыть
+            </span>
+          </Button>
+        )}
+
+        {(permissions.canUpdate || permissions.canDelete) && (
+          <ActionMenu label="Действия с желанием">
+            {permissions.canUpdate && handleUpdate && (
+              <DropdownMenuItem onSelect={() => handleUpdate(wishlistItem.id)}>
+                <Pencil aria-hidden="true" />
+                Редактировать
+              </DropdownMenuItem>
+            )}
+            {permissions.canUpdate && permissions.canDelete && handleUpdate && handleDelete && (
+              <DropdownMenuSeparator />
+            )}
+            {permissions.canDelete && handleDelete && (
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => handleDelete(wishlistItem.id)}
+              >
+                <Trash2 aria-hidden="true" />
+                Удалить
+              </DropdownMenuItem>
+            )}
+          </ActionMenu>
+        )}
+      </div>
+    </article>
   );
 });

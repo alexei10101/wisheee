@@ -11,7 +11,8 @@ function NotificationPage() {
   const { data: user, isLoading: userIsLoading } = useCurrentUser();
   const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
   const { session } = useAuth();
-  const haveNotificationsBeenRead = notifications?.some((notification) => !notification.is_read) ?? false;
+  const haveNotificationsBeenRead =
+    notifications?.some((notification) => !notification.is_read) ?? false;
 
   if (userIsLoading || notificationsIsLoading) return <PageLoader />;
   return (
@@ -20,10 +21,16 @@ function NotificationPage() {
         <PageHeader
           title="Мои уведомления"
           left={<BackButton />}
-          right={<MarkNotificationsAsRead userId={user?.id} isAvailable={haveNotificationsBeenRead} />}
+          right={
+            <MarkNotificationsAsRead userId={user?.id} isAvailable={haveNotificationsBeenRead} />
+          }
         />
       </div>
-      <NotificationList userId={user?.id} accessToken={session?.access_token} notifications={notifications ?? []} />
+      <NotificationList
+        userId={user?.id}
+        accessToken={session?.access_token}
+        notifications={notifications ?? []}
+      />
     </main>
   );
 }

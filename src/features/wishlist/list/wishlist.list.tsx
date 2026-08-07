@@ -8,13 +8,18 @@ import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import type { Permissions } from "@/shared/lib/permissions";
 import { List } from "@/shared/ui/list";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { Heart } from "lucide-react";
 
 type WishlistListProps = {
   wishlists: Wishlist[];
   permissions: Permissions;
 };
 
-type WishlistDialogState = { operation: "update"; wishlist: Wishlist } | { operation: "delete"; wishlistId: string } | { operation: null };
+type WishlistDialogState =
+  | { operation: "update"; wishlist: Wishlist }
+  | { operation: "delete"; wishlistId: string }
+  | { operation: null };
 
 export const WishlistList = function WishlistList({ wishlists, permissions }: WishlistListProps) {
   const { userId } = useParams<{ userId: string }>();
@@ -22,11 +27,18 @@ export const WishlistList = function WishlistList({ wishlists, permissions }: Wi
   const isMobile = !useMediaQuery("(min-width: 640px)");
 
   const navigate = useNavigate();
-  const onOpen = (id: string) => (userId ? navigate(buildRoutes.userWishlist(userId, id)) : navigate(buildRoutes.myWishlist(id)));
+  const onOpen = (id: string) =>
+    userId ? navigate(buildRoutes.userWishlist(userId, id)) : navigate(buildRoutes.myWishlist(id));
 
   return (
     <section>
-      {wishlists?.length === 0 && <div className="text-lg text-center">Вишлистов пока нет</div>}
+      {wishlists?.length === 0 && (
+        <EmptyState
+          icon={<Heart aria-hidden="true" />}
+          title="Вишлистов пока нет"
+          description="Создайте первый список и соберите в нём идеи подарков."
+        />
+      )}
       {wishlists && (
         <>
           <List
@@ -42,12 +54,21 @@ export const WishlistList = function WishlistList({ wishlists, permissions }: Wi
                 permissions={permissions}
                 isMobile={isMobile}
               />
-            )}></List>
+            )}
+          ></List>
           {permissions.canUpdate && dialog.operation === "update" && (
-            <WishlistUpdateDialog open onClose={() => setDialog({ operation: null })} wishlist={dialog.wishlist} />
+            <WishlistUpdateDialog
+              open
+              onClose={() => setDialog({ operation: null })}
+              wishlist={dialog.wishlist}
+            />
           )}
           {permissions.canDelete && dialog.operation === "delete" && (
-            <WishlistDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistId={dialog.wishlistId} />
+            <WishlistDeleteDialog
+              open
+              onClose={() => setDialog({ operation: null })}
+              wishlistId={dialog.wishlistId}
+            />
           )}
         </>
       )}

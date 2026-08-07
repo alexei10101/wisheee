@@ -10,8 +10,15 @@ export const useSendFriendRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ senderId, receiverId, metadata }: { senderId: string; receiverId: string; metadata: FriendRequestMetadata }) =>
-      friendsRequestService.sendFriendRequest(senderId, receiverId, metadata),
+    mutationFn: ({
+      senderId,
+      receiverId,
+      metadata,
+    }: {
+      senderId: string;
+      receiverId: string;
+      metadata: FriendRequestMetadata;
+    }) => friendsRequestService.sendFriendRequest(senderId, receiverId, metadata),
     onMutate: () => {
       const toastId = toast.loading("Отправка запроса...");
       return { toastId };
@@ -63,8 +70,12 @@ export const useAcceptFriendRequest = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(notificationKeys.friendRequest(variables.senderId), (old: AppNotification[] = []) =>
-        old.map((n) => (n.entity_id === variables.requestId ? { ...n, type: "friend_request_accepted" } : n)),
+      queryClient.setQueryData(
+        notificationKeys.friendRequest(variables.senderId),
+        (old: AppNotification[] = []) =>
+          old.map((n) =>
+            n.entity_id === variables.requestId ? { ...n, type: "friend_request_accepted" } : n,
+          ),
       );
       queryClient.invalidateQueries({
         queryKey: friendsKeys.list(variables.senderId),
@@ -105,8 +116,12 @@ export const useRejectFriendRequest = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(notificationKeys.friendRequest(variables.senderId), (old: AppNotification[] = []) =>
-        old.map((n) => (n.entity_id === variables.requestId ? { ...n, type: "friend_request_rejected" } : n)),
+      queryClient.setQueryData(
+        notificationKeys.friendRequest(variables.senderId),
+        (old: AppNotification[] = []) =>
+          old.map((n) =>
+            n.entity_id === variables.requestId ? { ...n, type: "friend_request_rejected" } : n,
+          ),
       );
     },
     onError: (_err, _vars, ctx) => {

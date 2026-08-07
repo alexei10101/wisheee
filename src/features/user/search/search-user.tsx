@@ -13,7 +13,11 @@ export function SearchUser() {
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
-    async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
+    async (
+      // receiverId: string,
+      // receiverUsername: string,
+      // receiverAvatar: string,
+    ) => {
       //   if (!user?.id || user.id === receiverId) return;
       //   const metadata: FriendRequestMetadata = {
       //     sender_username: user.username,
@@ -31,7 +35,7 @@ export function SearchUser() {
   );
 
   useEffect(() => {
-    let timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setDebouncedSearch(search);
     }, 600);
     return () => clearTimeout(timeout);
@@ -47,13 +51,20 @@ export function SearchUser() {
       }
     };
 
-    if (!debouncedSearch) return setSearchResult(null);
+    if (!debouncedSearch) {
+      setSearchResult(null);
+    }
     handleSearch();
   }, [debouncedSearch]);
 
   return (
     <>
-      <Input className="bg-card" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
+      <Input
+        className="bg-card"
+        placeholder="Поиск"
+        value={search}
+        onChange={(value) => setSearch(value.target.value)}
+      />
       <div className="mt-5">
         <SearchList users={searchResult} addFriend={handleAddFriend} />
       </div>

@@ -1,13 +1,30 @@
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { useCreateWishlistItem } from "@/entities/wishlist-item/model/item.mutations";
-import { CreateWishlistItemSchema, type CreateWishlistItemType } from "@/entities/wishlist-item/model/item.validation";
+import {
+  CreateWishlistItemSchema,
+  type CreateWishlistItemType,
+} from "@/entities/wishlist-item/model/item.validation";
 import { useMyWishlists } from "@/entities/wishlist/model/wishlist.hooks";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { Button } from "@/shared/ui/kit/button";
-import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/kit/dialog";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/kit/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { memo } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +35,11 @@ type WishlistItemCreateDialogProps = {
   onClose: () => void;
 };
 
-export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wishlistId, open, onClose }: WishlistItemCreateDialogProps) {
+export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({
+  wishlistId,
+  open,
+  onClose,
+}: WishlistItemCreateDialogProps) {
   const user = useRequiredUser();
   const { data: wishlists } = useMyWishlists();
 
@@ -49,7 +70,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
       title: form.getValues("title"),
       description: form.getValues("description"),
       link: form.getValues("link"),
-      price: Number(form.getValues("price")) ?? 0,
+      price: Number(form.getValues("price") ?? 0),
       image: "",
     };
     try {
@@ -66,16 +87,23 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
       open={open}
       onOpenChange={(value) => {
         if (!value) closeDialog();
-      }}>
+      }}
+    >
       <DialogCustomOverlay />
 
       <DialogCustomContent>
         <DialogHeader className="pb-7">
           <DialogTitle className="font-semibold">Создать подарок</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Заполните данные для нового подарка</DialogDescription>
+          <DialogDescription className="text-sm text-muted-foreground">
+            Заполните данные для нового подарка
+          </DialogDescription>
         </DialogHeader>
 
-        <form id="wishlist-item-create-form" onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col gap-4 mb-5 ">
+        <form
+          id="wishlist-item-create-form"
+          onSubmit={form.handleSubmit(handleCreate)}
+          className="mb-5 flex flex-col gap-4"
+        >
           <Controller
             name="title"
             control={form.control}
@@ -88,7 +116,9 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
                   placeholder="Название подарка"
                   autoComplete="off"
                 />
-                {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
@@ -97,7 +127,12 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-create-form-description" placeholder="Описание" autoComplete="off" />
+                <Input
+                  {...field}
+                  id="wishlist-item-create-form-description"
+                  placeholder="Описание"
+                  autoComplete="off"
+                />
               </Field>
             )}
           />
@@ -139,7 +174,9 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
                   onChange={(e) => field.onChange(Number(e.target.value))}
                   className="no-spin pr-8"
                 />
-                <span className="absolute text-end right-4 top-[5.5px] pointer-events-none text-muted-foreground">₽</span>
+                <span className="pointer-events-none absolute top-[5.5px] right-4 text-end text-muted-foreground">
+                  ₽
+                </span>
               </Field>
             )}
           />
@@ -148,7 +185,12 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-create-form-link" placeholder="Ссылка на подарок" autoComplete="off" />
+                <Input
+                  {...field}
+                  id="wishlist-item-create-form-link"
+                  placeholder="Ссылка на подарок"
+                  autoComplete="off"
+                />
               </Field>
             )}
           />
@@ -165,7 +207,7 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
                     <span className="block mb-2 ml-0.5">Выберите изображение</span>
 
                     {previewUrl ? (
-                      <img src={previewUrl} className="w-full h-48 object-cover rounded-xl" />
+                      <img src={previewUrl} alt="Предпросмотр изображения желания" className="h-48 w-full rounded-2xl object-cover" />
                     ) : (
                       <div className="w-full h-48 rounded-xl border border-dashed flex items-center justify-center text-sm text-muted-foreground">
                         PNG, JPEG или WEBP
@@ -209,7 +251,12 @@ export const WishlistItemCreateDialog = memo(function WishlistCreateDialog({ wis
           <Button variant="outline" className="w-full sm:w-26" onClick={closeDialog}>
             Отмена
           </Button>
-          <Button type="submit" form="wishlist-item-create-form" className="w-full sm:w-26" disabled={createWishlistItem.isPending}>
+          <Button
+            type="submit"
+            form="wishlist-item-create-form"
+            className="w-full sm:w-26"
+            disabled={createWishlistItem.isPending}
+          >
             Сохранить
           </Button>
         </DialogFooter>

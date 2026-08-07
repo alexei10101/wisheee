@@ -16,7 +16,9 @@ export async function convertToWebp(file: File, maxWidth: number = 100): Promise
 
   ctx.drawImage(bitmap, 0, 0, targetWidth, targetHeight);
 
-  const blob: Blob = await new Promise((resolve) => canvas.toBlob((b) => resolve(b as Blob), "image/webp", 0.85));
+  const blob: Blob = await new Promise((resolve) =>
+    canvas.toBlob((b) => resolve(b as Blob), "image/webp", 0.85),
+  );
 
   return new File([blob], "image.webp", {
     type: "image/webp",

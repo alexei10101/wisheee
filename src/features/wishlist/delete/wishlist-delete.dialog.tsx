@@ -11,7 +11,11 @@ type WishlistDeleteDialogProps = {
   wishlistId: string;
 };
 
-export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, onClose, wishlistId }: WishlistDeleteDialogProps) {
+export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({
+  open,
+  onClose,
+  wishlistId,
+}: WishlistDeleteDialogProps) {
   const deleteWishlist = useDeleteWishlist();
 
   const handleDelete = async () => {
@@ -29,7 +33,8 @@ export const WishlistDeleteDialog = memo(function WishlistDeleteDialog({ open, o
       open={open}
       onOpenChange={(value) => {
         if (!value) onClose();
-      }}>
+      }}
+    >
       <DialogPortal>
         <DialogCustomOverlay />
         <DialogCustomContent>

@@ -22,7 +22,9 @@ export const useCreateWishlist = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old) => (old ? [created, ...old] : [created]));
+      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old) =>
+        old ? [created, ...old] : [created],
+      );
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка добавления", {
@@ -36,7 +38,8 @@ export const useDeleteWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ wishlistId }: { wishlistId: string }) => wishlistRepository.delete(wishlistId),
+    mutationFn: async ({ wishlistId }: { wishlistId: string }) =>
+      wishlistRepository.delete(wishlistId),
     onMutate: () => {
       const toastId = toast.loading("Удаление вишлиста...");
       return { toastId };
@@ -49,7 +52,9 @@ export const useDeleteWishlist = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old = []) => old.filter((wishlist) => wishlist.id !== variables.wishlistId));
+      queryClient.setQueryData<Wishlist[]>(wishlistKeys.my, (old = []) =>
+        old.filter((wishlist) => wishlist.id !== variables.wishlistId),
+      );
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка удаления", {
@@ -63,8 +68,13 @@ export const useUpdateWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ wishlistId, updateData }: { wishlistId: string; updateData: UpdateWishlistType }) =>
-      wishlistRepository.update(wishlistId, updateData),
+    mutationFn: async ({
+      wishlistId,
+      updateData,
+    }: {
+      wishlistId: string;
+      updateData: UpdateWishlistType;
+    }) => wishlistRepository.update(wishlistId, updateData),
     onMutate: () => {
       const toastId = toast.loading("Обновление вишлиста...");
       return { toastId };

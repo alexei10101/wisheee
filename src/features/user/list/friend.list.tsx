@@ -14,7 +14,7 @@ export const FriendList = memo(function () {
   const handleDeleteFriend = () => toast("Не сегодня :)");
 
   if (isLoading) return <LocalLoader />;
-  if (!friends?.length) return <div className="text-lg text-center">У вас еще нет друзей</div>;
+  if (!friends?.length) return <div className="text-center text-lg">У вас еще нет друзей</div>;
 
   return (
     <List
@@ -29,6 +29,7 @@ export const FriendList = memo(function () {
           onOpen={onOpen}
           onDeleteFriend={handleDeleteFriend}
         />
-      )}></List>
+      )}
+    ></List>
   );
 });

@@ -1,16 +1,33 @@
 import { Button } from "@/shared/ui/kit/button";
-import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/ui/kit/dialog";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { memo, useEffect } from "react";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/ui/kit/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/kit/select";
 import type { WishlistItem } from "@/entities/wishlist-item/model/item";
 import { useUpdateWishlistItem } from "@/entities/wishlist-item/model/item.mutations";
 import { Spinner } from "@/shared/ui/kit/spinner";
-import { UpdateWishlistItemSchema, type UpdateWishlistItemType } from "@/entities/wishlist-item/model/item.validation";
+import {
+  UpdateWishlistItemSchema,
+  type UpdateWishlistItemType,
+} from "@/entities/wishlist-item/model/item.validation";
 import { useMyWishlists } from "@/entities/wishlist/model/wishlist.hooks";
 
 type WishlistItemUpdateDialogProps = {
@@ -61,7 +78,8 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
 
   const handleUpdate = async () => {
     const data = getUpdatedFields();
-    if ((Object.keys(data).length === 0 && !form.formState.dirtyFields.image) || !wishlistItem) return onClose();
+    if ((Object.keys(data).length === 0 && !form.formState.dirtyFields.image) || !wishlistItem)
+      return onClose();
 
     try {
       await updateWishlistItem.mutateAsync({
@@ -69,8 +87,12 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
         previousWishlistId: wishlistItem.wishlistId,
         data,
       });
-    } catch (error) {
-      updateWishlistItem.mutateAsync({ itemId: wishlistItem.id, data, previousWishlistId: wishlistItem.wishlistId });
+    } catch {
+      updateWishlistItem.mutateAsync({
+        itemId: wishlistItem.id,
+        data,
+        previousWishlistId: wishlistItem.wishlistId,
+      });
     } finally {
       onClose();
     }
@@ -120,16 +142,23 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
       open={open}
       onOpenChange={(value) => {
         if (!value) onClose();
-      }}>
+      }}
+    >
       <DialogCustomOverlay />
 
       <DialogCustomContent>
         <DialogHeader className="pb-7">
           <DialogTitle className="font-semibold">Редактирование подарка</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">Вы можете изменить информацию о подарке</DialogDescription>
+          <DialogDescription className="text-sm text-muted-foreground">
+            Вы можете изменить информацию о подарке
+          </DialogDescription>
         </DialogHeader>
 
-        <form id="wishlist-item-update-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4 mb-5">
+        <form
+          id="wishlist-item-update-form"
+          onSubmit={form.handleSubmit(handleUpdate)}
+          className="mb-5 flex flex-col gap-4"
+        >
           <Controller
             name="title"
             control={form.control}
@@ -142,7 +171,9 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                   placeholder="Название подарка"
                   autoComplete="off"
                 />
-                {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
@@ -151,7 +182,12 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-update-form-description" placeholder="Описание" autoComplete="off" />
+                <Input
+                  {...field}
+                  id="wishlist-item-update-form-description"
+                  placeholder="Описание"
+                  autoComplete="off"
+                />
               </Field>
             )}
           />
@@ -199,7 +235,9 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                   }}
                   className="no-spin pr-8"
                 />
-                <span className="absolute right-4 top-[5.5px] pointer-events-none text-end text-muted-foreground">₽</span>
+                <span className="pointer-events-none absolute top-[5.5px] right-4 text-end text-muted-foreground">
+                  ₽
+                </span>
               </Field>
             )}
           />
@@ -208,7 +246,12 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
             control={form.control}
             render={({ field }) => (
               <Field>
-                <Input {...field} id="wishlist-item-update-form-link" placeholder="Ссылка на подарок" autoComplete="off" />
+                <Input
+                  {...field}
+                  id="wishlist-item-update-form-link"
+                  placeholder="Ссылка на подарок"
+                  autoComplete="off"
+                />
               </Field>
             )}
           />
@@ -225,7 +268,7 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
                     <span className="block mb-2 ml-0.5">Выберите изображение</span>
 
                     {previewUrl ? (
-                      <img src={previewUrl} className="w-full h-48 object-cover rounded-xl" />
+                      <img src={previewUrl} alt="Предпросмотр изображения желания" className="h-48 w-full rounded-2xl object-cover" />
                     ) : (
                       <div className="w-full h-48 rounded-xl border border-dashed flex items-center justify-center text-sm text-muted-foreground">
                         PNG, JPEG или WEBP
@@ -269,7 +312,12 @@ export const WishlistItemUpdateDialog = memo(function WishlistItemUpdateDialog({
           <Button variant="outline" className="sm:w-26" onClick={() => onClose()}>
             Отмена
           </Button>
-          <Button type="submit" form="wishlist-item-update-form" className="sm:w-26" disabled={updateWishlistItem.isPending}>
+          <Button
+            type="submit"
+            form="wishlist-item-update-form"
+            className="sm:w-26"
+            disabled={updateWishlistItem.isPending}
+          >
             {updateWishlistItem.isPending ? <Spinner /> : "Сохранить"}
           </Button>
         </DialogFooter>

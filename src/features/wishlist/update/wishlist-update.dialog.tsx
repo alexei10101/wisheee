@@ -9,7 +9,10 @@ import { memo, useEffect } from "react";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import { DialogCustomContent, DialogCustomOverlay } from "@/shared/ui/dialog";
 import { useUpdateWishlist } from "@/entities/wishlist/model/wishlist.mutations";
-import { UpdateWishlistSchema, type UpdateWishlistType } from "@/entities/wishlist/model/wishlist.validation";
+import {
+  UpdateWishlistSchema,
+  type UpdateWishlistType,
+} from "@/entities/wishlist/model/wishlist.validation";
 
 type WishlistUpdateDialogProps = {
   open: boolean;
@@ -17,7 +20,11 @@ type WishlistUpdateDialogProps = {
   wishlist: Wishlist;
 };
 
-export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, onClose, wishlist }: WishlistUpdateDialogProps) {
+export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({
+  open,
+  onClose,
+  wishlist,
+}: WishlistUpdateDialogProps) {
   const updateWishlist = useUpdateWishlist();
 
   const form = useForm<UpdateWishlistType>({
@@ -75,16 +82,23 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
       open={open}
       onOpenChange={(value) => {
         if (!value) onClose();
-      }}>
+      }}
+    >
       <DialogPortal>
         <DialogCustomOverlay />
         <DialogCustomContent>
           <DialogHeader className="pb-7">
             <DialogTitle className="font-semibold">Редактирование вишлиста</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Вы можете изменить информацию о вишлисте</DialogDescription>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Вы можете изменить информацию о вишлисте
+            </DialogDescription>
           </DialogHeader>
           {wishlist && (
-            <form id="wishlist-edit-form" onSubmit={form.handleSubmit(handleUpdate)} className="flex flex-col gap-4">
+            <form
+              id="wishlist-edit-form"
+              onSubmit={form.handleSubmit(handleUpdate)}
+              className="flex flex-col gap-4"
+            >
               <Controller
                 name="title"
                 control={form.control}
@@ -97,7 +111,12 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
                       placeholder="Название"
                       autoComplete="off"
                     />
-                    {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+                    {fieldState.invalid && (
+                      <FieldError
+                        className="text-sm text-destructive"
+                        errors={[fieldState.error]}
+                      />
+                    )}
                   </Field>
                 )}
               />
@@ -106,7 +125,12 @@ export const WishlistUpdateDialog = memo(function WishlistUpdateDialog({ open, o
                 control={form.control}
                 render={({ field }) => (
                   <Field>
-                    <Input {...field} id="wishlist-form-description" placeholder="Описание" autoComplete="off" />
+                    <Input
+                      {...field}
+                      id="wishlist-form-description"
+                      placeholder="Описание"
+                      autoComplete="off"
+                    />
                   </Field>
                 )}
               />

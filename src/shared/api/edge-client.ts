@@ -9,7 +9,11 @@ export const EdgeOperation = {
 } as const;
 export type EdgeOperation = (typeof EdgeOperation)[keyof typeof EdgeOperation];
 
-export async function callEdge<T = null>(path: EdgeOperation, accessToken: string, body: unknown): Promise<ApiResponse<T>> {
+export async function callEdge<T = null>(
+  path: EdgeOperation,
+  accessToken: string,
+  body: unknown,
+): Promise<ApiResponse<T>> {
   try {
     const res = await fetch(`${EDGE_BASE_URL}/${path}`, {
       method: "POST",

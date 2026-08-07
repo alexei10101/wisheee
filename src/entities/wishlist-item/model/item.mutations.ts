@@ -22,7 +22,9 @@ export const useCreateWishlistItem = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(created.wishlistId), (old) => (old ? [created, ...old] : [created]));
+      queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(created.wishlistId), (old) =>
+        old ? [created, ...old] : [created],
+      );
     },
     onError: (_, __, ctx) => {
       toast.error("Ошибка добавления", {
@@ -49,8 +51,9 @@ export const useDeleteWishlistItem = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(deleted.wishlistId), (old = []) =>
-        old.filter((item) => item.id !== variables.itemId),
+      queryClient.setQueryData<WishlistItem[]>(
+        wishlistItemsKeys.list(deleted.wishlistId),
+        (old = []) => old.filter((item) => item.id !== variables.itemId),
       );
     },
     onError: (_, __, ctx) => {
@@ -65,8 +68,14 @@ export const useUpdateWishlistItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ itemId, data }: { itemId: string; data: UpdateWishlistItemType; previousWishlistId: string }) =>
-      wishlistItemRepository.update(itemId, data),
+    mutationFn: async ({
+      itemId,
+      data,
+    }: {
+      itemId: string;
+      data: UpdateWishlistItemType;
+      previousWishlistId: string;
+    }) => wishlistItemRepository.update(itemId, data),
     onMutate: () => {
       const toastId = toast.loading("Обновление желания...");
       return { toastId };
@@ -83,17 +92,19 @@ export const useUpdateWishlistItem = () => {
       });
 
       if (variables.previousWishlistId !== updated.wishlistId) {
-        queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(variables.previousWishlistId), (items = []) =>
-          items.filter((item) => item.id !== updated.id),
+        queryClient.setQueryData<WishlistItem[]>(
+          wishlistItemsKeys.list(variables.previousWishlistId),
+          (items = []) => items.filter((item) => item.id !== updated.id),
         );
 
-        queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(updated.wishlistId), (items = []) => [
-          updated,
-          ...items.filter((item) => item.id !== updated.id),
-        ]);
+        queryClient.setQueryData<WishlistItem[]>(
+          wishlistItemsKeys.list(updated.wishlistId),
+          (items = []) => [updated, ...items.filter((item) => item.id !== updated.id)],
+        );
       } else {
-        queryClient.setQueryData<WishlistItem[]>(wishlistItemsKeys.list(updated.wishlistId), (items = []) =>
-          items.map((item) => (item.id === updated.id ? updated : item)),
+        queryClient.setQueryData<WishlistItem[]>(
+          wishlistItemsKeys.list(updated.wishlistId),
+          (items = []) => items.map((item) => (item.id === updated.id ? updated : item)),
         );
       }
     },

@@ -16,4 +16,5 @@ export interface AppNotification {
   created_at: string;
 }
 
-export type AppNotificationType = "friend_request" | "friend_request_accepted" | "friend_request_rejected";
+export type AppNotificationType =
+  "friend_request" | "friend_request_accepted" | "friend_request_rejected";

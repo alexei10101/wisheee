@@ -8,7 +8,13 @@ export type Permissions = {
   canViewPrivate: boolean;
 };
 
-export function getUserRelation({ viewerId, ownerId }: { viewerId?: string; ownerId?: string }): UserRelation {
+export function getUserRelation({
+  viewerId,
+  ownerId,
+}: {
+  viewerId?: string;
+  ownerId?: string;
+}): UserRelation {
   if (!viewerId) return "stranger";
   if (viewerId === ownerId) return "owner";
   if (!!viewerId && !!ownerId && viewerId !== ownerId) return "friend";

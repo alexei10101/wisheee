@@ -1,7 +1,10 @@
 import NotificationCard from "@/entities/notification/ui/notification-card";
 import { ItemGroup } from "@/shared/ui/kit/item";
 import { useCallback } from "react";
-import { useAcceptFriendRequest, useRejectFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
+import {
+  useAcceptFriendRequest,
+  useRejectFriendRequest,
+} from "@/entities/request/friend-request/model/friend-request.mutations";
 import type { AppNotification } from "@/entities/notification/model/notification";
 import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
@@ -23,7 +26,12 @@ export function NotificationList({ userId, notifications, accessToken }: Notific
     async (receiverId: string, requestId: string) => {
       if (!userId || !accessToken) return;
       try {
-        await acceptFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, accessToken });
+        await acceptFriendRequest.mutateAsync({
+          senderId: userId,
+          receiverId,
+          requestId,
+          accessToken,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -32,12 +40,17 @@ export function NotificationList({ userId, notifications, accessToken }: Notific
   );
   const handleRejectingRequest = useCallback(
     async (receiverId: string, requestId: string) => {
-      if (!userId || !accessToken) return;
-      try {
-        await rejectFriendRequest.mutateAsync({ senderId: userId, receiverId, requestId, accessToken });
-      } catch (error) {
-        console.log(error);
-      }
+      // if (!userId || !accessToken) return;
+      // try {
+      //   await rejectFriendRequest.mutateAsync({
+      //     senderId: userId,
+      //     receiverId,
+      //     requestId,
+      //     accessToken,
+      //   });
+      // } catch (error) {
+      //   console.log(error);
+      // }
     },
     [userId, rejectFriendRequest],
   );

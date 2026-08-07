@@ -6,6 +6,8 @@ import { useState } from "react";
 import type { Permissions } from "@/shared/lib/permissions";
 import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { List } from "@/shared/ui/list";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { Gift } from "lucide-react";
 
 type WishlistItemList = {
   permissions: Permissions;
@@ -36,7 +38,13 @@ export function WishlistItemList({ permissions, items, style }: WishlistItemList
 
   return (
     <section className={style}>
-      {items.length === 0 && <div className="text-lg text-center">Вишлист пуст</div>}
+      {items.length === 0 && (
+        <EmptyState
+          icon={<Gift aria-hidden="true" />}
+          title="Здесь пока нет желаний"
+          description="Новые желания появятся в этом вишлисте."
+        />
+      )}
       <List
         items={items}
         getKey={(i) => i.id}
@@ -45,19 +53,36 @@ export function WishlistItemList({ permissions, items, style }: WishlistItemList
             key={item.id}
             wishlistItem={item}
             permissions={permissions}
-            handleDelete={permissions.canDelete ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
-            handleUpdate={permissions.canUpdate ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
+            handleDelete={
+              permissions.canDelete
+                ? () => setDialog({ operation: "delete", wishlistItemId: item.id })
+                : undefined
+            }
+            handleUpdate={
+              permissions.canUpdate
+                ? () => setDialog({ operation: "update", wishlistItem: item })
+                : undefined
+            }
             handleReserve={permissions.canReserve ? handleReserve : undefined}
             isMobile={isMobile}
             onOpen={onOpen}
           />
-        )}></List>
+        )}
+      ></List>
 
       {dialog.operation === "update" && (
-        <WishlistItemUpdateDialog open onClose={() => setDialog({ operation: null })} wishlistItem={dialog.wishlistItem} />
+        <WishlistItemUpdateDialog
+          open
+          onClose={() => setDialog({ operation: null })}
+          wishlistItem={dialog.wishlistItem}
+        />
       )}
       {dialog.operation === "delete" && (
-        <WishlistItemDeleteDialog open onClose={() => setDialog({ operation: null })} wishlistItemId={dialog.wishlistItemId} />
+        <WishlistItemDeleteDialog
+          open
+          onClose={() => setDialog({ operation: null })}
+          wishlistItemId={dialog.wishlistItemId}
+        />
       )}
     </section>
   );

@@ -1,7 +1,13 @@
 import type { UserUpdateDto } from "@/entities/user/model/user";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/shared/ui/kit/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/shared/ui/kit/dialog";
 import { Field, FieldError } from "@/shared/ui/kit/field";
 import { Input } from "@/shared/ui/kit/input";
 import { Label } from "@/shared/ui/kit/label";
@@ -38,7 +44,12 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
   });
 
   const avatarFile = updateUserForm.watch("avatar");
-  const previewUrl = avatarFile instanceof File ? URL.createObjectURL(avatarFile) : avatarFile === null ? null : user?.avatar;
+  const previewUrl =
+    avatarFile instanceof File
+      ? URL.createObjectURL(avatarFile)
+      : avatarFile === null
+        ? null
+        : user?.avatar;
 
   useEffect(() => {
     return () => {
@@ -54,7 +65,7 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
         username: user.username ?? "",
       });
     }
-  }, [user?.id, open]);
+  }, [user, open, updateUserForm]);
 
   const handleFormSubmit = async () => {
     if (!user?.id) return;
@@ -87,7 +98,9 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
       // }
       // await updateUser.mutateAsync(updated);
     } catch (error) {
-      console.log("Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"));
+      console.log(
+        "Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"),
+      );
     } finally {
       onClose();
     }
@@ -98,18 +111,27 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
       open={open}
       onOpenChange={(value) => {
         if (!value) onClose();
-      }}>
-      <DialogContent className="p-2 sm:p-6 sm:max-w-106.25">
+      }}
+    >
+      <DialogContent className="p-2 sm:max-w-106.25 sm:p-6">
         <DialogTitle>Изменение информации профиля</DialogTitle>
         <DialogDescription>Измените имя и аватар профиля</DialogDescription>
-        <form id="form" onSubmit={updateUserForm.handleSubmit(handleFormSubmit)} className="flex gap-4">
+        <form
+          id="form"
+          onSubmit={updateUserForm.handleSubmit(handleFormSubmit)}
+          className="flex gap-4"
+        >
           <Controller
             name="avatar"
             control={updateUserForm.control}
             render={({ field }) => (
               <Field className="w-20">
-                <Label className="cursor-pointer relative group">
-                  <img src={previewUrl ?? "/default-avatar.webp"} className="w-16 h-16 rounded-full object-cover" />
+                <Label className="group relative cursor-pointer">
+                  <img
+                    src={previewUrl ?? "/default-avatar.webp"}
+                    alt="Предпросмотр аватара"
+                    className="size-16 rounded-full object-cover"
+                  />
                   <Input
                     type="file"
                     className="hidden"
@@ -121,13 +143,16 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
                   />
                   <Button
                     className={cn(
-                      "absolute  ",
-                      isMobile ? "opacity-100 -top-1 -right-5" : "transition-opacity top-17 left-4 opacity-0 group-hover:opacity-100",
+                      "absolute",
+                      isMobile
+                        ? "-top-1 -right-5 opacity-100"
+                        : "top-17 left-4 opacity-0 transition-opacity group-hover:opacity-100",
                     )}
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => updateUserForm.setValue("avatar", null)}>
+                    onClick={() => updateUserForm.setValue("avatar", null)}
+                  >
                     <X />
                   </Button>
                 </Label>
@@ -148,7 +173,9 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
                   placeholder="Имя пользователя"
                   autoComplete="off"
                 />
-                {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />

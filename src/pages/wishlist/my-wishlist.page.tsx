@@ -26,19 +26,22 @@ function MyWishlistPage() {
 
   // TODO add error handler
 
-  if (!wishlist || isError) return <div className="min-h-screen bg-background px-4 pt-25">Вишлист не найден</div>;
+  if (!wishlist || isError)
+    return <div className="min-h-screen bg-background px-4 pt-25">Вишлист не найден</div>;
   return (
-    <main className="page bg-background">
-      <div className="mb-3 sm:mb-5">
-        <PageHeader
-          title={`${wishlist.title} ${!wishlist.isPublic ? "(приватный)" : ""}`}
-          subtitle={wishlist.description}
-          left={<BackButton />}
-          right={permissions.canAdd && <WishlistItemCreateButton wishlistId={wishlist.id} />}
-        />
+    <main className="page">
+      <div className="page-content">
+        <div className="mb-6 sm:mb-8">
+          <PageHeader
+            title={`${wishlist.title} ${!wishlist.isPublic ? "(приватный)" : ""}`}
+            subtitle={wishlist.description}
+            left={<BackButton />}
+            right={permissions.canAdd && <WishlistItemCreateButton wishlistId={wishlist.id} />}
+          />
+        </div>
+        {isLoading && <LocalLoader />}
+        {!isLoading && <WishlistItemList items={items} permissions={permissions} />}
       </div>
-      {isLoading && <LocalLoader />}
-      {!isLoading && <WishlistItemList items={items} permissions={permissions} />}
     </main>
   );
 }

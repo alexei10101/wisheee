@@ -44,8 +44,16 @@ export function SignInForm() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className="gap-0.5">
             <FieldLabel htmlFor="auth-form-login">Email</FieldLabel>
-            <Input {...field} id="auth-form-login" aria-invalid={fieldState.invalid} placeholder="name@example.com" autoComplete="off" />
-            {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+            <Input
+              {...field}
+              id="auth-form-login"
+              aria-invalid={fieldState.invalid}
+              placeholder="name@example.com"
+              autoComplete="off"
+            />
+            {fieldState.invalid && (
+              <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+            )}
           </Field>
         )}
       />
@@ -63,7 +71,9 @@ export function SignInForm() {
               placeholder="********"
               autoComplete="off"
             />
-            {fieldState.invalid && <FieldError className="text-destructive text-sm" errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError className="text-sm text-destructive" errors={[fieldState.error]} />
+            )}
           </Field>
         )}
       />
@@ -72,7 +82,7 @@ export function SignInForm() {
         {login.isPending ? <Spinner /> : "Войти"}
       </Button>
 
-      {error && <p className="text-destructive text-sm">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </form>
   );
 }

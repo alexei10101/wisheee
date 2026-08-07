@@ -5,11 +5,22 @@ export function BackButton() {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    window.history.length > 1 ? navigate(-1) : navigate("/");
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/");
   };
 
   return (
-    <Button className="-ms-4" variant="link" onClick={handleBack}>
+    <Button
+      type="button"
+      className="-ms-3 min-h-10 px-3"
+      variant="ghost"
+      onClick={handleBack}
+      aria-label="Назад"
+    >
       ← Назад
     </Button>
   );

@@ -1,5 +1,3 @@
-
-
 export const wishlistItemService = {
   // async uploadImage(userId: string, wishlistItemId: string, file: File): Promise<ServiceResult<{ publicUrl: string }>> {
   //   const webpFile = await convertToWebp(file);

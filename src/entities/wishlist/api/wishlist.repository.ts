@@ -11,7 +11,9 @@ export const wishlistRepository = {
   },
 
   async getById(wishlistId: string): Promise<WishlistWithItems | null> {
-    const { data } = await api.get<ApiResponse<WishlistWithItems | null>>(`/wishlists/${wishlistId}`);
+    const { data } = await api.get<ApiResponse<WishlistWithItems | null>>(
+      `/wishlists/${wishlistId}`,
+    );
     return data.data;
   },
 
@@ -21,7 +23,10 @@ export const wishlistRepository = {
   },
 
   async update(wishlistId: string, updateData: UpdateWishlistType): Promise<Wishlist | null> {
-    const { data } = await api.patch<ApiResponse<Wishlist | null>>(`/wishlists/${wishlistId}`, updateData);
+    const { data } = await api.patch<ApiResponse<Wishlist | null>>(
+      `/wishlists/${wishlistId}`,
+      updateData,
+    );
     return data.data;
   },
 

@@ -14,7 +14,12 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (!originalRequest || error.response?.status !== 401 || originalRequest._retry || error.response?.data.code === "NO_SESSION") {
+    if (
+      !originalRequest ||
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      error.response?.data.code === "NO_SESSION"
+    ) {
       return Promise.reject(error);
     }
 

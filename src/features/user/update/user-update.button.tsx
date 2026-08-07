@@ -10,7 +10,7 @@ export function UserUpdateDialogButton({ closeMenu }: { closeMenu: () => void })
 
   return (
     <>
-      <Button variant="ghost" className="cursor-pointer w-full" onClick={() => setOpen(true)}>
+      <Button variant="ghost" className="w-full cursor-pointer" onClick={() => setOpen(true)}>
         <Settings />
         Настройки
       </Button>

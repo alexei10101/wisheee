@@ -14,17 +14,34 @@ export type NotificationCardProps = {
   onSelect?: () => void;
 };
 
-const NotificationCard = ({ userId, notification: n, onAccept, onReject, onOpen }: NotificationCardProps) => {
+const NotificationCard = ({
+  userId,
+  notification: n,
+  onAccept,
+  onReject,
+  onOpen,
+}: NotificationCardProps) => {
   const Component = notificationComponents[n.type];
   if (!Component) return null;
   return (
-    <Item variant="outline" size="sm" className="bg-card shadow-sm">
-      <ItemMedia className="bg-card" variant="icon">
+    <Item
+      variant="outline"
+      size="sm"
+      className="w-full rounded-2xl border-border/70 bg-card p-3 shadow-sm sm:p-4"
+    >
+      <ItemMedia className="rounded-xl bg-primary/10 text-primary" variant="icon">
         {n.is_read ? <MailOpen /> : <Mail />}
+        <span className="sr-only">{n.is_read ? "Прочитано" : "Новое уведомление"}</span>
       </ItemMedia>
 
       <ItemContent className={n.type}>
-        <Component userId={userId} notification={n} onAccept={onAccept} onReject={onReject} onOpen={onOpen} />
+        <Component
+          userId={userId}
+          notification={n}
+          onAccept={onAccept}
+          onReject={onReject}
+          onOpen={onOpen}
+        />
       </ItemContent>
     </Item>
   );

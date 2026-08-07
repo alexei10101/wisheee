@@ -33,29 +33,38 @@ export function AppHeader() {
   };
 
   return (
-    <header className="absolute z-40 top-4 left-2 right-2 flex items-center rounded-full border border-border/60 bg-card/85 px-2.5 py-3 shadow-lg shadow-foreground/5 backdrop-blur-xl transition-colors sm:left-8 sm:right-8">
-      <p className="font-extrabold ms-4 hidden sm:block font-cormorant text-xl">WISHEEE</p>
-      <div className="sm:ml-auto flex items-center gap-5 justify-between w-full sm:w-auto">
-        <Button variant="link" className="cursor-pointer p-0 hidden sm:flex">
-          <Link to={ROUTES.HOME} className="flex items-center gap-1">
-            <House />
-          </Link>
-        </Button>
+    <header className="fixed top-3 right-2 left-2 z-40 flex items-center rounded-2xl border border-border/60 bg-card/90 px-2.5 py-2.5 shadow-lg shadow-foreground/5 backdrop-blur-xl transition-colors motion-reduce:transition-none sm:top-4 sm:right-8 sm:left-8 sm:rounded-full sm:py-3">
+      <p className="ms-4 hidden font-cormorant text-xl font-extrabold sm:block">WISHEEE</p>
+      <nav
+        aria-label="Основная навигация"
+        className="flex w-full items-center justify-between gap-2 sm:ml-auto sm:w-auto sm:gap-4"
+      >
+        <Link
+          to={ROUTES.HOME}
+          aria-label="На главную"
+          className="relative grid size-10 place-items-center overflow-hidden rounded-full border border-border/70 bg-background/60 shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-accent hover:shadow-md hover:shadow-primary/10 motion-reduce:transition-none sm:size-9"
+        >
+          <House size={18} aria-hidden="true" />
+        </Link>
 
         <ThemeToggleButton />
 
         <DropdownMenu open={dropdownMenuOpen} onOpenChange={(open) => setDropdownMenuOpen(open)}>
           <DropdownMenuTrigger asChild>
-            <div className="pe-5 cursor-pointer leading-0">
+            <button
+              type="button"
+              aria-label="Открыть меню профиля"
+              className="rounded-full pe-2 leading-none outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:pe-1"
+            >
               <UserBadge user={{ username: user.username, avatar: user.avatar }} />
-            </div>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" align={isMobile ? "start" : "end"}>
             {user && (
               <DropdownMenuGroup>
                 <UserUpdateDialogButton closeMenu={() => setDropdownMenuOpen(false)} />
                 <DropdownMenuSeparator />
-                <Button variant="ghost" className="cursor-pointer w-full" onClick={handleLogout}>
+                <Button variant="ghost" className="w-full cursor-pointer" onClick={handleLogout}>
                   <LogOut />
                   Выход
                 </Button>
@@ -63,13 +72,7 @@ export function AppHeader() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <div className="flex gap-5 sm:hidden">
-          <Link to={ROUTES.HOME}>
-            <House size={26} />
-          </Link>
-        </div>
-      </div>
+      </nav>
     </header>
   );
 }

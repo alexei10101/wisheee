@@ -7,7 +7,11 @@ import { useNavigate } from "react-router";
 
 type SearchListProps = {
   users: User[] | null;
-  addFriend: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
+  addFriend: (
+    receiverId: string,
+    receiverUsername: string,
+    receiverAvatar: string,
+  ) => Promise<void>;
 };
 
 export const SearchList = memo(function ({ addFriend, users }: SearchListProps) {
@@ -32,7 +36,8 @@ export const SearchList = memo(function ({ addFriend, users }: SearchListProps) 
               onOpen={onOpen}
               onAddFriend={addFriend}
             />
-          )}></List>
+          )}
+        ></List>
       )}
     </>
   );

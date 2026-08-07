@@ -16,11 +16,18 @@ function MyWishlistsPage() {
 
   return (
     <main className="page">
-      <div className="mb-3 sm:mb-5">
-        <PageHeader title="Мои вишлисты" left={<BackButton />} right={permissions.canAdd && <WishlistCreateButton />} />
+      <div className="page-content">
+        <div className="mb-6 sm:mb-8">
+          <PageHeader
+            title="Мои вишлисты"
+            subtitle="Соберите идеи подарков для разных событий"
+            left={<BackButton />}
+            right={permissions.canAdd && <WishlistCreateButton />}
+          />
+        </div>
+        {isLoading && <LocalLoader />}
+        {!isLoading && <WishlistList wishlists={wishlists ?? []} permissions={permissions} />}
       </div>
-      {isLoading && <LocalLoader />}
-      {!isLoading && <WishlistList wishlists={wishlists ?? []} permissions={permissions} />}
     </main>
   );
 }

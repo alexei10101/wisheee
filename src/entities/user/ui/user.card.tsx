@@ -1,5 +1,4 @@
 import { Button } from "@/shared/ui/kit/button";
-import { Item, ItemActions, ItemContent } from "@/shared/ui/kit/item";
 import { Check, Plus, X } from "lucide-react";
 import { memo } from "react";
 import { UserBadge } from "./user.badge";
@@ -10,35 +9,59 @@ type UserCardProps = {
   avatar: string;
   onOpen: (userId: string) => void;
   isFriend?: boolean;
-  onAddFriend?: (receiverId: string, receiverUsername: string, receiverAvatar: string) => Promise<void>;
+  onAddFriend?: (
+    receiverId: string,
+    receiverUsername: string,
+    receiverAvatar: string,
+  ) => Promise<void>;
   onDeleteFriend?: () => void;
 };
 
-export const UserCard = memo(function ({ id, username, avatar, onOpen, isFriend, onAddFriend, onDeleteFriend }: UserCardProps) {
+export const UserCard = memo(function UserCard({
+  id,
+  username,
+  avatar,
+  onOpen,
+  isFriend,
+  onAddFriend,
+  onDeleteFriend,
+}: UserCardProps) {
   return (
-    <Item
-      className="relative mx-auto flex w-full cursor-pointer flex-row bg-card p-2 text-card-foreground shadow-sm transition-colors sm:p-4"
-      variant="outline"
-      onClick={(e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest("button")) return;
-        onOpen(id);
-      }}>
-      <ItemContent className="flex-row gap-3 max-w-1/2">
+    <article className="mx-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-border/70 bg-card p-2.5 text-card-foreground shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-primary/30 hover:shadow-md motion-reduce:transition-none sm:p-3">
+      <button
+        type="button"
+        aria-label={`Открыть профиль ${username}`}
+        className="min-w-0 flex-1 rounded-xl p-1 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        onClick={() => onOpen(id)}
+      >
         <UserBadge user={{ avatar, username }} />
-      </ItemContent>
-      <ItemActions className="absolute right-2 top-2.5 sm:top-4.5 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+      </button>
+
+      <div className="flex shrink-0 items-center gap-1">
         {onDeleteFriend && (
-          <Button size="sm" variant="ghost" onClick={() => onDeleteFriend()}>
-            <X />
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            aria-label={`Удалить ${username} из друзей`}
+            onClick={onDeleteFriend}
+          >
+            <X aria-hidden="true" />
           </Button>
         )}
         {onAddFriend && (
-          <Button size="sm" variant="ghost" onClick={() => onAddFriend(id, username, avatar)} disabled={isFriend}>
-            {isFriend ? <Check /> : <Plus />}
+          <Button
+            type="button"
+            size="icon"
+            variant={isFriend ? "secondary" : "ghost"}
+            aria-label={isFriend ? `${username} уже в друзьях` : `Добавить ${username} в друзья`}
+            onClick={() => onAddFriend(id, username, avatar)}
+            disabled={isFriend}
+          >
+            {isFriend ? <Check aria-hidden="true" /> : <Plus aria-hidden="true" />}
           </Button>
         )}
-      </ItemActions>
-    </Item>
+      </div>
+    </article>
   );
 });

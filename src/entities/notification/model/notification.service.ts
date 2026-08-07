@@ -1,4 +1,7 @@
-import type { FriendNotificationMetadata, FriendRequestStatus } from "@/entities/request/friend-request/model/friend-request";
+import type {
+  FriendNotificationMetadata,
+  FriendRequestStatus,
+} from "@/entities/request/friend-request/model/friend-request";
 import { safeQuery, type ServiceResult } from "@/shared/safe-query";
 import { notificationRepository } from "../api/notification.repository";
 import type { AppNotification } from "./notification";
@@ -13,7 +16,15 @@ export const notificationService = {
     metadata: FriendNotificationMetadata,
     status?: FriendRequestStatus,
   ): Promise<ServiceResult> {
-    return safeQuery(notificationRepository.createFriendNotification(senderId, receiverId, requestId, metadata, status));
+    return safeQuery(
+      notificationRepository.createFriendNotification(
+        senderId,
+        receiverId,
+        requestId,
+        metadata,
+        status,
+      ),
+    );
   },
   async updateFriendNotification(
     accessToken: string,

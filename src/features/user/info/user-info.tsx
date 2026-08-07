@@ -12,9 +12,9 @@ export function UserInfo({ user, avatar }: UserInfoProps) {
   return (
     <Item className="px-0">
       <ItemMedia>
-        <Avatar className="w-20 h-20">
+        <Avatar className="h-20 w-20">
           <AvatarImage src={avatar ?? "/default-avatar.webp"} className="object-cover" />
-          <AvatarFallback className="text-xl flex items-center justify-center">
+          <AvatarFallback className="flex items-center justify-center text-xl">
             {user.username?.charAt(0).toUpperCase() ?? "U"}
           </AvatarFallback>
         </Avatar>

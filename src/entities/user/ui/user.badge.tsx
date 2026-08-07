@@ -23,19 +23,33 @@ export function UserBadge({ user, variant, size = "sm" }: UserBadgeProps) {
   const avatarUrl = user.avatar || "/default-avatar.webp";
 
   return (
-    <Item className={cn(`p-0 ${variant === "vertical" ? "flex-col gap-1" : "inline-flex flex-nowrap w-fit gap-2"}`)}>
+    <Item
+      className={cn(
+        `p-0 ${variant === "vertical" ? "flex-col gap-1" : "inline-flex w-fit flex-nowrap gap-2"}`,
+      )}
+    >
       <ItemMedia>
         <Avatar className={avatarSize}>
           {loading && <Skeleton className="absolute inset-0 rounded-full" />}
-          <AvatarImage src={avatarUrl} onLoad={() => setLoading(false)} onError={() => setLoading(false)} className="object-cover" />
-          <AvatarFallback className="text-xl flex items-center justify-center">
+          <AvatarImage
+            src={avatarUrl}
+            onLoad={() => setLoading(false)}
+            onError={() => setLoading(false)}
+            className="object-cover"
+          />
+          <AvatarFallback className="flex items-center justify-center text-xl">
             {user.username?.charAt(0).toUpperCase() ?? "U"}
           </AvatarFallback>
         </Avatar>
       </ItemMedia>
 
       <ItemContent className="flex-0">
-        <ItemTitle className={cn(size === "lg" && "text-xl sm:text-2xl md:text-3xl", size === "xl" && "text-lg sm:text-3xl md:text-4xl")}>
+        <ItemTitle
+          className={cn(
+            size === "lg" && "text-xl sm:text-2xl md:text-3xl",
+            size === "xl" && "text-lg sm:text-3xl md:text-4xl",
+          )}
+        >
           {user.username?.length < 13 && user.username}
         </ItemTitle>
       </ItemContent>

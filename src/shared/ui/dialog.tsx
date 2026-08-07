@@ -1,5 +1,7 @@
-import { DialogContent, DialogOverlay } from "@radix-ui/react-dialog";
+import { DialogClose, DialogContent, DialogOverlay } from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
+import { X } from "lucide-react";
+import { Button } from "./kit/button";
 
 // Fade dialog in
 const overlayVariants = {
@@ -15,7 +17,7 @@ export function DialogCustomOverlay() {
   return (
     <DialogOverlay asChild>
       <motion.div
-        className="fixed inset-0 z-100 bg-foreground/40 backdrop-blur-sm"
+        className="fixed inset-0 z-100 bg-foreground/45 backdrop-blur-sm motion-reduce:transition-none"
         initial="hidden"
         animate="visible"
         exit="hidden"
@@ -30,14 +32,28 @@ export function DialogCustomContent({ children }: { children: React.ReactNode })
   return (
     <DialogContent asChild>
       <motion.div
-        className="fixed inset-2 z-100 sm:top-1/2 sm:left-1/2 sm:inset-auto sm:w-[90vw] sm:max-w-sm sm:-translate-x-1/2 sm:-translate-y-1/2"
+        className="fixed top-1/2 left-1/2 z-100 max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 motion-reduce:transform-none"
         initial="hidden"
         animate="visible"
         exit="hidden"
         variants={contentVariants}
-        transition={{ type: "spring", stiffness: 150, damping: 25 }}>
-        <div className="flex h-full w-full flex-col overflow-hidden rounded-sm border border-border bg-card text-card-foreground shadow-2xl sm:rounded-lg sm:shadow-primary/10">
-          <div className="flex-1 overflow-y-auto p-2 sm:p-6 no-scrollbar">{children}</div>
+        transition={{ type: "spring", stiffness: 150, damping: 25 }}
+      >
+        <div className="relative flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-2xl shadow-foreground/10">
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Закрыть"
+              className="absolute top-3 right-3 z-10"
+            >
+              <X aria-hidden="true" />
+            </Button>
+          </DialogClose>
+          <div className="no-scrollbar flex-1 overflow-y-auto p-4 pr-14 sm:p-6 sm:pr-16">
+            {children}
+          </div>
         </div>
       </motion.div>
     </DialogContent>
