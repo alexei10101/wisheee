@@ -1,8 +1,9 @@
 import { supabase } from "@/shared/supabase-client";
-import type { User, UserUpdateDto } from "../model/user";
+import type { User } from "../model/user";
 import type { File } from "zod/v4/core";
 import { api } from "@/shared/api/api";
 import type { ApiResponse } from "@/shared/api/types";
+import type { UpdateUserType } from "../model/user.validation";
 
 export const userRepository = {
   async me(): Promise<User | null> {
@@ -19,7 +20,7 @@ export const userRepository = {
     return data.data;
   },
   // TODO check unique username
-  async update(updateData: UserUpdateDto): Promise<User | null> {
+  async update(updateData: UpdateUserType): Promise<User | null> {
     const { data } = await api.patch<ApiResponse<User>>("/users/me", updateData);
     return data.data;
   },

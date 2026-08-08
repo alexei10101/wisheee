@@ -1,4 +1,3 @@
-import type { UserUpdateDto } from "@/entities/user/model/user";
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
 import {
@@ -15,9 +14,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import { useUpdateUser } from "@/entities/user/model/user.mutations";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { UpdateUserSchema, type UpdateUserType } from "@/entities/user/model/user.validation";
 
 type UserUpdateDialogProps = {
   open: boolean;
@@ -25,18 +24,12 @@ type UserUpdateDialogProps = {
   onClose: () => void;
 };
 
-type FormValues = z.infer<typeof userSchema>;
-const userSchema = z.object({
-  username: z.string().min(2, "Минимум 2 символа"),
-  avatar: z.union([z.instanceof(File), z.null()]).optional(),
-});
-
 export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogProps) {
   const user = useRequiredUser();
   const updateUser = useUpdateUser();
 
-  const updateUserForm = useForm<FormValues>({
-    resolver: zodResolver(userSchema),
+  const updateUserForm = useForm<UpdateUserType>({
+    resolver: zodResolver(UpdateUserSchema),
     defaultValues: {
       username: "",
       avatar: undefined,
@@ -60,23 +53,19 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
   }, [previewUrl]);
 
   useEffect(() => {
-    if (open && user?.id) {
+    if (open && user.id) {
       updateUserForm.reset({
-        username: user.username ?? "",
+        username: user.username,
       });
     }
   }, [user, open, updateUserForm]);
 
   const handleFormSubmit = async () => {
-    if (!user?.id) return;
-
     const formValues = updateUserForm.getValues();
     const dirtyFields = updateUserForm.formState.dirtyFields;
 
-    const updated = {} as UserUpdateDto;
-    if (dirtyFields.username) {
-      updated.username = formValues.username.trim();
-    }
+    const updated = {} as UpdateUserType;
+    if (dirtyFields.username) updated.username = formValues?.username?.trim();
 
     try {
       // const avatarValue = formValues.avatar;
@@ -96,7 +85,7 @@ export function UserUpdateDialog({ open, isMobile, onClose }: UserUpdateDialogPr
       //   onClose();
       //   return;
       // }
-      // await updateUser.mutateAsync(updated);
+      await updateUser.mutateAsync(updated);
     } catch (error) {
       console.log(
         "Ошибка при обновлении профиля: " + ((error as Error).message ?? "Неизвестная ошибка"),

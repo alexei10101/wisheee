@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User, UserUpdateDto } from "./user";
+import type { User } from "./user";
 import { userRepository } from "../api/user.repository";
 import { toast } from "sonner";
 import { userKeys } from "./user.queries";
@@ -7,14 +7,7 @@ import { userKeys } from "./user.queries";
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (updated: UserUpdateDto) => {
-      try {
-        const data = await userRepository.update(updated);
-        return data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    mutationFn: userRepository.update,
     onMutate: () => {
       const toastId = toast.loading("Обновление аккаунта...");
       return { toastId };
