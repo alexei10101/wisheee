@@ -35,13 +35,19 @@ export const WishlistCard = memo(function WishlistCard({
           <h3 className="min-w-0 text-base leading-snug font-semibold tracking-tight sm:text-lg">
             {wishlist.title}
           </h3>
-          <Badge
-            variant="secondary"
-            className="gap-1 border border-primary/15 bg-primary/10 text-primary"
-          >
-            {wishlist.isPublic ? <Globe2 aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-            {wishlist.isPublic ? "Публичный" : "Приватный"}
-          </Badge>
+          {isOwner && (
+            <Badge
+              variant="secondary"
+              className="gap-1 border border-primary/15 bg-primary/10 text-primary"
+            >
+              {wishlist.isPublic ? (
+                <Globe2 aria-hidden="true" />
+              ) : (
+                <LockKeyhole aria-hidden="true" />
+              )}
+              {wishlist.isPublic ? "Публичный" : "Приватный"}
+            </Badge>
+          )}
         </div>
         {wishlist.description?.trim() && (
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">

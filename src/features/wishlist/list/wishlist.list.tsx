@@ -50,6 +50,7 @@ export const WishlistList = function WishlistList({ wishlists, permissions }: Wi
                 onDelete={() => setDialog({ operation: "delete", wishlistId: wishlist.id })}
                 onOpen={onOpen}
                 permissions={permissions}
+                isOwner={!userId}
               />
             )}
           ></List>
