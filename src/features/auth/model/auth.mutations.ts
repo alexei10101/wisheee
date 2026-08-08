@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authRepository } from "../api/auth.repository";
 import { toast } from "sonner";
 import { userKeys } from "@/entities/user/model/user.queries";
-import { authService } from "./auth.service";
+import { useNavigate } from "react-router";
 
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -57,9 +57,10 @@ export const useSignUp = () => {
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: authService.logout,
+    mutationFn: authRepository.logout,
     onMutate: () => {
       const toastId = toast.loading("Выход...");
       return { toastId };
@@ -72,13 +73,14 @@ export const useLogout = () => {
           onClick: () => {},
         },
       });
+      navigate("/signIn");
+      queryClient.clear();
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка -__-", {
         id: ctx?.toastId,
       });
     },
-    onSettled: () => queryClient.setQueryData(userKeys.me, null),
   });
 };
 

@@ -3,11 +3,12 @@ import { userKeys } from "./user.queries";
 import type { User } from "./user";
 import { userRepository } from "../api/user.repository";
 
-export const useCurrentUser = () => {
+export const useCurrentUser = (enabled?: boolean) => {
   return useQuery({
     queryKey: userKeys.me,
     queryFn: userRepository.me,
     staleTime: 1000 * 60 * 5,
+    enabled,
   });
 };
 
