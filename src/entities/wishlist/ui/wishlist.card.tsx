@@ -13,7 +13,7 @@ type WishlistCardProps = {
   onUpdate: () => void;
   onDelete: () => void;
   permissions: Permissions;
-  isMobile: boolean;
+  isOwner: boolean;
 };
 
 export const WishlistCard = memo(function WishlistCard({
@@ -22,6 +22,7 @@ export const WishlistCard = memo(function WishlistCard({
   onDelete,
   onOpen,
   permissions,
+  isOwner,
 }: WishlistCardProps) {
   return (
     <article className="group grid w-full max-w-3xl grid-cols-[4.75rem_minmax(0,1fr)] overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[5.5rem_minmax(0,1fr)_auto]">

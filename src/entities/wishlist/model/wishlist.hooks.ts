@@ -28,3 +28,13 @@ export const useMyWishlist = (wishlistId?: string) => {
     select: (wishlists) => wishlists.find((wishlist) => wishlist.id === wishlistId),
   });
 };
+
+export const useUserWishlist = (userId?: string, wishlistId?: string) => {
+  return useQuery({
+    queryKey: wishlistKeys.user(userId!),
+    queryFn: () => wishlistRepository.getList(),
+    enabled: !!(wishlistId && userId),
+    staleTime: 1000 * 60 * 5,
+    select: (wishlists) => wishlists.find((wishlist) => wishlist.id === wishlistId),
+  });
+};

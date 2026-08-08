@@ -4,7 +4,6 @@ import { useState } from "react";
 import { WishlistCard } from "@/entities/wishlist/ui/wishlist.card";
 import { WishlistUpdateDialog } from "../update/wishlist-update.dialog";
 import { WishlistDeleteDialog } from "../delete/wishlist-delete.dialog";
-import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import type { Wishlist } from "@/entities/wishlist/model/wishlist";
 import type { Permissions } from "@/shared/lib/permissions";
 import { List } from "@/shared/ui/list";
@@ -24,7 +23,6 @@ type WishlistDialogState =
 export const WishlistList = function WishlistList({ wishlists, permissions }: WishlistListProps) {
   const { userId } = useParams<{ userId: string }>();
   const [dialog, setDialog] = useState<WishlistDialogState>({ operation: null });
-  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   const navigate = useNavigate();
   const onOpen = (id: string) =>
@@ -52,7 +50,6 @@ export const WishlistList = function WishlistList({ wishlists, permissions }: Wi
                 onDelete={() => setDialog({ operation: "delete", wishlistId: wishlist.id })}
                 onOpen={onOpen}
                 permissions={permissions}
-                isMobile={isMobile}
               />
             )}
           ></List>

@@ -39,7 +39,6 @@ describe("WishlistItemCard", () => {
       <WishlistItemCard
         wishlistItem={item}
         permissions={viewerPermissions}
-        isMobile
         onOpen={vi.fn()}
         handleReserve={vi.fn()}
       />,
@@ -62,7 +61,6 @@ describe("WishlistItemCard", () => {
       <WishlistItemCard
         wishlistItem={item}
         permissions={ownerPermissions}
-        isMobile={false}
         onOpen={vi.fn()}
         handleUpdate={handleUpdate}
         handleDelete={handleDelete}
@@ -83,7 +81,6 @@ describe("WishlistItemCard", () => {
       <WishlistItemCard
         wishlistItem={{ ...item, price: null, link: "", image: "", reserver: null }}
         permissions={ownerPermissions}
-        isMobile
         onOpen={vi.fn()}
       />,
     );

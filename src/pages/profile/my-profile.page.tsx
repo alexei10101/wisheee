@@ -1,13 +1,11 @@
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { UserInfo } from "@/features/user/info/user-info";
-import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { ROUTES } from "@/shared/routes";
 import { MenuCard } from "@/shared/ui/menu-card";
 import { Bell, Gift, Heart, Users } from "lucide-react";
 
 function MyProfilePage() {
   const user = useRequiredUser();
-  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   return (
     <main className="page">
@@ -15,7 +13,7 @@ function MyProfilePage() {
         <h1 className="max-w-3xl">
           Добро пожаловать, <span>{user.username}</span>!
         </h1>
-        <UserInfo user={user} isMobile={isMobile} avatar={user.avatar} />
+        <UserInfo user={user} avatar={user.avatar} />
         <section
           aria-label="Разделы профиля"
           className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"

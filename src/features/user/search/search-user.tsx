@@ -13,11 +13,7 @@ export function SearchUser() {
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
-    async (
-      // receiverId: string,
-      // receiverUsername: string,
-      // receiverAvatar: string,
-    ) => {
+    async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
       //   if (!user?.id || user.id === receiverId) return;
       //   const metadata: FriendRequestMetadata = {
       //     sender_username: user.username,
@@ -51,9 +47,8 @@ export function SearchUser() {
       }
     };
 
-    if (!debouncedSearch) {
-      setSearchResult(null);
-    }
+    if (!debouncedSearch) return setSearchResult(null);
+
     handleSearch();
   }, [debouncedSearch]);
 

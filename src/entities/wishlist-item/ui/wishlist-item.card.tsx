@@ -13,7 +13,6 @@ type WishlistItemProps = {
   handleDelete?: (id: string) => void;
   handleUpdate?: (id: string) => void;
   handleReserve?: (id: string) => void;
-  isMobile: boolean;
   onOpen: (link: string) => void;
 };
 

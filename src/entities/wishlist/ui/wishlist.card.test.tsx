@@ -36,7 +36,7 @@ describe("WishlistCard", () => {
           onUpdate={vi.fn()}
           onDelete={vi.fn()}
           permissions={ownerPermissions}
-          isMobile
+          isOwner={true}
         />
       </TooltipProvider>,
     );
@@ -60,7 +60,7 @@ describe("WishlistCard", () => {
           onUpdate={onUpdate}
           onDelete={onDelete}
           permissions={ownerPermissions}
-          isMobile={false}
+          isOwner={true}
         />
       </TooltipProvider>,
     );

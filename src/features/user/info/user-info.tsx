@@ -4,7 +4,6 @@ import { Item, ItemContent, ItemMedia } from "@/shared/ui/kit/item";
 
 type UserInfoProps = {
   user: User;
-  isMobile: boolean;
   avatar: string | null;
 };
 

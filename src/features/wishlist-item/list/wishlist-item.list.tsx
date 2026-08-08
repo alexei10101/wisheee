@@ -4,7 +4,6 @@ import { WishlistItemUpdateDialog } from "../update/wishlist-item-update.dialog"
 import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog";
 import { useState } from "react";
 import type { Permissions } from "@/shared/lib/permissions";
-import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { List } from "@/shared/ui/list";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Gift } from "lucide-react";
@@ -22,7 +21,6 @@ type WishlistItemDialogState =
 
 export function WishlistItemList({ permissions, items, style }: WishlistItemList) {
   const [dialog, setDialog] = useState<WishlistItemDialogState>({ operation: null });
-  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   const onOpen = (link: string) => {
     if (!link) return;
@@ -64,7 +62,6 @@ export function WishlistItemList({ permissions, items, style }: WishlistItemList
                 : undefined
             }
             handleReserve={permissions.canReserve ? handleReserve : undefined}
-            isMobile={isMobile}
             onOpen={onOpen}
           />
         )}
