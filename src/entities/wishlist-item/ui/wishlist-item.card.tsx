@@ -33,7 +33,7 @@ export const WishlistItemCard = memo(function WishlistItemCard({
 
   return (
     <article className="group relative grid w-full max-w-3xl grid-cols-[6.5rem_minmax(0,1fr)] overflow-hidden rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[8rem_minmax(0,1fr)_auto]">
-      <div className="m-2 min-h-26 overflow-hidden rounded-xl bg-muted sm:m-3 sm:min-h-32 sm:rounded-2xl">
+      <div className="min-h-26 overflow-hidden rounded-s-xl bg-muted sm:min-h-32 sm:rounded-s-2xl">
         {wishlistItem.image ? (
           <img
             src={wishlistItem.image}
@@ -93,23 +93,19 @@ export const WishlistItemCard = memo(function WishlistItemCard({
           </Button>
         )}
 
-        {hasLink && (
-          <Button
-            type="button"
-            variant={permissions.canReserve ? "outline" : "default"}
-            className="min-h-10 flex-1 sm:flex-none"
-            aria-label="Открыть магазин"
-            onClick={() => onOpen(wishlistItem.link)}
-          >
-            <ExternalLink aria-hidden="true" />
-            <span aria-hidden="true" className="sm:hidden lg:inline">
-              Открыть магазин
-            </span>
-            <span aria-hidden="true" className="hidden sm:inline lg:hidden">
-              Открыть
-            </span>
-          </Button>
-        )}
+        <Button
+          type="button"
+          disabled={hasLink ? false : true}
+          variant={permissions.canReserve ? "outline" : "default"}
+          className="min-h-10 flex-1 sm:flex-none"
+          aria-label="Открыть магазин"
+          onClick={() => onOpen(wishlistItem.link)}
+        >
+          <ExternalLink aria-hidden="true" />
+          <span aria-hidden="true" className="inline">
+            Открыть
+          </span>
+        </Button>
 
         {(permissions.canUpdate || permissions.canDelete) && (
           <ActionMenu label="Действия с желанием">
