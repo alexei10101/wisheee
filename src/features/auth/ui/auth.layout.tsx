@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/kit/card";
-import * as React from "react";
+import { type ReactNode } from "react";
 
 export function AuthLayout({
   title,
@@ -14,10 +14,10 @@ export function AuthLayout({
   form,
   footerText,
 }: {
-  title: React.ReactNode;
-  description: React.ReactNode;
-  form: React.ReactNode;
-  footerText: React.ReactNode;
+  title: ReactNode;
+  description: ReactNode;
+  form: ReactNode;
+  footerText: ReactNode;
 }) {
   return (
     <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10 before:absolute before:top-[-18rem] before:left-1/2 before:-z-10 before:size-[34rem] before:-translate-x-1/2 before:rounded-full before:bg-primary/10 before:blur-3xl">
