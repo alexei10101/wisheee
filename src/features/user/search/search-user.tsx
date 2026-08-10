@@ -55,6 +55,7 @@ export function SearchUser() {
   return (
     <>
       <Input
+        autoFocus
         className="bg-card"
         placeholder="Поиск"
         value={search}
