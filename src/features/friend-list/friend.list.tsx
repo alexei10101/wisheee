@@ -6,6 +6,7 @@ import { buildRoutes } from "@/shared/routes";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { toast } from "sonner";
+import { List } from "@/shared/ui/list";
 
 export const FriendList = memo(function () {
   const { data: user, isLoading: isCurrentUserLoading } = useCurrentUser();
@@ -20,17 +21,18 @@ export const FriendList = memo(function () {
   if (!friends) return <div>У вас еще нет друзей</div>;
 
   return (
-    <div className="flex flex-col gap-2">
-      {friends?.map((user) => (
+    <List
+      items={friends}
+      getKey={(f) => f.id}
+      renderItem={(user) => (
         <UserCard
           key={user.id}
           id={user.id}
           username={user.username}
-          avatarUrl={user.avatar_url}
+          avatarUrl={user.avatar_url ?? ""}
           onOpen={onOpen}
           onDeleteFriend={handleDeleteFriend}
         />
-      ))}
-    </div>
+      )}></List>
   );
 });

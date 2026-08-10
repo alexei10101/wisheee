@@ -54,7 +54,7 @@ function WishlistPage() {
           />
         )}
       </div>
-      <WishlistItemList wishlist={activeWishlist} permissions={permissions} />
+      <WishlistItemList items={activeWishlist.wishlist_items} permissions={permissions} wishlistId={activeWishlist.id} />
     </main>
   );
 }

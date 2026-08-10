@@ -60,7 +60,7 @@ export function SearchUser() {
     <>
       <Input className="bg-white" placeholder="Поиск" value={search} onChange={(value) => setSearch(value.target.value)} />
       <div className="mt-5">
-        <SearchList list={searchResult} addFriend={handleAddFriend} />
+        <SearchList users={searchResult} addFriend={handleAddFriend} />
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 import type { WishlistItem } from "@/entities/wishlist-item/model/wishlist-item";
 import { WishlistItemCard } from "@/entities/wishlist-item/ui/wishlist-item.card";
-import type { WishlistWithItems } from "@/entities/wishlist/model/wishlist";
 import { WishlistItemUpdateDialog } from "../update/wishlist-item-update.dialog";
 import { WishlistItemDeleteDialog } from "../delete/wishlist-item-delete.dialog";
 import { useState } from "react";
@@ -9,11 +8,15 @@ import { useMediaQuery } from "@/shared/hooks/use-media-query.hook";
 import { useCurrentUser } from "@/entities/user/model/use-current-user";
 import { useReserveWishlistItem } from "@/entities/wishlist-item/model/wishlist-item.mutations";
 import { useAuth } from "@/app/auth.context";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { Gift } from "lucide-react";
+import { List } from "@/shared/ui/list";
 
 type WishlistItemList = {
   permissions: Permissions;
-  wishlist: WishlistWithItems;
+  items: WishlistItem[];
   style?: string;
+  wishlistId: string;
 };
 
 type WishlistItemDialogState =
@@ -21,7 +24,7 @@ type WishlistItemDialogState =
   | { operation: "delete"; wishlistItemId: string }
   | { operation: null };
 
-export function WishlistItemList({ permissions, wishlist, style }: WishlistItemList) {
+export function WishlistItemList({ permissions, items, style, wishlistId }: WishlistItemList) {
   const { data: user } = useCurrentUser();
   const { session } = useAuth();
   const reserveWishlistItem = useReserveWishlistItem();
@@ -44,9 +47,17 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
 
   return (
     <section className={style}>
-      <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-2 sm:gap-4 text-lg overflow-x-hidden">
-        {wishlist.wishlist_items?.length === 0 && <div className="flex flex-col mx-auto text-lg text-center">Вишлист пуст</div>}
-        {wishlist.wishlist_items?.map((item) => (
+      {items.length === 0 && (
+        <EmptyState
+          icon={<Gift aria-hidden="true" />}
+          title="Здесь пока нет желаний"
+          description="Новые желания появятся в этом вишлисте."
+        />
+      )}
+      <List
+        items={items}
+        getKey={(i) => i.id}
+        renderItem={(item) => (
           <WishlistItemCard
             key={item.id}
             wishlistItem={item}
@@ -54,21 +65,20 @@ export function WishlistItemList({ permissions, wishlist, style }: WishlistItemL
             handleDelete={permissions.canDelete ? () => setDialog({ operation: "delete", wishlistItemId: item.id }) : undefined}
             handleUpdate={permissions.canUpdate ? () => setDialog({ operation: "update", wishlistItem: item }) : undefined}
             handleReserve={permissions.canReserve ? handleReserve : undefined}
-            isMobile={isMobile}
             onOpen={onOpen}
+            isMobile={isMobile}
           />
-        ))}
-      </div>
+        )}></List>
 
       {dialog.operation === "update" && (
         <WishlistItemUpdateDialog open onClose={() => setDialog({ operation: null })} wishlistItem={dialog.wishlistItem} />
       )}
       {dialog.operation === "delete" && (
         <WishlistItemDeleteDialog
-          wishlistId={wishlist.id}
           open
           onClose={() => setDialog({ operation: null })}
           wishlistItemId={dialog.wishlistItemId}
+          wishlistId={wishlistId}
         />
       )}
     </section>
