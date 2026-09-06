@@ -1,11 +1,13 @@
+import { useUnreadNotificationCount } from "@/entities/notification/model/notification.hooks";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { UserInfo } from "@/features/user/info/user-info";
 import { ROUTES } from "@/shared/routes";
 import { MenuCard } from "@/shared/ui/menu-card";
-import { Bell, Gift, Heart, Users } from "lucide-react";
+import { Bell, Gift, Heart, Loader, Users } from "lucide-react";
 
 function MyProfilePage() {
   const user = useRequiredUser();
+  const unreadNotificationCount = useUnreadNotificationCount();
 
   return (
     <main className="page">
@@ -38,7 +40,12 @@ function MyProfilePage() {
           ></MenuCard>
           <MenuCard
             title={"Уведомления"}
-            description={"3 уведомления"}
+            description={
+              <>
+                {unreadNotificationCount.isLoading && <Loader />}
+                {unreadNotificationCount.data?.unreadCount}
+              </>
+            }
             icon={<Bell />}
             link={ROUTES.NOTIFICATIONS}
           ></MenuCard>

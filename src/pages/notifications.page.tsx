@@ -27,7 +27,7 @@ function NotificationPage() {
       <div className="mb-3 sm:mb-5">
         <PageHeader title="Мои уведомления" left={<BackButton />} />
       </div>
-      <NotificationList userId={user.id} notifications={notifications.data ?? []} />
+      <NotificationList userId={user.id} notifications={notifications ?? []} />
     </main>
   );
 }

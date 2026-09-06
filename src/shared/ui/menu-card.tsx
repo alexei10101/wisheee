@@ -4,7 +4,7 @@ import { Card } from "./kit/card";
 
 type MenuCardProps = {
   title: string;
-  description: string;
+  description: React.ReactNode;
   link: string;
   icon?: React.ReactNode;
   badge?: string;
