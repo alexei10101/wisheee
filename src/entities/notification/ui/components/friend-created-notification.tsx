@@ -3,25 +3,15 @@ import type { NotificationCardProps } from "../notification-card";
 import { Button } from "@/shared/ui/kit/button";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 
-export function FriendPendingNotification({
-  userId,
+export function FriendCreatedNotification({
   notification,
   onAccept,
   onReject,
+  onDelete,
   onOpen,
 }: NotificationCardProps) {
-  const isRequestInitiator = notification.metadata?.request_sender_id === userId;
-  const data = {
-    username:
-      (isRequestInitiator
-        ? notification.metadata?.receiver_username
-        : notification.metadata?.sender_username) ?? "",
-    avatar:
-      (isRequestInitiator
-        ? notification.metadata?.receiver_avatar
-        : notification.metadata?.sender_avatar) ?? "",
-  };
-  const title = isRequestInitiator
+  const isActionOwner = notification.actor?.id === notification.recipient.id;
+  const title = isActionOwner
     ? "Вы отправили заявку в друзья пользователю "
     : "Новая заявка в друзья от ";
 
@@ -31,12 +21,24 @@ export function FriendPendingNotification({
 
       <ItemTitle className="inline-flex w-full flex-wrap items-center gap-1">
         <span>{title}</span>
-        <button className="leading-0" onClick={() => onOpen(notification.sender_id)}>
-          <UserBadge user={{ username: data.username, avatar_url: data.avatar }} />
+        <button
+          className="leading-0"
+          onClick={() =>
+            notification.counterparty?.id ? onOpen(notification.counterparty.id) : null
+          }
+        >
+          {notification.counterparty && (
+            <UserBadge
+              user={{
+                username: notification.counterparty.username,
+                avatar: notification.counterparty.avatar,
+              }}
+            />
+          )}
         </button>
       </ItemTitle>
 
-      {!isRequestInitiator && (
+      {!isActionOwner && (
         <ItemActions>
           <Button size="sm" variant="outline" onClick={onReject}>
             Отклонить
@@ -44,6 +46,13 @@ export function FriendPendingNotification({
 
           <Button size="sm" variant="outline" onClick={onAccept}>
             Принять
+          </Button>
+        </ItemActions>
+      )}
+      {isActionOwner && (
+        <ItemActions>
+          <Button size="sm" variant="outline" onClick={onDelete}>
+            Отменить заявку
           </Button>
         </ItemActions>
       )}

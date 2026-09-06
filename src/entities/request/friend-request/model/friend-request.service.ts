@@ -1,114 +1,114 @@
-import { safeQuery, type ServiceResult } from "@/shared/safe-query";
-import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
+// import { safeQuery, type ServiceResult } from "@/shared/safe-query";
+// import type { FriendRequest, FriendRequestMetadata, FriendRequestStatus } from "./friend-request";
 
-import { friendRequestRepository } from "../api/friend-request.repository";
-import { notificationService } from "@/entities/notification/model/notification.service";
-import { friendService } from "@/entities/friend/model/friend.service";
+// import { friendRequestRepository } from "../api/friend-request.repository";
+// import { notificationService } from "@/entities/notification/model/notification.service";
+// import { friendService } from "@/entities/friend/model/friend.service";
 
-export const friendsRequestService = {
-  async createFriendRequest(
-    senderId: string,
-    receiverId: string,
-    metadata: FriendRequestMetadata,
-  ): Promise<ServiceResult<FriendRequest>> {
-    return safeQuery(friendRequestRepository.createRequest(senderId, receiverId, metadata));
-  },
-  async updateFriendRequestStatus(
-    requestId: string,
-    status: Omit<FriendRequestStatus, "pending">,
-  ): Promise<ServiceResult<FriendRequest>> {
-    return safeQuery(friendRequestRepository.updateRequestStatus(requestId, status));
-  },
-  async checkRequestExisting(
-    senderId: string,
-    receiverId: string,
-  ): Promise<ServiceResult<{ id: string } | null>> {
-    return safeQuery(friendRequestRepository.checkRequestExisting(senderId, receiverId));
-  },
+// export const friendsRequestService = {
+//   async createFriendRequest(
+//     senderId: string,
+//     receiverId: string,
+//     metadata: FriendRequestMetadata,
+//   ): Promise<ServiceResult<FriendRequest>> {
+//     return safeQuery(friendRequestRepository.createRequest(senderId, receiverId, metadata));
+//   },
+//   async updateFriendRequestStatus(
+//     requestId: string,
+//     status: Omit<FriendRequestStatus, "pending">,
+//   ): Promise<ServiceResult<FriendRequest>> {
+//     return safeQuery(friendRequestRepository.updateRequestStatus(requestId, status));
+//   },
+//   async checkRequestExisting(
+//     senderId: string,
+//     receiverId: string,
+//   ): Promise<ServiceResult<{ id: string } | null>> {
+//     return safeQuery(friendRequestRepository.checkRequestExisting(senderId, receiverId));
+//   },
 
-  async acceptFriendRequest(
-    senderId: string,
-    receiverId: string,
-    requestId: string,
-    accessToken: string,
-  ): Promise<ServiceResult> {
-    if (!senderId || !receiverId) return { error: "Нет id", result: null };
-    const status: FriendRequestStatus = "accepted";
+//   async acceptFriendRequest(
+//     senderId: string,
+//     receiverId: string,
+//     requestId: string,
+//     accessToken: string,
+//   ): Promise<ServiceResult> {
+//     if (!senderId || !receiverId) return { error: "Нет id", result: null };
+//     const status: FriendRequestStatus = "accepted";
 
-    const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
-    if (updating.error) return { error: updating.error, result: null };
-    if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
+//     const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
+//     if (updating.error) return { error: updating.error, result: null };
+//     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
 
-    const friendship = await friendService.createFriendship(senderId, receiverId);
-    if (friendship.error) {
-      console.error("Ошибка создания дружбы:", friendship.error);
-      return { error: friendship.error, result: null };
-    }
+//     const friendship = await friendService.createFriendship(senderId, receiverId);
+//     if (friendship.error) {
+//       console.error("Ошибка создания дружбы:", friendship.error);
+//       return { error: friendship.error, result: null };
+//     }
 
-    const notification = await notificationService.updateFriendNotification(
-      accessToken,
-      requestId,
-      status,
-    );
-    if (!notification.ok) {
-      console.error("Ошибка обновления уведомлений:", notification.error.message);
-      return { error: notification.error.message, result: null };
-    }
+//     const notification = await notificationService.updateFriendNotification(
+//       accessToken,
+//       requestId,
+//       status,
+//     );
+//     if (!notification.ok) {
+//       console.error("Ошибка обновления уведомлений:", notification.error.message);
+//       return { error: notification.error.message, result: null };
+//     }
 
-    return { error: null, result: null };
-  },
-  async rejectFriendRequest(
-    senderId: string,
-    receiverId: string,
-    requestId: string,
-    accessToken: string,
-  ): Promise<ServiceResult> {
-    if (!senderId || !receiverId) return { error: "Нет id", result: null };
-    const status: FriendRequestStatus = "rejected";
+//     return { error: null, result: null };
+//   },
+//   async rejectFriendRequest(
+//     senderId: string,
+//     receiverId: string,
+//     requestId: string,
+//     accessToken: string,
+//   ): Promise<ServiceResult> {
+//     if (!senderId || !receiverId) return { error: "Нет id", result: null };
+//     const status: FriendRequestStatus = "rejected";
 
-    const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
-    if (updating.error) return { error: updating.error, result: null };
-    if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
+//     const updating = await friendsRequestService.updateFriendRequestStatus(requestId, status);
+//     if (updating.error) return { error: updating.error, result: null };
+//     if (!updating.result) return { error: "Ошибка обновления запроса", result: null };
 
-    const notification = await notificationService.updateFriendNotification(
-      accessToken,
-      requestId,
-      status,
-    );
-    if (!notification.ok) {
-      console.error("Ошибка обновления уведомлений:", notification.error.message);
-      return { error: notification.error.message, result: null };
-    }
+//     const notification = await notificationService.updateFriendNotification(
+//       accessToken,
+//       requestId,
+//       status,
+//     );
+//     if (!notification.ok) {
+//       console.error("Ошибка обновления уведомлений:", notification.error.message);
+//       return { error: notification.error.message, result: null };
+//     }
 
-    return { error: null, result: null };
-  },
-  async sendFriendRequest(
-    senderId: string,
-    receiverId: string,
-    metadata: FriendRequestMetadata,
-  ): Promise<ServiceResult> {
-    if (!senderId || !receiverId) return { error: "Нет id", result: null };
-    if (senderId === receiverId) return { error: "id одинаковы", result: null };
+//     return { error: null, result: null };
+//   },
+//   async sendFriendRequest(
+//     senderId: string,
+//     receiverId: string,
+//     metadata: FriendRequestMetadata,
+//   ): Promise<ServiceResult> {
+//     if (!senderId || !receiverId) return { error: "Нет id", result: null };
+//     if (senderId === receiverId) return { error: "id одинаковы", result: null };
 
-    const existing = await friendsRequestService.checkRequestExisting(senderId, receiverId);
-    if (existing.error) return { error: existing.error, result: null };
-    if (existing.result) return { error: "Запрос уже существует", result: null };
+//     const existing = await friendsRequestService.checkRequestExisting(senderId, receiverId);
+//     if (existing.error) return { error: existing.error, result: null };
+//     if (existing.result) return { error: "Запрос уже существует", result: null };
 
-    const request = await friendsRequestService.createFriendRequest(senderId, receiverId, metadata);
-    if (request.error) return { error: request.error, result: null };
-    if (!request.result) return { error: "Ошибка создания запроса", result: null };
+//     const request = await friendsRequestService.createFriendRequest(senderId, receiverId, metadata);
+//     if (request.error) return { error: request.error, result: null };
+//     if (!request.result) return { error: "Ошибка создания запроса", result: null };
 
-    const notification = await notificationService.createFriendNotification(
-      senderId,
-      receiverId,
-      request.result.id,
-      {
-        ...metadata,
-        request_sender_id: senderId,
-      },
-    );
-    if (notification.error) return { error: notification.error, result: null };
+//     const notification = await notificationService.createFriendNotification(
+//       senderId,
+//       receiverId,
+//       request.result.id,
+//       {
+//         ...metadata,
+//         request_sender_id: senderId,
+//       },
+//     );
+//     if (notification.error) return { error: notification.error, result: null };
 
-    return { error: null, result: null };
-  },
-};
+//     return { error: null, result: null };
+//   },
+// };

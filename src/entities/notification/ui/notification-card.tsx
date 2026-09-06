@@ -9,18 +9,17 @@ export type NotificationCardProps = {
   notification: AppNotification;
   onAccept: () => Promise<void>;
   onReject: () => Promise<void>;
+  onDelete: () => Promise<void>;
   onOpen: (userId: string) => void | Promise<void>;
-  selected?: boolean;
-  onSelect?: () => void;
 };
 
-const NotificationCard = ({
+export const NotificationCard = memo(function NotificationCard({
   userId,
   notification: n,
   onAccept,
   onReject,
   onOpen,
-}: NotificationCardProps) => {
+}: NotificationCardProps) {
   const Component = notificationComponents[n.type];
   if (!Component) return null;
   return (
@@ -30,8 +29,8 @@ const NotificationCard = ({
       className="w-full rounded-2xl border-border/70 bg-card p-3 shadow-sm sm:p-4"
     >
       <ItemMedia className="rounded-xl bg-primary/10 text-primary" variant="icon">
-        {n.is_read ? <MailOpen /> : <Mail />}
-        <span className="sr-only">{n.is_read ? "Прочитано" : "Новое уведомление"}</span>
+        {n.readAt ? <MailOpen /> : <Mail />}
+        <span className="sr-only">{n.readAt ? "Прочитано" : "Новое уведомление"}</span>
       </ItemMedia>
 
       <ItemContent className={n.type}>
@@ -40,11 +39,10 @@ const NotificationCard = ({
           notification={n}
           onAccept={onAccept}
           onReject={onReject}
+          onDelete={async () => {}}
           onOpen={onOpen}
         />
       </ItemContent>
     </Item>
   );
-};
-
-export default memo(NotificationCard);
+});

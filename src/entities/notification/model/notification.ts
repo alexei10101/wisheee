@@ -1,20 +1,20 @@
-export interface AppNotification {
-  id: string; // request id
-  event_id?: string;
-  receiver_id: string; // to whom is the notification
-  sender_id: string; // who sent it
-  type: AppNotificationType; // friends_request
-  entity_id: string; // UUID reference
-  is_read: boolean;
-  metadata?: {
-    request_sender_id: string;
-    sender_username?: string;
-    sender_avatar?: string;
-    receiver_username?: string;
-    receiver_avatar?: string;
-  };
-  created_at: string;
-}
+import type { User } from "@/entities/user/model/user";
 
 export type AppNotificationType =
-  "friend_request" | "friend_request_accepted" | "friend_request_rejected";
+  "FRIEND_REQUEST_CREATED" | "FRIEND_REQUEST_ACCEPTED" | "FRIEND_REQUEST_REJECTED";
+
+export interface AppNotification {
+  id: string;
+  type: AppNotificationType;
+  entityId: string;
+  recipient: User;
+  actor: User | null;
+  counterparty: User | null;
+  readAt: Date | null;
+  createdAt: Date;
+}
+
+export interface AppNotificationResponse {
+  items: AppNotification[];
+  unreadCount: number;
+}

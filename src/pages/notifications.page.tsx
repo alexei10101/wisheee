@@ -1,23 +1,21 @@
-import { useNotifications } from "@/entities/notification/model/notification.queries";
-import { MarkNotificationsAsRead } from "@/features/notification/mark-notifications-as-read.button";
 import { NotificationList } from "@/features/notification/notification-list/notification.list";
 import { BackButton } from "@/shared/ui/back.button";
 import { PageHeader } from "@/shared/ui/page-header";
-import { useCurrentUser } from "@/features/auth/model/use-current-user";
-import { PageLoader } from "@/shared/ui/local-loader";
-import { useAuth } from "@/app/auth.context";
+import { AppLoader } from "@/shared/ui/app-loader";
+import { useRequiredUser } from "@/entities/user/model/user.hooks";
+import { useNotifications } from "@/entities/notification/model/notification.hooks";
 
 function NotificationPage() {
-  const { data: user, isLoading: userIsLoading } = useCurrentUser();
-  const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
-  const { session } = useAuth();
-  const haveNotificationsBeenRead =
-    notifications?.some((notification) => !notification.is_read) ?? false;
+  const user = useRequiredUser();
+  const notifications = useNotifications();
+  // const { data: notifications, isLoading: notificationsIsLoading } = useNotifications(user?.id);
+  // const haveNotificationsBeenRead =
+  //   notifications?.some((notification) => !notification.is_read) ?? false;
 
-  if (userIsLoading || notificationsIsLoading) return <PageLoader />;
+  if (!user) return <AppLoader />;
   return (
     <main className="page bg-background">
-      <div className="mb-3 sm:mb-5">
+      {/* <div className="mb-3 sm:mb-5">
         <PageHeader
           title="Мои уведомления"
           left={<BackButton />}
@@ -25,12 +23,11 @@ function NotificationPage() {
             <MarkNotificationsAsRead userId={user?.id} isAvailable={haveNotificationsBeenRead} />
           }
         />
+      </div> */}
+      <div className="mb-3 sm:mb-5">
+        <PageHeader title="Мои уведомления" left={<BackButton />} />
       </div>
-      <NotificationList
-        userId={user?.id}
-        accessToken={session?.access_token}
-        notifications={notifications ?? []}
-      />
+      <NotificationList userId={user.id} notifications={notifications.data ?? []} />
     </main>
   );
 }

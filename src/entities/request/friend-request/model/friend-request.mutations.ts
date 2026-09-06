@@ -1,29 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { friendsRequestService } from "./friend-request.service";
-import type { AppNotification } from "@/entities/notification/model/notification";
-import type { FriendRequestMetadata } from "./friend-request";
-import { notificationKeys } from "@/entities/notification/model/notification.queries";
-import { friendsKeys } from "@/entities/friend/model/friend.queries";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { friendRequestRepository } from "../api/friend-request.repository";
 
 export const useSendFriendRequest = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: ({
-      senderId,
-      receiverId,
-      metadata,
-    }: {
-      senderId: string;
-      receiverId: string;
-      metadata: FriendRequestMetadata;
-    }) => friendsRequestService.sendFriendRequest(senderId, receiverId, metadata),
+    mutationFn: friendRequestRepository.createRequest,
     onMutate: () => {
       const toastId = toast.loading("Отправка запроса...");
       return { toastId };
     },
-    onSuccess: (_, variables, ctx) => {
+    onSuccess: (_, __, ctx) => {
       toast.success("Запрос успешно отправлен", {
         id: ctx.toastId,
         action: {
@@ -31,9 +17,7 @@ export const useSendFriendRequest = () => {
           onClick: () => {},
         },
       });
-      queryClient.invalidateQueries({
-        queryKey: notificationKeys.friendRequest(variables.receiverId),
-      });
+      // проверять встречная ли заявка и обновлять друзей при необходимости
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка отправки запроса", {
@@ -44,25 +28,13 @@ export const useSendFriendRequest = () => {
 };
 
 export const useAcceptFriendRequest = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: ({
-      senderId,
-      receiverId,
-      requestId,
-      accessToken,
-    }: {
-      senderId: string;
-      receiverId: string;
-      requestId: string;
-      accessToken: string;
-    }) => friendsRequestService.acceptFriendRequest(senderId, receiverId, requestId, accessToken),
+    mutationFn: friendRequestRepository.acceptRequest,
     onMutate: () => {
       const toastId = toast.loading("Принимаем заявку в друзья…");
       return { toastId };
     },
-    onSuccess: (_, variables, ctx) => {
+    onSuccess: (_, __, ctx) => {
       toast.success("Заявка принята", {
         id: ctx.toastId,
         action: {
@@ -70,19 +42,10 @@ export const useAcceptFriendRequest = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(
-        notificationKeys.friendRequest(variables.senderId),
-        (old: AppNotification[] = []) =>
-          old.map((n) =>
-            n.entity_id === variables.requestId ? { ...n, type: "friend_request_accepted" } : n,
-          ),
-      );
-      queryClient.invalidateQueries({
-        queryKey: friendsKeys.list(variables.senderId),
-      });
+      // optimistic add friend from repository result 
     },
     onError: (_err, _vars, ctx) => {
-      toast.error("Ошибка", {
+      toast.error("Ошибка добавления", {
         id: ctx?.toastId,
       });
     },
@@ -90,25 +53,13 @@ export const useAcceptFriendRequest = () => {
 };
 
 export const useRejectFriendRequest = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: ({
-      senderId,
-      receiverId,
-      requestId,
-      accessToken,
-    }: {
-      senderId: string;
-      receiverId: string;
-      requestId: string;
-      accessToken: string;
-    }) => friendsRequestService.rejectFriendRequest(senderId, receiverId, requestId, accessToken),
+    mutationFn: friendRequestRepository.rejectRequest,
     onMutate: () => {
       const toastId = toast.loading("Отклоняем заявку в друзья…");
       return { toastId };
     },
-    onSuccess: (_, variables, ctx) => {
+    onSuccess: (_, __, ctx) => {
       toast.success("Заявка отклонена", {
         id: ctx.toastId,
         action: {
@@ -116,13 +67,6 @@ export const useRejectFriendRequest = () => {
           onClick: () => {},
         },
       });
-      queryClient.setQueryData(
-        notificationKeys.friendRequest(variables.senderId),
-        (old: AppNotification[] = []) =>
-          old.map((n) =>
-            n.entity_id === variables.requestId ? { ...n, type: "friend_request_rejected" } : n,
-          ),
-      );
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка", {

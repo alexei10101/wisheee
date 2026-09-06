@@ -1,40 +1,25 @@
-import { supabase } from "@/shared/supabase-client";
-import type { FriendRequestMetadata, FriendRequestStatus } from "../model/friend-request";
+import { api } from "@/shared/api/api";
+import type { ApiResponse } from "@/shared/api/types";
+import type { SendRequestResult } from "./friend-request.responses";
+import type { User } from "@/entities/user/model/user";
 
 export const friendRequestRepository = {
-  async createRequest(senderId: string, receiverId: string, metadata: FriendRequestMetadata) {
-    return supabase
-      .from("friend_requests")
-      .insert({
-        sender_id: senderId,
-        receiver_id: receiverId,
-        status: "pending",
-        sender_username: metadata.sender_username,
-        sender_avatar: metadata.sender_avatar,
-        receiver_username: metadata.receiver_username,
-        receiver_avatar: metadata.receiver_avatar,
-      })
-      .select()
-      .single();
+  async createRequest(addresseeId: string): Promise<SendRequestResult> {
+    const { data } = await api.post<ApiResponse<SendRequestResult>>("/friends/requests", {
+      addresseeId,
+    });
+    return data.data;
   },
-  async updateRequestStatus(requestId: string, status: Omit<FriendRequestStatus, "pending">) {
-    return supabase
-      .from("friend_requests")
-      .update({
-        status,
-      })
-      .eq("id", requestId)
-      .eq("status", "pending")
-      .select("*")
-      .maybeSingle();
+  async acceptRequest(requestId: string): Promise<User> {
+    const { data } = await api.post<ApiResponse<User>>(`/friends/requests/${requestId}/accept`);
+    return data.data;
   },
-  async checkRequestExisting(senderId: string, receiverId: string) {
-    return supabase
-      .from("friend_requests")
-      .select("id")
-      .eq("sender_id", senderId)
-      .eq("receiver_id", receiverId)
-      .eq("status", "pending")
-      .maybeSingle();
+  async rejectRequest(requestId: string): Promise<null> {
+    await api.post<ApiResponse<null>>(`/friends/requests/${requestId}/reject`);
+    return null;
+  },
+  async deleteRequest(requestId: string): Promise<null> {
+    await api.delete<ApiResponse<null>>(`/friends/requests/${requestId}`);
+    return null;
   },
 };

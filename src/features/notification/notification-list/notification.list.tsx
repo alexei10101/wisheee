@@ -1,73 +1,57 @@
-import NotificationCard from "@/entities/notification/ui/notification-card";
-import { ItemGroup } from "@/shared/ui/kit/item";
-import { useCallback } from "react";
+import type { AppNotification } from "@/entities/notification/model/notification";
+import { NotificationCard } from "@/entities/notification/ui/notification-card";
 import {
   useAcceptFriendRequest,
   useRejectFriendRequest,
 } from "@/entities/request/friend-request/model/friend-request.mutations";
-import type { AppNotification } from "@/entities/notification/model/notification";
-import { useNavigate } from "react-router";
 import { buildRoutes } from "@/shared/routes";
+import { List } from "@/shared/ui/list";
+import { useNavigate } from "react-router";
 
 type NotificationListProps = {
   userId: string | undefined;
   notifications: AppNotification[];
-  accessToken?: string;
 };
 
-export function NotificationList({ userId, notifications, accessToken }: NotificationListProps) {
+export function NotificationList({ notifications }: NotificationListProps) {
   const navigate = useNavigate();
-  const onOpen = (userId: string) => navigate(buildRoutes.userWishlists(userId));
+  const onOpen = (userId: string) => {
+    userId && navigate(buildRoutes.userWishlists(userId));
+  };
 
   const acceptFriendRequest = useAcceptFriendRequest();
   const rejectFriendRequest = useRejectFriendRequest();
 
-  const handleAcceptingRequest = useCallback(
-    async (receiverId: string, requestId: string) => {
-      if (!userId || !accessToken) return;
-      try {
-        await acceptFriendRequest.mutateAsync({
-          senderId: userId,
-          receiverId,
-          requestId,
-          accessToken,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [userId, acceptFriendRequest],
-  );
-  const handleRejectingRequest = useCallback(
-    async (receiverId: string, requestId: string) => {
-      // if (!userId || !accessToken) return;
-      // try {
-      //   await rejectFriendRequest.mutateAsync({
-      //     senderId: userId,
-      //     receiverId,
-      //     requestId,
-      //     accessToken,
-      //   });
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    },
-    [userId, rejectFriendRequest],
-  );
+  const handleAcceptingRequest = async (requestId: string) => {
+    try {
+      await acceptFriendRequest.mutateAsync(requestId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRejectingRequest = async (requestId: string) => {
+    try {
+      await rejectFriendRequest.mutateAsync(requestId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  if (!userId) return null;
   return (
-    <ItemGroup className="gap-2 sm:gap-4">
-      {notifications?.map((n) => (
+    <List
+      items={notifications ?? []}
+      getKey={(n) => n.id}
+      renderItem={(notification) => (
         <NotificationCard
-          key={n.id}
-          userId={userId}
-          notification={n}
-          onAccept={() => handleAcceptingRequest(n.sender_id, n.entity_id)}
-          onReject={() => handleRejectingRequest(n.sender_id, n.entity_id)}
+          key={notification.id}
+          userId={notification.recipient.id}
+          notification={notification}
+          onAccept={() => handleAcceptingRequest(notification.entityId)}
+          onReject={() => handleRejectingRequest(notification.entityId)}
+          onDelete={async () => {}}
           onOpen={onOpen}
         />
-      ))}
-    </ItemGroup>
+      )}
+    ></List>
   );
 }

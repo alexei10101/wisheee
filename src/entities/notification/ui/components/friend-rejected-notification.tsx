@@ -3,46 +3,38 @@ import type { NotificationCardProps } from "../notification-card";
 import { UserBadge } from "@/entities/user/ui/user.badge";
 
 export function FriendRejectedNotification({
-  userId,
   notification,
   onOpen,
-}: Omit<NotificationCardProps, "onAccept" | "onReject">) {
-  const isRequestInitiator = notification.metadata?.request_sender_id === userId;
-  const data = {
-    username:
-      (isRequestInitiator
-        ? notification.metadata?.receiver_username
-        : notification.metadata?.sender_username) ?? "",
-    avatar:
-      (isRequestInitiator
-        ? notification.metadata?.receiver_avatar
-        : notification.metadata?.sender_avatar) ?? "",
-  };
-  const userBadge = (
-    <div className="cursor-pointer" onClick={() => onOpen(notification.receiver_id)}>
+}: Pick<NotificationCardProps, "notification" | "onOpen">) {
+  const isActionOwner = notification.actor?.id === notification.recipient.id;
+
+  const userBadge = notification.counterparty && (
+    <div
+      className="cursor-pointer"
+      onClick={() => (notification.counterparty?.id ? onOpen(notification.counterparty.id) : null)}
+    >
       <UserBadge
         user={{
-          username: data.username,
-          avatar_url: data.avatar,
+          username: notification.counterparty.username,
+          avatar: notification.counterparty.avatar,
         }}
       />
     </div>
+  );
+  const message = isActionOwner ? (
+    <>
+      Вы отклонили заявку в друзья от <button className="leading-0">{userBadge}</button>
+    </>
+  ) : (
+    <>
+      Пользователь <button className="leading-0">{userBadge}</button> отклонил заявку в друзья
+    </>
   );
 
   return (
     <>
       <ItemDescription>Отклоненная заявка в друзья</ItemDescription>
-      <ItemTitle className="inline-flex w-full flex-wrap gap-1">
-        {isRequestInitiator ? (
-          <>
-            Пользователь <button className="leading-0">{userBadge}</button> отклонил заявку в друзья
-          </>
-        ) : (
-          <>
-            Вы отклонили заявку в друзья от <button className="leading-0">{userBadge}</button>
-          </>
-        )}
-      </ItemTitle>
+      <ItemTitle className="inline-flex w-full flex-wrap gap-1">{message}</ItemTitle>
     </>
   );
 }

@@ -4,28 +4,26 @@ import type { User } from "@/entities/user/model/user";
 import { SearchList } from "../list/search.list";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { userRepository } from "@/entities/user/api/user.repository";
+import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
 
 export function SearchUser() {
   const user = useRequiredUser();
-  // const sendFriendRequest = useSendFriendRequest();
+  const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [searchResult, setSearchResult] = useState<User[] | null>(null);
 
   const handleAddFriend = useCallback(
-    async (receiverId: string, receiverUsername: string, receiverAvatar: string) => {
-      //   if (!user?.id || user.id === receiverId) return;
-      //   const metadata: FriendRequestMetadata = {
-      //     sender_username: user.username,
-      //     sender_avatar: user.avatar_url,
-      //     receiver_username: receiverUsername,
-      //     receiver_avatar: receiverAvatar,
-      //   };
-      //   try {
-      //     await sendFriendRequest.mutateAsync({ senderId: user.id, receiverId, metadata });
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
+    async (addresseeId: string) => {
+      if (!addresseeId) {
+        console.log("no addresseeId");
+        return;
+      }
+      try {
+        await sendFriendRequest.mutateAsync(addresseeId);
+      } catch (error) {
+        console.log(error);
+      }
     },
     [user?.id],
   );

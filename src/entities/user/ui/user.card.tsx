@@ -9,11 +9,7 @@ type UserCardProps = {
   avatar: string;
   onOpen: (userId: string) => void;
   isFriend?: boolean;
-  onAddFriend?: (
-    receiverId: string,
-    receiverUsername: string,
-    receiverAvatar: string,
-  ) => Promise<void>;
+  onAddFriend?: (addresseeId: string) => Promise<void>;
   onDeleteFriend?: () => void;
 };
 
@@ -55,7 +51,7 @@ export const UserCard = memo(function UserCard({
             size="icon"
             variant={isFriend ? "secondary" : "ghost"}
             aria-label={isFriend ? `${username} уже в друзьях` : `Добавить ${username} в друзья`}
-            onClick={() => onAddFriend(id, username, avatar)}
+            onClick={() => onAddFriend(id)}
             disabled={isFriend}
           >
             {isFriend ? <Check aria-hidden="true" /> : <Plus aria-hidden="true" />}
