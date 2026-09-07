@@ -74,7 +74,9 @@ export const useLogout = () => {
         },
       });
       navigate("/signIn");
-      queryClient.clear();
+      setTimeout(() => {
+        queryClient.clear();
+      });
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка -__-", {
