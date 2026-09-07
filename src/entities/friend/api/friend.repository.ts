@@ -8,4 +8,7 @@ export const friendsRepository = {
     const { data } = await api.get<ApiResponse<User[]>>(url);
     return data.data;
   },
+  async deleteFriend(userId: string) {
+    await api.delete(`/friends/${userId}`);
+  },
 };

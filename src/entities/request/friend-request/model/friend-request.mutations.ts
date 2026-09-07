@@ -42,7 +42,7 @@ export const useAcceptFriendRequest = () => {
           onClick: () => {},
         },
       });
-      // optimistic add friend from repository result 
+      // optimistic add friend from repository result
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка добавления", {

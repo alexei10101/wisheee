@@ -6,12 +6,14 @@ import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { userRepository } from "@/entities/user/api/user.repository";
 import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
 import { useMyFriends } from "@/entities/friend/model/friend.hooks";
+import { useDeleteFriend } from "@/entities/friend/model/friend.mutations";
 
 export function SearchUser() {
   const user = useRequiredUser();
   const { data: friends } = useMyFriends();
   const friendIds = friends?.map((friend) => friend.id);
   const sendFriendRequest = useSendFriendRequest();
+  const deleteFriend = useDeleteFriend();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [searchResult, setSearchResult] = useState<(User & { isFriend: boolean })[] | null>(null);
@@ -28,6 +30,22 @@ export function SearchUser() {
         console.log(error);
       }
     },
+    [user?.id],
+  );
+
+  const handleDeleteFriend = useCallback(
+    async (userId: string) => {
+      if (!userId) {
+        console.log("no user id");
+        return;
+      }
+      try {
+        await deleteFriend.mutateAsync(userId);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // TODO: check bounds
     [user?.id],
   );
 
@@ -66,7 +84,11 @@ export function SearchUser() {
         onChange={(value) => setSearch(value.target.value)}
       />
       <div className="mt-5">
-        <SearchList users={searchResult} addFriend={handleAddFriend} />
+        <SearchList
+          users={searchResult}
+          addFriend={handleAddFriend}
+          deleteFriend={handleDeleteFriend}
+        />
       </div>
     </>
   );

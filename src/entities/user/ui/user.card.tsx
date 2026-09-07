@@ -1,8 +1,7 @@
-import { Button } from "@/shared/ui/kit/button";
-import { X } from "lucide-react";
 import { memo } from "react";
 import { UserBadge } from "./user.badge";
 import { AddFriendBtn } from "@/features/friend/add/friend-add.button";
+import { DeleteFriendBtn } from "@/features/friend/delete/friend-delete.button";
 
 type UserCardProps = {
   id: string;
@@ -11,7 +10,7 @@ type UserCardProps = {
   onOpen: (userId: string) => void;
   isFriend: boolean;
   onAddFriend?: (addresseeId: string) => Promise<void>;
-  onDeleteFriend?: () => void;
+  onDeleteFriend?: (userId: string) => Promise<void>;
 };
 
 export const UserCard = memo(function UserCard({
@@ -35,18 +34,10 @@ export const UserCard = memo(function UserCard({
       </button>
 
       <div className="flex shrink-0 items-center gap-1">
-        {onDeleteFriend && (
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            aria-label={`Удалить ${username} из друзей`}
-            onClick={onDeleteFriend}
-          >
-            <X aria-hidden="true" />
-          </Button>
+        {onDeleteFriend && isFriend && (
+          <DeleteFriendBtn username={username} onDeleteFriend={() => onDeleteFriend(id)} />
         )}
-        {onAddFriend && (
+        {onAddFriend && !isFriend && (
           <AddFriendBtn
             isFriend={isFriend}
             username={username}

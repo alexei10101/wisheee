@@ -8,9 +8,10 @@ import { useNavigate } from "react-router";
 type SearchListProps = {
   users: (User & { isFriend: boolean })[] | null;
   addFriend: (addresseeId: string) => Promise<void>;
+  deleteFriend: (userId: string) => Promise<void>;
 };
 
-export const SearchList = memo(function ({ addFriend, users }: SearchListProps) {
+export const SearchList = memo(function ({ addFriend, deleteFriend, users }: SearchListProps) {
   const navigate = useNavigate();
   const onOpen = (userId: string) => navigate(buildRoutes.userWishlists(userId));
 
@@ -31,6 +32,7 @@ export const SearchList = memo(function ({ addFriend, users }: SearchListProps) 
               avatar={user.avatar ?? ""}
               onOpen={onOpen}
               onAddFriend={addFriend}
+              onDeleteFriend={deleteFriend}
               isFriend={user.isFriend}
             />
           )}
