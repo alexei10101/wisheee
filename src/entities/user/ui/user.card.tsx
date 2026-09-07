@@ -1,14 +1,15 @@
 import { Button } from "@/shared/ui/kit/button";
-import { Check, Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 import { memo } from "react";
 import { UserBadge } from "./user.badge";
+import { AddFriendBtn } from "@/features/friend/add/friend-add.button";
 
 type UserCardProps = {
   id: string;
   username: string;
   avatar: string;
   onOpen: (userId: string) => void;
-  isFriend?: boolean;
+  isFriend: boolean;
   onAddFriend?: (addresseeId: string) => Promise<void>;
   onDeleteFriend?: () => void;
 };
@@ -46,16 +47,11 @@ export const UserCard = memo(function UserCard({
           </Button>
         )}
         {onAddFriend && (
-          <Button
-            type="button"
-            size="icon"
-            variant={isFriend ? "secondary" : "ghost"}
-            aria-label={isFriend ? `${username} уже в друзьях` : `Добавить ${username} в друзья`}
-            onClick={() => onAddFriend(id)}
-            disabled={isFriend}
-          >
-            {isFriend ? <Check aria-hidden="true" /> : <Plus aria-hidden="true" />}
-          </Button>
+          <AddFriendBtn
+            isFriend={isFriend}
+            username={username}
+            onAddFriend={() => onAddFriend(id)}
+          />
         )}
       </div>
     </article>

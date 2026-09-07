@@ -5,13 +5,16 @@ import { SearchList } from "../list/search.list";
 import { useRequiredUser } from "@/entities/user/model/user.hooks";
 import { userRepository } from "@/entities/user/api/user.repository";
 import { useSendFriendRequest } from "@/entities/request/friend-request/model/friend-request.mutations";
+import { useMyFriends } from "@/entities/friend/model/friend.hooks";
 
 export function SearchUser() {
   const user = useRequiredUser();
+  const { data: friends } = useMyFriends();
+  const friendIds = friends?.map((friend) => friend.id);
   const sendFriendRequest = useSendFriendRequest();
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
-  const [searchResult, setSearchResult] = useState<User[] | null>(null);
+  const [searchResult, setSearchResult] = useState<(User & { isFriend: boolean })[] | null>(null);
 
   const handleAddFriend = useCallback(
     async (addresseeId: string) => {
@@ -38,7 +41,10 @@ export function SearchUser() {
   useEffect(() => {
     const handleSearch = async () => {
       try {
-        const result = await userRepository.search(debouncedSearch);
+        const searchResult = await userRepository.search(debouncedSearch);
+        const result = searchResult.map((user) =>
+          friendIds?.includes(user.id) ? { ...user, isFriend: true } : { ...user, isFriend: false },
+        );
         setSearchResult(result ?? []);
       } catch (error) {
         console.log(error);
