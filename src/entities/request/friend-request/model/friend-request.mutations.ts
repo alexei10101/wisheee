@@ -1,15 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { friendRequestRepository } from "../api/friend-request.repository";
+import { friendKeys } from "@/entities/friend/model/friend.queries";
 
 export const useSendFriendRequest = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: friendRequestRepository.createRequest,
     onMutate: () => {
       const toastId = toast.loading("Отправка запроса...");
       return { toastId };
     },
-    onSuccess: (_, __, ctx) => {
+    onSuccess: async (_, __, ctx) => {
       toast.success("Запрос успешно отправлен", {
         id: ctx.toastId,
         action: {
@@ -17,7 +20,7 @@ export const useSendFriendRequest = () => {
           onClick: () => {},
         },
       });
-      // проверять встречная ли заявка и обновлять друзей при необходимости
+      await queryClient.invalidateQueries({ queryKey: friendKeys.me });
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка отправки запроса", {
@@ -28,13 +31,15 @@ export const useSendFriendRequest = () => {
 };
 
 export const useAcceptFriendRequest = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: friendRequestRepository.acceptRequest,
     onMutate: () => {
       const toastId = toast.loading("Принимаем заявку в друзья…");
       return { toastId };
     },
-    onSuccess: (_, __, ctx) => {
+    onSuccess: async (_, __, ctx) => {
       toast.success("Заявка принята", {
         id: ctx.toastId,
         action: {
@@ -42,7 +47,7 @@ export const useAcceptFriendRequest = () => {
           onClick: () => {},
         },
       });
-      // optimistic add friend from repository result
+      await queryClient.invalidateQueries({ queryKey: friendKeys.me });
     },
     onError: (_err, _vars, ctx) => {
       toast.error("Ошибка добавления", {
